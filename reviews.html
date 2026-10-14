@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="sq">
 <head>
 <meta charset="UTF-8">
@@ -6,11 +7,11 @@
 <meta name="keywords" content="website, marketing, video editing, karta biznesi, fletushka, Shqipëri">
 <meta name="author" content="Code Nest Tirana">
 <meta name="theme-color" content="#050b1a" id="themeColorMeta">
+<meta name="google-site-verification" content="CO6UedhZosdGpYOF0iH1mPcNoLlRew6OeG4dwUQJchU" />
 <title>Code Nest Tirana | Reviews nga klientët</title>
-<link rel="alternate" hreflang="sq" href="index.html">
-<link rel="alternate" hreflang="en" href="index-en.html">
-<link rel="alternate" hreflang="x-default" href="index.html">
-<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="alternate" hreflang="sq" href="reviews.html">
+<link rel="alternate" hreflang="x-default" href="reviews.html">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 
 <!-- Apply saved theme before first paint (no flash) -->
 
@@ -91,9 +92,9 @@ header.scrolled{background:rgba(5,11,26,.86);border-bottom-color:var(--line)}
 .navbar{height:76px;display:flex;align-items:center;justify-content:space-between}
 .nav-right{display:flex;align-items:center;gap:14px}
 .logo{display:flex;align-items:center;gap:11px;font-size:25px;font-weight:800;letter-spacing:-.8px;color:var(--silver)}
-.logo span{color:var(--blue)}
-.logo-city{font-style:normal;font-weight:inherit;letter-spacing:inherit;color:inherit;margin-left:.22em}
-.footer-logo .logo-city{font-style:normal;font-weight:inherit;color:inherit}
+.logo-text{display:inline-flex;align-items:baseline;gap:.22em}
+.logo-nest{color:var(--blue)}
+.logo-city{font-style:normal;font-weight:inherit;letter-spacing:inherit;color:inherit;margin-left:0}
 @media(max-width:420px){.logo{font-size:21px}.logo-city{display:none}}
 .nav-links{display:flex;align-items:center;gap:6px;list-style:none}
 .nav-links a{position:relative;display:block;padding:10px 14px;color:var(--steel);font-size:15px;font-weight:500;border-radius:10px;transition:.25s}
@@ -113,6 +114,17 @@ header.scrolled{background:rgba(5,11,26,.86);border-bottom-color:var(--line)}
 .theme-toggle svg{position:absolute;top:50%;width:16px;height:16px;margin-top:-8px;z-index:2;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:color .3s}
 .theme-toggle .ic-sun{left:10px;color:var(--steel)}
 .theme-toggle .ic-moon{right:10px;color:#fff}
+
+/* ===== Language toggle (SQ / EN switch, top right) ===== */
+.lang-toggle{display:flex;align-items:center;gap:2px;padding:3px;border-radius:999px;border:1px solid var(--line-2);background:rgba(255,255,255,.05);transition:border-color .3s,box-shadow .3s}
+.lang-toggle:hover{border-color:rgba(30,123,255,.7);box-shadow:var(--glow)}
+.lang-toggle button{border:0;background:transparent;color:var(--steel);font-size:12px;font-weight:700;letter-spacing:.6px;padding:7px 11px;border-radius:999px;cursor:pointer;transition:.25s}
+.lang-toggle button:hover{color:var(--silver)}
+.lang-toggle button.on{color:#fff;background:linear-gradient(180deg,#2f8bff,#1458d8);box-shadow:0 0 12px rgba(30,123,255,.55)}
+html:has(#themeToggleBox:checked) .lang-toggle{background:rgba(15,23,42,.05)}
+html:has(#themeToggleBox:checked) .lang-toggle button:hover{color:var(--blue-deep)}
+html:has(#themeToggleBox:checked) .lang-toggle button.on{color:#fff}
+@media(max-width:380px){.lang-toggle button{padding:6px 8px;font-size:11px}}
 
 /* ===== Buttons: shine sweep + glow on hover ===== */
 .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 26px;border-radius:14px;font-weight:600;font-size:16px;cursor:pointer;border:1px solid transparent;transition:transform .3s,box-shadow .3s,background .3s,border-color .3s,color .3s}
@@ -309,7 +321,7 @@ header.scrolled{background:rgba(5,11,26,.86);border-bottom-color:var(--line)}
 footer{background:#030814;border-top:1px solid var(--line);padding:38px 0;position:relative;z-index:2}
 .footer-content{display:flex;justify-content:space-between;gap:18px 25px;align-items:center;flex-wrap:wrap}
 .footer-logo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;color:var(--silver)}
-.footer-logo span{color:var(--blue)}
+.footer-logo .logo-nest{color:var(--blue)}
 .footer-content p{color:var(--steel);font-size:14px}
 .footer-links{display:flex;gap:22px;color:var(--steel);font-size:14px}
 .footer-links a{transition:.25s}
@@ -633,7 +645,7 @@ h1,h2,h3,h4{-webkit-hyphens:manual;hyphens:manual;text-wrap:balance}
 <header id="siteHeader">
   <div class="container navbar">
     <a href="index.html#home" class="logo" aria-label="Code Nest Tirana - Home">
-      <div translate="no">Code <span>Nest</span> <em class="logo-city">Tirana</em></div>
+      <span class="logo-text" translate="no"><span>Code</span><span class="logo-nest">Nest</span><span class="logo-city">Tirana</span></span>
     </a>
 
     <div class="nav-right">
@@ -650,6 +662,11 @@ h1,h2,h3,h4{-webkit-hyphens:manual;hyphens:manual;text-wrap:balance}
       </ul>
 
       <!-- Dark / light toggle (top right, CSS-only) -->
+      <div class="lang-toggle" role="group" aria-label="Gjuha / Language" translate="no">
+        <button type="button" data-lang="sq" class="on" aria-pressed="true">SQ</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+
       <input type="checkbox" class="theme-checkbox" id="themeToggleBox" aria-label="Theme">
       <label class="theme-toggle" for="themeToggleBox" title="Theme">
         <span class="knob"></span>
@@ -768,7 +785,7 @@ h1,h2,h3,h4{-webkit-hyphens:manual;hyphens:manual;text-wrap:balance}
 <footer>
   <div class="container footer-content">
     <div class="footer-logo">
-      <div translate="no">Code <span>Nest</span> <em class="logo-city">Tirana</em></div>
+      <span class="logo-text" translate="no"><span>Code</span><span class="logo-nest">Nest</span><span class="logo-city">Tirana</span></span>
     </div>
 
     <p>© 2026 <span translate="no">Code Nest Tirana</span>. Të gjitha të drejtat e rezervuara.</p>
@@ -788,7 +805,105 @@ h1,h2,h3,h4{-webkit-hyphens:manual;hyphens:manual;text-wrap:balance}
 <!-- FLOATING WHATSAPP -->
 <a href="https://wa.me/355698543275" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Kontakt në WhatsApp"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg></a>
 
-
+<script>
+/* ===== SQ / EN language toggle (same as index.html) ===== */
+(function () {
+  var KEY = "cnt-lang";
+  var ITEMS = [
+    { s: '#navLinks a[href="index.html#sherbimet"],.footer-links a[href="index.html#sherbimet"]', en: "Our services" },
+    { s: '#navLinks a[href="index.html#rreth-nesh"],.footer-links a[href="index.html#rreth-nesh"]', en: "About us" },
+    { s: '#navLinks a[href="index.html#provo-falas"],.footer-links a[href="index.html#provo-falas"]', en: "Try for free" },
+    { s: '#navLinks a[href="index.html#kontakt"],.footer-links a[href="index.html#kontakt"]', en: "Contact" },
+    { s: ".reviews .section-title>span", en: "Our clients" },
+    { s: ".reviews .section-title>h2", en: "What clients say" },
+    { s: ".reviews .section-title>p", en: "Reviews from clients we have worked with." },
+    { s: ".reviews-grid .review-card:nth-child(1) p", en: '"The website turned out very professional and much more beautiful than I imagined."' },
+    { s: ".reviews-grid .review-card:nth-child(1) small", en: "Client" },
+    { s: ".reviews-grid .review-card:nth-child(2) p", en: '"Very good service and proper communication. The videos for our marketing turned out great."' },
+    { s: ".reviews-grid .review-card:nth-child(2) small", en: "Client" },
+    { s: ".reviews-grid .review-card:nth-child(3) p", en: '"The business card and flyers were modern and professional. Very satisfied!"' },
+    { s: ".reviews-grid .review-card:nth-child(3) small", en: "Client" },
+    { s: ".comments-head h3", en: "Comments" },
+    { s: ".comments-summary span", en: "3 comments" },
+    { s: ".comment-list>.comment:nth-child(1) .comment-time", en: "Verified client" },
+    { s: ".comment-list>.comment:nth-child(1) .comment-text", en: '"The website turned out very professional and much more beautiful than I imagined."' },
+    { s: ".comment-list>.comment:nth-child(2) .comment-time", en: "Verified client" },
+    { s: ".comment-list>.comment:nth-child(2) .comment-text", en: '"Very good service and proper communication. The videos for our marketing turned out great."' },
+    { s: ".comment-list>.comment:nth-child(3) .comment-time", en: "Verified client" },
+    { s: ".comment-list>.comment:nth-child(3) .comment-text", en: '"The business card and flyers were modern and professional. Very satisfied!"' },
+    { s: ".comment-form h4", en: "Have you worked with us?" },
+    { s: ".comment-form>p", en: "Send your review via WhatsApp and we will add it here." },
+    { s: ".comment-form .btn", en: "Leave a review on WhatsApp" },
+    { s: ".footer-content>p", parts: ["© 2026 ", ". All rights reserved."] }
+  ];
+  var ATTRS = [
+    { s: ".whatsapp-float", a: "aria-label", en: "Contact us on WhatsApp" },
+    { s: ".stars-static", a: "aria-label", en: "5 out of 5 stars" }
+  ];
+  var DOCTITLE_EN = "Code Nest Tirana | Client reviews";
+  var METADESC_EN = "Professional services for website creation, video editing, business cards and informative flyers.";
+  var origTitle = document.title;
+  var metaDesc = document.querySelector('meta[name="description"]');
+  var origDesc = metaDesc ? (metaDesc.getAttribute("content") || "") : "";
+  var textCache = new Map();
+  function textNodes(el) {
+    var out = [];
+    (function walk(n) {
+      for (var i = 0; i < n.childNodes.length; i++) {
+        var c = n.childNodes[i];
+        if (c.nodeType === 3) { if (c.nodeValue.trim() !== "") out.push(c); }
+        else if (c.nodeType === 1 && c.getAttribute("translate") !== "no") walk(c);
+      }
+    })(el);
+    return out;
+  }
+  function setLang(lang) {
+    for (var t = 0; t < ITEMS.length; t++) {
+      var it = ITEMS[t];
+      var els = document.querySelectorAll(it.s);
+      for (var k = 0; k < els.length; k++) {
+        var el = els[k];
+        if (!textCache.has(el)) textCache.set(el, textNodes(el).map(function (n) { return n.nodeValue; }));
+        var src = (lang === "en") ? (it.parts || [it.en]) : textCache.get(el);
+        var nodes = textNodes(el);
+        for (var i = 0; i < nodes.length; i++) {
+          if (src[i] !== undefined) nodes[i].nodeValue = src[i];
+        }
+      }
+    }
+    for (var q = 0; q < ATTRS.length; q++) {
+      var at = ATTRS[q];
+      var aes = document.querySelectorAll(at.s);
+      for (var m = 0; m < aes.length; m++) {
+        var ae = aes[m];
+        var dk = "data-orig-" + at.a;
+        if (!ae.hasAttribute(dk)) ae.setAttribute(dk, ae.getAttribute(at.a) || "");
+        ae.setAttribute(at.a, (lang === "en") ? at.en : ae.getAttribute(dk));
+      }
+    }
+    document.documentElement.setAttribute("lang", lang);
+    document.title = (lang === "en") ? DOCTITLE_EN : origTitle;
+    if (metaDesc) metaDesc.setAttribute("content", (lang === "en") ? METADESC_EN : origDesc);
+    var btns = document.querySelectorAll(".lang-toggle button");
+    for (var b = 0; b < btns.length; b++) {
+      var on = btns[b].getAttribute("data-lang") === lang;
+      btns[b].classList.toggle("on", on);
+      btns[b].setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    try { localStorage.setItem(KEY, lang); } catch (e) {}
+  }
+  var start = "sq";
+  try { start = localStorage.getItem(KEY) || "sq"; } catch (e) {}
+  if (start !== "en") start = "sq";
+  var btns0 = document.querySelectorAll(".lang-toggle button");
+  for (var j = 0; j < btns0.length; j++) {
+    (function (btn) {
+      btn.addEventListener("click", function () { setLang(btn.getAttribute("data-lang")); });
+    })(btns0[j]);
+  }
+  setLang(start);
+})();
+</script>
 
 </body>
 </html>

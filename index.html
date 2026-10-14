@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="sq">
 <head>
 <meta charset="UTF-8">
@@ -9,9 +10,8 @@
 <meta name="google-site-verification" content="CO6UedhZosdGpYOF0iH1mPcNoLlRew6OeG4dwUQJchU" />
 <title>Code Nest Tirana | Zgjidhje Profesionale për Biznesin tuaj</title>
 <link rel="alternate" hreflang="sq" href="index.html">
-<link rel="alternate" hreflang="en" href="index-en.html">
 <link rel="alternate" hreflang="x-default" href="index.html">
-<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 
 <!-- Apply saved theme before first paint (no flash) -->
 
@@ -92,9 +92,9 @@ header.scrolled{background:rgba(5,11,26,.86);border-bottom-color:var(--line)}
 .navbar{height:76px;display:flex;align-items:center;justify-content:space-between}
 .nav-right{display:flex;align-items:center;gap:14px}
 .logo{display:flex;align-items:center;gap:11px;font-size:25px;font-weight:800;letter-spacing:-.8px;color:var(--silver)}
-.logo span{color:var(--blue)}
-.logo-city{font-style:normal;font-weight:inherit;letter-spacing:inherit;color:inherit;margin-left:.22em}
-.footer-logo .logo-city{font-style:normal;font-weight:inherit;color:inherit}
+.logo-text{display:inline-flex;align-items:baseline;gap:.22em}
+.logo-nest{color:var(--blue)}
+.logo-city{font-style:normal;font-weight:inherit;letter-spacing:inherit;color:inherit;margin-left:0}
 @media(max-width:420px){.logo{font-size:21px}.logo-city{display:none}}
 .nav-links{display:flex;align-items:center;gap:6px;list-style:none}
 .nav-links a{position:relative;display:block;padding:10px 14px;color:var(--steel);font-size:15px;font-weight:500;border-radius:10px;transition:.25s}
@@ -114,6 +114,17 @@ header.scrolled{background:rgba(5,11,26,.86);border-bottom-color:var(--line)}
 .theme-toggle svg{position:absolute;top:50%;width:16px;height:16px;margin-top:-8px;z-index:2;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:color .3s}
 .theme-toggle .ic-sun{left:10px;color:var(--steel)}
 .theme-toggle .ic-moon{right:10px;color:#fff}
+
+/* ===== Language toggle (SQ / EN switch, top right) ===== */
+.lang-toggle{display:flex;align-items:center;gap:2px;padding:3px;border-radius:999px;border:1px solid var(--line-2);background:rgba(255,255,255,.05);transition:border-color .3s,box-shadow .3s}
+.lang-toggle:hover{border-color:rgba(30,123,255,.7);box-shadow:var(--glow)}
+.lang-toggle button{border:0;background:transparent;color:var(--steel);font-size:12px;font-weight:700;letter-spacing:.6px;padding:7px 11px;border-radius:999px;cursor:pointer;transition:.25s}
+.lang-toggle button:hover{color:var(--silver)}
+.lang-toggle button.on{color:#fff;background:linear-gradient(180deg,#2f8bff,#1458d8);box-shadow:0 0 12px rgba(30,123,255,.55)}
+html:has(#themeToggleBox:checked) .lang-toggle{background:rgba(15,23,42,.05)}
+html:has(#themeToggleBox:checked) .lang-toggle button:hover{color:var(--blue-deep)}
+html:has(#themeToggleBox:checked) .lang-toggle button.on{color:#fff}
+@media(max-width:380px){.lang-toggle button{padding:6px 8px;font-size:11px}}
 
 /* ===== Buttons: shine sweep + glow on hover ===== */
 .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 26px;border-radius:14px;font-weight:600;font-size:16px;cursor:pointer;border:1px solid transparent;transition:transform .3s,box-shadow .3s,background .3s,border-color .3s,color .3s}
@@ -310,7 +321,7 @@ header.scrolled{background:rgba(5,11,26,.86);border-bottom-color:var(--line)}
 footer{background:#030814;border-top:1px solid var(--line);padding:38px 0;position:relative;z-index:2}
 .footer-content{display:flex;justify-content:space-between;gap:18px 25px;align-items:center;flex-wrap:wrap}
 .footer-logo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;color:var(--silver)}
-.footer-logo span{color:var(--blue)}
+.footer-logo .logo-nest{color:var(--blue)}
 .footer-content p{color:var(--steel);font-size:14px}
 .footer-links{display:flex;gap:22px;color:var(--steel);font-size:14px}
 .footer-links a{transition:.25s}
@@ -545,23 +556,22 @@ html:has(#themeToggleBox:checked) .footer-links a:hover{color:var(--blue-deep);t
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 /* 2. Translators wrap every text node in <font> tags: make them inherit everything */
-font{font:inherit;letter-spacing:inherit;line-height:inherit;text-transform:inherit}
+font{font:inherit;letter-spacing:inherit;line-height:inherit;text-transform:inherit;vertical-align:baseline!important;white-space:inherit}
 
 /* 3. One font family everywhere, including translator-injected elements
       (the hero .l2 line is the single exception: it sets its own serif with !important) */
 body,body *{font-family:var(--font)!important}
 .hero-text h1 .l2,.hero-text h1 .l2 *{font-family:var(--font-display)!important}
 
-/* 4. Casing: no forced upper/lowercase; just guarantee a capital first letter on titles
-      (the hero .l1/.l2 lines are left out on purpose: .l2 is a continuation of .l1).
-      The gradient-clipped headings (.section-title h2, .about-text h2) are ALSO left out:
-      ::first-letter on background-clip:text headings makes the first letter render wrong. */
-body,body *{text-transform:none}
-.service-card h3::first-letter,
-.about-box h3::first-letter,
-.contact-info h3::first-letter,
-.contact-form h3::first-letter,
-.comments-head h3::first-letter{text-transform:uppercase}
+/* 4. Casing: titles are already correctly capitalized in the HTML itself
+      (Albanian source, e.g. "Kontakt" -> auto-translates cleanly to "Contact").
+      No ::first-letter selectors and no text-transform capitalize/uppercase
+      rules anywhere on this page on purpose: any ::first-letter rule forces
+      the browser to split off the first letter, and combined with the
+      translator's <font> wrappers a word gets split into styled pieces,
+      each piece re-capitalized (e.g. "Kontakt"/"Contact" rendered as
+      "contAct"). So: never add ::first-letter or casing rules. */
+body,body *{text-transform:none!important;font-variant:normal!important;font-variant-caps:normal!important}
 
 /* 5. Long translated words wrap instead of stretching the layout */
 h1,h2,h3,h4,p,li,label,small,strong,.btn,.small-title,.hero-eyebrow,.free-trial-badge{overflow-wrap:break-word;word-wrap:break-word}
@@ -579,11 +589,15 @@ h1,h2,h3,h4{-webkit-hyphens:manual;hyphens:manual;text-wrap:balance}
 
 /* 8. Navigation: never break a menu item mid-label; tighten on tablets */
 .nav-links a{white-space:nowrap}
-/* Translated "Contact" button/links: no ::first-letter or case tricks, translator <font> wrappers inherit cleanly */
-.nav-links .nav-contact,.nav-links .nav-contact *,.footer-links a,.footer-links a *{text-transform:none!important;font-variant:normal!important}
-.nav-links .nav-contact::first-letter,.footer-links a::first-letter,.section-title span::first-letter,.contact-info h3::first-letter,.contact-form h3::first-letter,font::first-letter{text-transform:none!important;font-size:inherit!important;font-weight:inherit!important;color:inherit!important}
+/* Translated labels (e.g. "Kontakt" -> "Contact"): no case tricks anywhere,
+   translator <font> wrappers inherit cleanly and stay plain inline text
+   so a word is never split into styled pieces. Covers every element,
+   including buttons, paragraphs and cards with "kontakto/kontakt" text.
+   NOTE: no ::first-letter selectors allowed here (see note 4 above). */
+.nav-links .nav-contact,.nav-links .nav-contact *,.footer-links a,.footer-links a *{text-transform:none!important;font-variant:normal!important;font-variant-caps:normal!important}
+font{text-transform:inherit!important;font-variant:inherit!important;font-variant-caps:inherit!important}
 /* translator <font> wrappers must stay plain inline text so a word is never split into styled pieces */
-.nav-links a font,.footer-links a font,.section-title span font,.contact-info h3 font,.contact-form h3 font{display:inline!important;text-transform:none!important}
+.nav-links a font,.footer-links a font,.section-title span font,.contact-info h3 font,.contact-form h3 font,.btn font,p font,li font,h1 font,h2 font,h3 font,h4 font,strong font,small font,span font{display:inline!important;float:none!important;text-transform:none!important;font-variant:normal!important;font-variant-caps:normal!important;font-size:inherit!important;font-weight:inherit!important;color:inherit!important;letter-spacing:inherit!important;vertical-align:baseline!important}
 @media(max-width:1100px) and (min-width:901px){
   .nav-links{gap:2px}
   .nav-links a{padding:10px 9px;font-size:14px}
@@ -620,7 +634,7 @@ h1,h2,h3,h4{-webkit-hyphens:manual;hyphens:manual;text-wrap:balance}
 <header id="siteHeader">
   <div class="container navbar">
     <a href="#home" class="logo" aria-label="Code Nest Tirana - Home">
-      <div translate="no">Code <span>Nest</span> <em class="logo-city">Tirana</em></div>
+      <span class="logo-text" translate="no"><span>Code</span><span class="logo-nest">Nest</span><span class="logo-city">Tirana</span></span>
     </a>
 
     <div class="nav-right">
@@ -631,10 +645,15 @@ h1,h2,h3,h4{-webkit-hyphens:manual;hyphens:manual;text-wrap:balance}
         <li><a href="#ai" title="Animacioni" translate="no">AI</a></li>
         <li><a href="#sherbimet">Shërbimet tona</a></li>
         <li><a href="#rreth-nesh">Rreth nesh</a></li>
-        <li><a href="reviews.html">Reviews</a></li>
+        <li><a href="#reviews">Reviews</a></li>
         <li><a href="#provo-falas">Provo falas</a></li>
         <li><a href="#kontakt" class="nav-contact">Kontakt</a></li>
       </ul>
+
+      <div class="lang-toggle" role="group" aria-label="Gjuha / Language" translate="no">
+        <button type="button" data-lang="sq" class="on" aria-pressed="true">SQ</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
 
       <!-- Dark / light toggle (top right, CSS-only) -->
       <input type="checkbox" class="theme-checkbox" id="themeToggleBox" aria-label="Theme">
@@ -662,7 +681,7 @@ h1,h2,h3,h4{-webkit-hyphens:manual;hyphens:manual;text-wrap:balance}
       <span class="hero-eyebrow">Zgjidhje digjitale për biznesin tuaj</span>
 
       <h1>
-        <span class="l1">Bëje biznesin tënd</span>
+        <span class="l1">Bëjeni biznesin tuaj</span>
         <span class="l2">më profesional.</span>
       </h1>
 
@@ -767,7 +786,102 @@ h1,h2,h3,h4{-webkit-hyphens:manual;hyphens:manual;text-wrap:balance}
   </div>
 </section>
 
-<!-- REVIEWS moved to reviews.html -->
+<!-- REVIEWS + COMMENTS -->
+<section class="reviews" id="reviews">
+  <div class="container">
+
+    <div class="section-title fade-in">
+      <span>Klientët tanë</span>
+      <h2>Çfarë thonë klientët</h2>
+      <p>Vlerësimet e klientëve që kanë punuar me ne.</p>
+    </div>
+
+    <div class="reviews-grid">
+
+      <div class="review-card fade-in">
+        <div class="stars"><span class="stars-static" role="img" aria-label="5 nga 5 yje"><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg></span></div>
+        <p>"Website-i doli shumë profesional dhe shumë më i bukur nga sa e imagjinoja."</p>
+        <div class="review-author">
+          <div class="avatar">A</div>
+          <div><strong translate="no">Ardit</strong><small>Klient</small></div>
+        </div>
+      </div>
+
+      <div class="review-card fade-in">
+        <div class="stars"><span class="stars-static" role="img" aria-label="5 nga 5 yje"><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg></span></div>
+        <p>"Shërbim shumë i mirë dhe komunikim korrekt. Videot për marketingun tonë dolën shumë mirë."</p>
+        <div class="review-author">
+          <div class="avatar">E</div>
+          <div><strong translate="no">Elona</strong><small>Klientja</small></div>
+        </div>
+      </div>
+
+      <div class="review-card fade-in">
+        <div class="stars"><span class="stars-static" role="img" aria-label="5 nga 5 yje"><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg></span></div>
+        <p>"Karta e biznesit dhe fletushkat ishin moderne dhe profesionale. Shumë i kënaqur!"</p>
+        <div class="review-author">
+          <div class="avatar">M</div>
+          <div><strong translate="no">Martin</strong><small>Klient</small></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- COMMENT SECTION: static list (HTML + CSS only) -->
+    <div class="comments fade-in" id="komente">
+      <div class="comments-head">
+        <h3>Komentet</h3>
+        <div class="comments-summary"><span>3 komente</span></div>
+      </div>
+
+      <ul class="comment-list">
+        <li class="comment">
+          <article class="comment-card">
+            <div class="avatar">A</div>
+            <div class="comment-body">
+              <div class="comment-head">
+                <strong class="comment-name">Ardit</strong>
+                <span class="comment-time">Klient i verifikuar</span>
+              </div>
+              <p class="comment-text">Website-i doli shumë profesional dhe shumë më i bukur nga sa e imagjinoja.</p>
+            </div>
+          </article>
+        </li>
+        <li class="comment">
+          <article class="comment-card">
+            <div class="avatar">E</div>
+            <div class="comment-body">
+              <div class="comment-head">
+                <strong class="comment-name">Elona</strong>
+                <span class="comment-time">Kliente e verifikuar</span>
+              </div>
+              <p class="comment-text">Shërbim shumë i mirë dhe komunikim korrekt. Videot për marketingun tonë dolën shumë mirë.</p>
+            </div>
+          </article>
+        </li>
+        <li class="comment">
+          <article class="comment-card">
+            <div class="avatar">M</div>
+            <div class="comment-body">
+              <div class="comment-head">
+                <strong class="comment-name">Martin</strong>
+                <span class="comment-time">Klient i verifikuar</span>
+              </div>
+              <p class="comment-text">Karta e biznesit dhe fletushkat ishin moderne dhe profesionale. Shumë i kënaqur!</p>
+            </div>
+          </article>
+        </li>
+      </ul>
+
+      <div class="comment-form">
+        <h4>Keni punuar me ne?</h4>
+        <p style="color:var(--muted);margin-bottom:18px">Dërgoni vlerësimin tuaj në WhatsApp dhe do ta shtojmë këtu.</p>
+        <a class="btn btn-primary" href="https://wa.me/355698543275?text=Punova%20me%20Code%20Nest%20Tirana%20dhe%20dua%20te%20le%20nje%20review." target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-send"/></svg> Lini një review në WhatsApp</a>
+      </div>
+    </div>
+
+  </div>
+</section>
 
 <!-- CTA -->
 <section class="cta">
@@ -826,7 +940,7 @@ h1,h2,h3,h4{-webkit-hyphens:manual;hyphens:manual;text-wrap:balance}
 
         <div class="contact-item">
           <div class="contact-icon"><svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg></div>
-          <div><small translate="no">Email</small><strong translate="no"><a href="mailto:your-email@example.com">your-email@example.com</a></strong></div>
+          <div><small translate="no">Email</small><strong translate="no"><a href="mailto:roanguri5@gmail.com">roanguri5@gmail.com</a></strong></div>
         </div>
 
         <div class="contact-item">
@@ -858,7 +972,7 @@ h1,h2,h3,h4{-webkit-hyphens:manual;hyphens:manual;text-wrap:balance}
 <footer>
   <div class="container footer-content">
     <div class="footer-logo">
-      <div translate="no">Code <span>Nest</span> <em class="logo-city">Tirana</em></div>
+      <span class="logo-text" translate="no"><span>Code</span><span class="logo-nest">Nest</span><span class="logo-city">Tirana</span></span>
     </div>
 
     <p>© 2026 <span translate="no">Code Nest Tirana</span>. Të gjitha të drejtat e rezervuara.</p>
@@ -868,7 +982,7 @@ h1,h2,h3,h4{-webkit-hyphens:manual;hyphens:manual;text-wrap:balance}
       <a href="#ai" translate="no">AI</a>
       <a href="#sherbimet">Shërbimet tona</a>
       <a href="#rreth-nesh">Rreth nesh</a>
-      <a href="reviews.html">Reviews</a>
+      <a href="#reviews">Reviews</a>
       <a href="#provo-falas">Provo falas</a>
       <a href="#kontakt">Kontakt</a>
     </div>
@@ -876,7 +990,7 @@ h1,h2,h3,h4{-webkit-hyphens:manual;hyphens:manual;text-wrap:balance}
 </footer>
 
 <!-- FLOATING WHATSAPP -->
-<a href="https://wa.me/355698543275" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Kontakt në WhatsApp"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg></a>
+<a href="https://wa.me/355698543275" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Na kontaktoni në WhatsApp"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg></a>
 
 <script>
 /* ===== Quantum / AI particle sphere (canvas) =====
@@ -1028,6 +1142,155 @@ h1,h2,h3,h4{-webkit-hyphens:manual;hyphens:manual;text-wrap:balance}
   } else {
     play();
   }
+})();
+</script>
+
+<script>
+/* ===== SQ / EN language toggle =====
+   Hardcoded strings, so English always shows "Contact" (never "contAct")
+   and the page no longer depends on browser auto-translate for UI labels. */
+(function () {
+  var KEY = "cnt-lang";
+  var ITEMS = [
+    { s: '#navLinks a[href="#sherbimet"],.footer-links a[href="#sherbimet"]', en: "Our services" },
+    { s: '#navLinks a[href="#rreth-nesh"],.footer-links a[href="#rreth-nesh"]', en: "About us" },
+    { s: '#navLinks a[href="#provo-falas"],.footer-links a[href="#provo-falas"]', en: "Try for free" },
+    { s: '#navLinks a[href="#kontakt"],.footer-links a[href="#kontakt"]', en: "Contact" },
+    { s: ".hero-eyebrow", en: "Digital solutions for your business" },
+    { s: ".hero-text h1 .l1", en: "Make your business" },
+    { s: ".hero-text h1 .l2", en: "more professional." },
+    { s: ".hero-text>p", en: "We create the digital presence your business deserves — from modern websites to professional marketing materials." },
+    { s: '.hero-buttons a[href="#sherbimet"]', en: "View services" },
+    { s: '.hero-buttons a[href="#kontakt"]', en: "Contact us" },
+    { s: ".ai-label", parts: ["We build high-performance websites, powered by ", "artificial intelligence"] },
+    { s: ".services .section-title>span", en: "What we do" },
+    { s: ".services .section-title>h2", en: "Our services" },
+    { s: ".services .section-title>p", en: "Everything you need to present your business professionally." },
+    { s: ".services-grid .service-card:nth-child(1) h3", en: "Website creation" },
+    { s: ".services-grid .service-card:nth-child(1) p", en: "We create modern, fast, responsive websites tailored to your business identity." },
+    { s: ".services-grid .service-card:nth-child(2) h3", en: "Video editing" },
+    { s: ".services-grid .service-card:nth-child(2) p", en: "We edit professional videos for marketing, social media, ads and promoting your business." },
+    { s: ".services-grid .service-card:nth-child(3) h3", en: "Business cards" },
+    { s: ".services-grid .service-card:nth-child(3) p", en: "We design modern business cards that help your clients remember your brand and contact details." },
+    { s: ".services-grid .service-card:nth-child(4) h3", en: "Flyers" },
+    { s: ".services-grid .service-card:nth-child(4) p", en: "We create informative and promotional flyers to present your offers and services." },
+    { s: ".about-box h3", en: "A partner for your business." },
+    { s: ".about-box>p", en: "Our goal is to help businesses have a stronger, more professional presence online and offline." },
+    { s: ".about-list li:nth-child(1)", en: "Modern design" },
+    { s: ".about-list li:nth-child(2)", en: "Tailored solutions" },
+    { s: ".about-list li:nth-child(3)", en: "Direct communication" },
+    { s: ".about-list li:nth-child(4)", en: "Focus on your business" },
+    { s: ".about-text h2", en: "Your ideas, our work." },
+    { s: ".about-text>p:nth-of-type(1)", en: "Every business has a story. We help you tell it the right way." },
+    { s: ".about-text>p:nth-of-type(2)", en: "From a simple website to marketing materials, we create solutions that look professional and fit your needs." },
+    { s: ".about-text .btn", en: "Let's discuss your project" },
+    { s: ".reviews .section-title>span", en: "Our clients" },
+    { s: ".reviews .section-title>h2", en: "What clients say" },
+    { s: ".reviews .section-title>p", en: "Reviews from clients we have worked with." },
+    { s: ".reviews-grid .review-card:nth-child(1) p", en: '"The website turned out very professional and much more beautiful than I imagined."' },
+    { s: ".reviews-grid .review-card:nth-child(1) small", en: "Client" },
+    { s: ".reviews-grid .review-card:nth-child(2) p", en: '"Very good service and proper communication. The videos for our marketing turned out great."' },
+    { s: ".reviews-grid .review-card:nth-child(2) small", en: "Client" },
+    { s: ".reviews-grid .review-card:nth-child(3) p", en: '"The business card and flyers were modern and professional. Very satisfied!"' },
+    { s: ".reviews-grid .review-card:nth-child(3) small", en: "Client" },
+    { s: ".comments-head h3", en: "Comments" },
+    { s: ".comments-summary span", en: "3 comments" },
+    { s: ".comment-list>.comment:nth-child(1) .comment-time", en: "Verified client" },
+    { s: ".comment-list>.comment:nth-child(1) .comment-text", en: '"The website turned out very professional and much more beautiful than I imagined."' },
+    { s: ".comment-list>.comment:nth-child(2) .comment-time", en: "Verified client" },
+    { s: ".comment-list>.comment:nth-child(2) .comment-text", en: '"Very good service and proper communication. The videos for our marketing turned out great."' },
+    { s: ".comment-list>.comment:nth-child(3) .comment-time", en: "Verified client" },
+    { s: ".comment-list>.comment:nth-child(3) .comment-text", en: '"The business card and flyers were modern and professional. Very satisfied!"' },
+    { s: ".comment-form h4", en: "Have you worked with us?" },
+    { s: ".comment-form>p", en: "Send your review via WhatsApp and we will add it here." },
+    { s: ".comment-form .btn", en: "Leave a review on WhatsApp" },
+    { s: ".cta-box>h2", en: "Ready to take your business higher?" },
+    { s: ".cta-box>p", en: "Contact us today and tell us what project you have in mind." },
+    { s: ".free-trial-badge", en: "Special offer" },
+    { s: ".free-trial-content>h2", en: "Try for free!" },
+    { s: ".free-trial-content>p", en: "Want to try our services? Send us a message and tell us what you need. Let's start together!" },
+    { s: ".free-trial-box .btn", en: "Send us a message" },
+    { s: ".contact .section-title>span", en: "Contact" },
+    { s: ".contact .section-title>h2", en: "Let's talk" },
+    { s: ".contact .section-title>p", en: "Have an idea? Contact us and we can discuss your project." },
+    { s: ".contact-info h3", en: "Find us here" },
+    { s: ".contact-info>p", en: "For questions, quotes or new projects, you can contact us directly." },
+    { s: ".contact-info>.contact-item:nth-of-type(1) small", en: "Phone" },
+    { s: ".contact-info>.contact-item:nth-of-type(4) small", en: "Services" },
+    { s: ".contact-form h3", en: "Send us a message" },
+    { s: '.contact-form label[for="message"]', en: "Your message" },
+    { s: '.contact-form button[type="submit"]', en: "Send the message via WhatsApp" },
+    { s: ".footer-content>p", parts: ["© 2026 ", ". All rights reserved."] }
+  ];
+  var ATTRS = [
+    { s: "#message", a: "placeholder", en: "Write your name, phone and project details..." },
+    { s: ".whatsapp-float", a: "aria-label", en: "Contact us on WhatsApp" },
+    { s: "#ai", a: "aria-label", en: "Websites with artificial intelligence" },
+    { s: "#navLinks a[title]", a: "title", en: "Animation" },
+    { s: ".stars-static", a: "aria-label", en: "5 out of 5 stars" }
+  ];
+  var DOCTITLE_EN = "Code Nest Tirana | Professional Solutions for Your Business";
+  var METADESC_EN = "Professional services for website creation, video editing, business cards and informative flyers.";
+  var origTitle = document.title;
+  var metaDesc = document.querySelector('meta[name="description"]');
+  var origDesc = metaDesc ? (metaDesc.getAttribute("content") || "") : "";
+  var textCache = new Map();
+  function textNodes(el) {
+    var out = [];
+    (function walk(n) {
+      for (var i = 0; i < n.childNodes.length; i++) {
+        var c = n.childNodes[i];
+        if (c.nodeType === 3) { if (c.nodeValue.trim() !== "") out.push(c); }
+        else if (c.nodeType === 1 && c.getAttribute("translate") !== "no") walk(c);
+      }
+    })(el);
+    return out;
+  }
+  function setLang(lang) {
+    for (var t = 0; t < ITEMS.length; t++) {
+      var it = ITEMS[t];
+      var els = document.querySelectorAll(it.s);
+      for (var k = 0; k < els.length; k++) {
+        var el = els[k];
+        if (!textCache.has(el)) textCache.set(el, textNodes(el).map(function (n) { return n.nodeValue; }));
+        var src = (lang === "en") ? (it.parts || [it.en]) : textCache.get(el);
+        var nodes = textNodes(el);
+        for (var i = 0; i < nodes.length; i++) {
+          if (src[i] !== undefined) nodes[i].nodeValue = src[i];
+        }
+      }
+    }
+    for (var q = 0; q < ATTRS.length; q++) {
+      var at = ATTRS[q];
+      var aes = document.querySelectorAll(at.s);
+      for (var m = 0; m < aes.length; m++) {
+        var ae = aes[m];
+        var dk = "data-orig-" + at.a;
+        if (!ae.hasAttribute(dk)) ae.setAttribute(dk, ae.getAttribute(at.a) || "");
+        ae.setAttribute(at.a, (lang === "en") ? at.en : ae.getAttribute(dk));
+      }
+    }
+    document.documentElement.setAttribute("lang", lang);
+    document.title = (lang === "en") ? DOCTITLE_EN : origTitle;
+    if (metaDesc) metaDesc.setAttribute("content", (lang === "en") ? METADESC_EN : origDesc);
+    var btns = document.querySelectorAll(".lang-toggle button");
+    for (var b = 0; b < btns.length; b++) {
+      var on = btns[b].getAttribute("data-lang") === lang;
+      btns[b].classList.toggle("on", on);
+      btns[b].setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    try { localStorage.setItem(KEY, lang); } catch (e) {}
+  }
+  var start = "sq";
+  try { start = localStorage.getItem(KEY) || "sq"; } catch (e) {}
+  if (start !== "en") start = "sq";
+  var btns0 = document.querySelectorAll(".lang-toggle button");
+  for (var j = 0; j < btns0.length; j++) {
+    (function (btn) {
+      btn.addEventListener("click", function () { setLang(btn.getAttribute("data-lang")); });
+    })(btns0[j]);
+  }
+  setLang(start);
 })();
 </script>
 
