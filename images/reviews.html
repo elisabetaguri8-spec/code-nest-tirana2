@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Shërbime profesionale për krijim websitesh, editim videosh, karta biznesi dhe fletushka informuese.">
+<meta name="keywords" content="website, marketing, video editing, karta biznesi, fletushka, Shqipëri">
+<meta name="author" content="Code Nest Tirana">
+<meta name="theme-color" content="#050b1a" id="themeColorMeta">
+<meta name="google-site-verification" content="fA_9FSEQ1gjiVQi68hGGw6-mw8vn9Re9OgTd4uUmy4g" />
+<title>Code Nest Tirana | Reviews nga klientët</title>
+<link rel="alternate" hreflang="sq" href="reviews.html">
+<link rel="alternate" hreflang="x-default" href="reviews.html">
+<link rel="icon" type="image/jpeg" href="images/logo-codenest-tirana.jpg?v=2">
+<link rel="apple-touch-icon" href="images/logo-codenest-tirana.jpg?v=2">
+
+<!-- Apply saved theme before first paint (no flash) -->
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@1,500;1,700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#050b1a;            /* deep navy */
+  --bg-2:#08122a;          /* section navy */
+  --panel:#0c1830;         /* card surface */
+  --panel-2:#101f3d;
+  --line:rgba(148,163,184,.14);
+  --line-2:rgba(148,163,184,.26);
+  --blue:#1e7bff;
+  --blue-2:#19b6ff;
+  --blue-deep:#0a3fb8;
+  --icon:#3b8bff;          /* icon blue */
+  --star-off:#56627f;
+  --steel:#8f9bb3;
+  --silver:#d3dae6;
+  --text:#e8edf6;
+  --muted:#93a0b8;
+  --glow:0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32);
+  --radius:20px;
+  --font:"Outfit",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --font-display:"Playfair Display",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{font-family:var(--font);color:var(--text);background:var(--bg);line-height:1.65;overflow-x:hidden;position:relative}
+a{text-decoration:none;color:inherit}
+button,input,textarea{font:inherit}
+img{max-width:100%;display:block}
+.container{width:min(1160px,92%);margin:auto}
+section{padding:110px 0;position:relative}
+
+/* ===== Icons (inline SVG sprite) ===== */
+.ico{width:1.2em;height:1.2em;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+/* ===== ONE texture for the whole page =====
+   Fine grain + blueprint grid, laid over the entire document (sections, cards, boxes, footer),
+   so it looks identical everywhere. Both sit above content but never block clicks. */
+body:before{
+  content:"";position:fixed;inset:0;z-index:5;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+body:after{
+  content:"";position:absolute;inset:0;z-index:5;pointer-events:none;
+  background-image:linear-gradient(rgba(148,163,184,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.05) 1px,transparent 1px);
+  background-size:56px 56px;
+}
+.container{position:relative;z-index:2}
+
+/* ===== REACTIVE BACKGROUND =====
+   One fixed layer over the whole page (sits under the header, never blocks clicks).
+   - a soft blue light follows the cursor / finger across every section
+   - the blueprint grid lights up around the pointer
+   - the grid lines stay aligned with the page grid while scrolling
+   JS only sets --bx / --by (pointer) and --sy (scroll offset). */
+.bg-react{position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden;--bx:50%;--by:40%;--sy:0px;--on:0}
+.bg-react .bg-glow{position:absolute;inset:0;opacity:calc(.55 + var(--on) * .45);
+  background:radial-gradient(520px circle at var(--bx) var(--by),rgba(30,123,255,.20),rgba(25,182,255,.07) 45%,transparent 70%);
+  mix-blend-mode:screen;transition:opacity .5s}
+.bg-react .bg-grid{position:absolute;inset:0;opacity:calc(.5 + var(--on) * .5);
+  background-image:linear-gradient(rgba(60,150,255,.42) 1px,transparent 1px),linear-gradient(90deg,rgba(60,150,255,.42) 1px,transparent 1px);
+  background-size:56px 56px;background-position:0 var(--sy);
+  -webkit-mask-image:radial-gradient(300px circle at var(--bx) var(--by),#000,transparent 70%);
+          mask-image:radial-gradient(300px circle at var(--bx) var(--by),#000,transparent 70%);
+  transition:opacity .5s}
+
+/* ===== Header ===== */
+header{position:fixed;inset:0 0 auto 0;height:76px;z-index:1000;background:rgba(5,11,26,.86);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+header.scrolled{background:rgba(5,11,26,.86);border-bottom-color:var(--line)}
+.navbar{height:76px;display:flex;align-items:center;justify-content:space-between}
+.nav-right{display:flex;align-items:center;gap:14px}
+.logo{display:flex;align-items:center;gap:11px;font-size:25px;font-weight:800;letter-spacing:-.8px;color:var(--silver)}
+.logo-text{display:inline-flex;align-items:baseline;gap:.22em}
+.logo-nest{color:var(--blue)}
+.logo-city{font-style:normal;font-weight:inherit;letter-spacing:inherit;color:inherit;margin-left:0}
+@media(max-width:420px){.logo{font-size:21px}.logo-city{display:none}}
+.nav-links{display:flex;align-items:center;gap:6px;list-style:none}
+.nav-links a{position:relative;display:block;padding:10px 14px;color:var(--steel);font-size:15px;font-weight:500;border-radius:10px;transition:.25s}
+.nav-links a:hover{color:#fff;text-shadow:0 0 14px rgba(96,165,250,.9)}
+.nav-links a.active{color:#fff}
+.nav-links a:not(.nav-contact).active:after{content:"";position:absolute;left:14px;right:14px;bottom:4px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--blue),var(--blue-2));box-shadow:0 0 10px var(--blue)}
+.nav-links .nav-contact{color:#fff;margin-left:8px;padding:11px 20px;border:1px solid rgba(30,123,255,.55);background:linear-gradient(180deg,rgba(30,123,255,.22),rgba(30,123,255,.08));font-weight:600}
+.nav-links .nav-contact:hover{background:var(--blue);box-shadow:var(--glow);text-shadow:none}
+.menu-btn{display:none;place-items:center;border:1px solid var(--line-2);background:rgba(255,255,255,.03);width:44px;height:44px;border-radius:12px;cursor:pointer;color:var(--silver);transition:.25s}
+.menu-btn .ico{width:22px;height:22px}
+.menu-btn:hover{box-shadow:var(--glow);color:#fff}
+
+/* ===== Theme toggle (sun / moon switch, top right) ===== */
+.theme-toggle{position:relative;flex:none;width:68px;height:36px;padding:0;border-radius:999px;cursor:pointer;border:1px solid var(--line-2);background:rgba(255,255,255,.05);transition:background .3s,border-color .3s,box-shadow .3s}
+.theme-toggle:hover{border-color:rgba(30,123,255,.7);box-shadow:var(--glow)}
+.theme-toggle .knob{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:linear-gradient(180deg,#2f8bff,#1458d8);box-shadow:0 0 14px rgba(30,123,255,.7);transition:transform .35s cubic-bezier(.4,.1,.2,1),background .3s,box-shadow .3s;transform:translateX(32px)}
+.theme-toggle svg{position:absolute;top:50%;width:16px;height:16px;margin-top:-8px;z-index:2;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:color .3s}
+.theme-toggle .ic-sun{left:10px;color:var(--steel)}
+.theme-toggle .ic-moon{right:10px;color:#fff}
+
+/* ===== Language toggle (SQ / EN switch, top right) ===== */
+.lang-toggle{display:flex;align-items:center;gap:2px;padding:3px;border-radius:999px;border:1px solid var(--line-2);background:rgba(255,255,255,.05);transition:border-color .3s,box-shadow .3s}
+.lang-toggle:hover{border-color:rgba(30,123,255,.7);box-shadow:var(--glow)}
+.lang-toggle button{border:0;background:transparent;color:var(--steel);font-size:12px;font-weight:700;letter-spacing:.6px;padding:7px 11px;border-radius:999px;cursor:pointer;transition:.25s}
+.lang-toggle button:hover{color:var(--silver)}
+.lang-toggle button.on{color:#fff;background:linear-gradient(180deg,#2f8bff,#1458d8);box-shadow:0 0 12px rgba(30,123,255,.55)}
+html:has(#themeToggleBox:checked) .lang-toggle{background:rgba(15,23,42,.05)}
+html:has(#themeToggleBox:checked) .lang-toggle button:hover{color:var(--blue-deep)}
+html:has(#themeToggleBox:checked) .lang-toggle button.on{color:#fff}
+@media(max-width:380px){.lang-toggle button{padding:6px 8px;font-size:11px}}
+
+/* ===== Buttons: shine sweep + glow on hover ===== */
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 26px;border-radius:14px;font-weight:600;font-size:16px;cursor:pointer;border:1px solid transparent;transition:transform .3s,box-shadow .3s,background .3s,border-color .3s,color .3s}
+.btn:before{content:"";position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);transform:skewX(-20deg);transition:left .7s ease}
+.btn:hover:before{left:130%}
+.btn:hover{transform:translateY(-3px)}
+.btn-sm{padding:10px 18px;font-size:14px;border-radius:12px}
+.btn-primary{color:#fff;background:linear-gradient(180deg,#2f8bff 0%,#1458d8 100%);border-color:rgba(120,180,255,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 10px 26px rgba(20,88,216,.35)}
+.btn-primary:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),var(--glow)}
+.btn-secondary{color:var(--silver);background:rgba(255,255,255,.04);border-color:var(--line-2)}
+.btn-secondary:hover{color:#fff;border-color:rgba(30,123,255,.8);background:rgba(30,123,255,.12);box-shadow:var(--glow)}
+.btn-white{color:#0a1a3f;background:linear-gradient(180deg,#fff,#cfd8e6);box-shadow:inset 0 -2px 0 rgba(0,0,0,.08),0 10px 26px rgba(0,0,0,.3)}
+.btn-white .ico{color:#0a3fb8}
+.btn-white:hover{box-shadow:0 0 0 1px rgba(255,255,255,.7),0 0 26px rgba(255,255,255,.55),0 0 70px rgba(96,165,250,.45)}
+/* dark blue button (CTA box) */
+.btn-navy{color:#fff;background:linear-gradient(180deg,#14409f 0%,#0a2570 100%);border-color:rgba(96,150,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 10px 26px rgba(2,10,40,.55)}
+.btn-navy:hover{border-color:rgba(96,165,255,.85);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 0 0 1px rgba(30,123,255,.5),0 0 26px rgba(30,123,255,.55),0 0 60px rgba(25,182,255,.28)}
+:focus-visible{outline:2px solid var(--blue-2);outline-offset:3px}
+
+/* ===== Hero: text only, centered, symmetrical ===== */
+.hero{min-height:100vh;min-height:100svh;padding:120px 0 90px;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  background:
+   radial-gradient(ellipse 55% 60% at 80% 35%,rgba(30,123,255,.28),transparent 70%),
+   radial-gradient(ellipse 45% 50% at 5% 95%,rgba(10,63,184,.30),transparent 70%),
+   linear-gradient(180deg,#040916 0%,#071228 100%)}
+.hero-content{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.hero-text{display:flex;flex-direction:column;align-items:center;max-width:920px;margin:0 auto}
+
+/* line 0: small, wide-tracked, cyan */
+.hero-eyebrow{display:block;margin-bottom:28px;font-size:15px;font-weight:500;letter-spacing:5px;color:var(--blue-2);text-shadow:0 0 18px rgba(25,182,255,.55)}
+/* line 1: huge, heavy sans, silver.
+   padding-bottom keeps the descender of "j" from being clipped by background-clip:text */
+.hero-text h1{margin-bottom:34px;line-height:1.12;font-weight:800;text-wrap:balance}
+.hero-text h1 .l1{display:block;font-size:clamp(34px,10vw,96px);letter-spacing:-3.5px;font-weight:800;line-height:1.1;padding:0 .04em .16em;background:linear-gradient(180deg,#fff 0%,#c3cddd 55%,#8794ad 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* line 2: elegant italic serif, electric blue (padding avoids clipping italic overhang + descenders) */
+.hero-text h1 .l2{display:block;margin-top:0;font-family:var(--font-display)!important;font-style:italic;font-size:clamp(30px,8vw,80px);letter-spacing:-1px;font-weight:500;line-height:1.2;padding:0 .12em .14em .04em;background:linear-gradient(95deg,#1e7bff 0%,#19b6ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 22px rgba(30,123,255,.45))}
+/* line 3: light-weight, muted */
+.hero-text p{font-size:clamp(17px,2vw,21px);font-weight:300;letter-spacing:.2px;color:var(--muted);max-width:620px;margin:0 auto 42px}
+.hero-buttons,.cta-buttons{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+
+/* ===== AI showcase: static text left, quantum particle sphere right ===== */
+.ai-showcase{padding:100px 0;background:#030814;overflow:hidden;border-top:1px solid rgba(148,163,184,.12);border-bottom:1px solid rgba(148,163,184,.12)}
+.ai-showcase:before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 50% 70% at 78% 50%,rgba(30,123,255,.20),transparent 70%),radial-gradient(ellipse 35% 45% at 8% 100%,rgba(10,63,184,.22),transparent 70%)}
+.ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.ai-copy{display:flex;flex-direction:column;align-items:flex-start}
+.ai-tag{display:inline-block;margin-bottom:22px;font-size:14px;font-weight:500;letter-spacing:4px;color:#19b6ff;text-shadow:0 0 16px rgba(25,182,255,.55)}
+/* static label: no animation, no transform, never moves */
+.ai-label{font-size:clamp(28px,3.7vw,48px);font-weight:700;line-height:1.18;letter-spacing:-1.2px;color:#e8edf6}
+.ai-label em{font-style:normal;background:linear-gradient(95deg,#1e7bff,#19b6ff);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.08em}
+.ai-visual{position:relative;width:100%;max-width:540px;aspect-ratio:1/1;margin-left:auto}
+.ai-visual canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+/* ===== Section titles ===== */
+.section-title{text-align:center;max-width:720px;margin:0 auto 58px}
+.section-title span{display:inline-block;color:var(--blue-2);font-size:15px;font-weight:600;margin-bottom:6px}
+.section-title h2{font-size:clamp(34px,5vw,50px);line-height:1.15;letter-spacing:-1.8px;font-weight:700;margin:6px 0 16px;padding-bottom:.12em;background:linear-gradient(180deg,#fff,#aeb9cf);-webkit-background-clip:text;background-clip:text;color:transparent}
+.section-title p{color:var(--muted);font-size:17px}
+.services,.contact{background:linear-gradient(180deg,var(--bg-2),#06101f)}
+.reviews{background:linear-gradient(180deg,#06101f,var(--bg-2))}
+#rreth-nesh{background:var(--bg)}
+
+/* ===== Cards (spotlight + shine) ===== */
+.services-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.service-card,.review-card,.contact-info,.contact-form,.comments{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.012) 55%),var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
+.service-card:before,.review-card:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .35s;background:radial-gradient(320px circle at var(--mx,50%) var(--my,0%),rgba(30,123,255,.22),transparent 60%)}
+.service-card:hover:before,.review-card:hover:before{opacity:1}
+.service-card{padding:32px 26px;transition:transform .35s,border-color .35s,box-shadow .35s}
+.service-card:hover{transform:translateY(-8px);border-color:rgba(30,123,255,.6);box-shadow:0 0 0 1px rgba(30,123,255,.25),0 22px 60px rgba(0,0,0,.45),0 0 40px rgba(30,123,255,.22)}
+.service-icon{position:relative;width:60px;height:60px;display:grid;place-items:center;border-radius:16px;margin-bottom:22px;color:var(--blue-2);background:linear-gradient(145deg,rgba(30,123,255,.28),rgba(30,123,255,.06));border:1px solid rgba(30,123,255,.4);box-shadow:0 0 24px rgba(30,123,255,.25)}
+.service-icon svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.service-card h3{font-size:21px;font-weight:600;color:#fff;margin-bottom:10px;position:relative}
+.service-card p{color:var(--muted);font-size:15px;position:relative}
+
+/* ===== About ===== */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center}
+.about-box{position:relative;overflow:hidden;padding:50px;border-radius:28px;color:#fff;background:linear-gradient(150deg,#0e1f48 0%,#081533 55%,#0b1226 100%);border:1px solid var(--line-2);box-shadow:0 40px 90px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1)}
+.about-box:before{content:"";position:absolute;width:320px;height:320px;border-radius:50%;right:-110px;bottom:-120px;background:radial-gradient(circle,rgba(30,123,255,.6),transparent 68%)}
+.about-box:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.06) 50%,transparent 62%)}
+.about-box h3{font-size:32px;line-height:1.15;letter-spacing:-1px;font-weight:700;margin-bottom:16px;position:relative;z-index:1}
+.about-box p{color:#b5c0d6;position:relative;z-index:1}
+.about-list{list-style:none;margin-top:28px;position:relative;z-index:1}
+.about-list li{margin:14px 0;color:var(--text);font-weight:500}
+.about-list li:before{content:"✓";display:inline-grid;place-items:center;width:25px;height:25px;margin-right:12px;border-radius:50%;background:rgba(30,123,255,.18);border:1px solid rgba(30,123,255,.5);color:var(--blue-2);font-size:13px;font-weight:800;box-shadow:0 0 12px rgba(30,123,255,.3)}
+/* "Idetë tuaja, puna jonë." : more line-height + bottom padding so the comma and the "j" descenders
+   are not cut off by background-clip:text; display:block keeps the gradient box tall enough */
+.about-text h2{display:block;font-size:clamp(36px,4.6vw,50px);line-height:1.18;letter-spacing:-1.6px;font-weight:700;margin-bottom:22px;padding:0 .06em .16em 0;background:linear-gradient(180deg,#fff,#a9b5cc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.about-text p{color:var(--muted);font-size:17px;margin-bottom:18px}
+.about-text .btn{margin-top:10px}
+
+/* ===== Reviews ===== */
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.review-card{padding:32px;transition:transform .3s,border-color .3s,box-shadow .3s}
+.review-card:hover{transform:translateY(-6px);border-color:rgba(30,123,255,.5);box-shadow:0 22px 60px rgba(0,0,0,.45),0 0 34px rgba(30,123,255,.18)}
+.stars{position:relative;color:#fbbf24;letter-spacing:3px;margin-bottom:18px;text-shadow:0 0 12px rgba(251,191,36,.45)}
+.review-card p{position:relative;color:#b9c4d9;margin-bottom:24px}
+.review-author{position:relative;display:flex;align-items:center;gap:13px}
+.avatar{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;background:linear-gradient(145deg,var(--blue),var(--blue-deep));box-shadow:0 0 16px rgba(30,123,255,.4)}
+.review-author strong{color:#fff;font-weight:600}
+.review-author small{display:block;color:var(--muted)}
+
+/* ===== Comments: list on top, form BELOW the list ===== */
+.comments{margin-top:64px;padding:38px}
+.comments-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-bottom:26px}
+.comments-head h3{font-size:26px;font-weight:600;color:var(--text)}
+.comments-summary{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:15px}
+.comment-list,.replies{list-style:none}
+.comment-list>.comment{margin-bottom:16px}
+.comment-card{display:flex;gap:14px;align-items:flex-start}
+.comment-body{flex:1;min-width:0;padding:16px 18px;border-radius:16px;background:rgba(148,163,184,.07);border:1px solid var(--line)}
+.comment-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:6px}
+.comment-name{color:var(--text);font-weight:600}
+.comment-badge{font-size:12px;font-weight:600;padding:1px 9px;border-radius:999px;color:var(--blue-2);border:1px solid rgba(30,123,255,.45);background:rgba(30,123,255,.12)}
+.comment-time{color:var(--muted);font-size:13px}
+.comment-text{color:var(--text);margin:8px 0 8px;white-space:pre-wrap;overflow-wrap:anywhere;hyphens:none}
+.comment-actions{display:flex;flex-wrap:wrap;gap:4px}
+.link-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:6px 10px;margin-left:-10px;border-radius:10px;color:var(--steel);font-size:14px;font-weight:500;cursor:pointer;transition:color .2s,background .2s}
+.link-btn .ico{width:16px;height:16px}
+.link-btn:hover{color:var(--blue-2);background:rgba(30,123,255,.1)}
+.link-btn.danger:hover{color:#f87171;background:rgba(248,113,113,.1)}
+.replies{margin:12px 0 0 22px;padding-left:18px;border-left:1px solid var(--line-2)}
+.replies .comment{margin-top:12px}
+.replies.flat{margin-left:0;padding-left:0;border-left:0}
+.replies .avatar{width:38px;height:38px;font-size:14px}
+.comment-empty{padding:28px;margin-bottom:16px;text-align:center;color:var(--muted);border:1px dashed var(--line-2);border-radius:16px}
+
+.just-added>.comment-body{animation:flash 1.8s ease}
+@keyframes flash{0%{box-shadow:0 0 0 2px rgba(30,123,255,.85),0 0 30px rgba(30,123,255,.5)}100%{box-shadow:0 0 0 0 rgba(30,123,255,0)}}
+
+/* star rating: static display + interactive input */
+.stars-static{display:inline-flex;gap:2px;line-height:0;vertical-align:middle}
+.stars-static .s{width:16px;height:16px;fill:none;stroke:var(--star-off);stroke-width:1.7;stroke-linejoin:round}
+.stars-static .s.on{fill:#fbbf24;stroke:#fbbf24}
+.star-input{display:inline-flex;gap:2px}
+.star-btn{background:none;border:0;padding:4px;cursor:pointer;line-height:0;border-radius:8px;color:var(--star-off);transition:transform .15s,color .15s}
+.star-btn svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linejoin:round;transition:fill .15s}
+.star-btn:hover{transform:scale(1.15)}
+.star-btn.on{color:#fbbf24}
+.star-btn.on svg{fill:#fbbf24}
+.star-input.sm .star-btn svg{width:22px;height:22px}
+.rating-label{display:block;font-weight:500;margin-bottom:6px;color:var(--silver);font-size:15px}
+.rating-label small{color:var(--muted);font-weight:400}
+
+/* forms inside the comment area */
+.comment-form{margin-top:28px;padding-top:28px;border-top:1px solid var(--line)}
+.comment-form h4{font-size:20px;font-weight:600;color:var(--text);margin-bottom:18px}
+.reply-form{margin-top:14px;padding:16px;border-radius:14px;border:1px solid var(--line-2);background:rgba(3,8,20,.35)}
+.reply-form .form-group{margin-bottom:12px}
+.reply-form textarea{min-height:90px}
+.form-row{display:flex;flex-wrap:wrap;gap:10px}
+.form-error{color:#f87171;font-size:14px;margin-bottom:14px}
+.form-error[hidden]{display:none}
+
+/* ===== CTA + free trial: dark blue, no rings, reacts to touch ===== */
+.cta{padding:30px 0 110px;background:var(--bg-2)}
+.cta-box,.free-trial-box{position:relative;overflow:hidden;text-align:center;border-radius:30px;border:1px solid rgba(96,150,255,.2);box-shadow:0 40px 100px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08);transition:border-color .35s,box-shadow .35s,transform .25s;-webkit-tap-highlight-color:transparent}
+.cta-box{padding:76px 35px;background:linear-gradient(135deg,#040b22 0%,#08194d 55%,#040b22 100%)}
+.free-trial-box{padding:60px 35px;background:linear-gradient(135deg,#040a1c 0%,#0a1f58 60%,#040a1c 100%)}
+/* touch / cursor glow (follows the finger or mouse) */
+.cta-box:before,.free-trial-box:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .35s;background:radial-gradient(380px circle at var(--mx,50%) var(--my,50%),rgba(30,123,255,.36),transparent 62%)}
+.cta-box.is-touched,.free-trial-box.is-touched{border-color:rgba(70,145,255,.75);box-shadow:0 0 0 1px rgba(30,123,255,.3),0 40px 100px rgba(0,0,0,.55),0 0 50px rgba(30,123,255,.3);transform:scale(.992)}
+.cta-box.is-touched:before,.free-trial-box.is-touched:before{opacity:1}
+@media(hover:hover){
+  .cta-box:hover,.free-trial-box:hover{border-color:rgba(70,145,255,.75);box-shadow:0 0 0 1px rgba(30,123,255,.3),0 40px 100px rgba(0,0,0,.55),0 0 50px rgba(30,123,255,.3)}
+  .cta-box:hover:before,.free-trial-box:hover:before{opacity:1}
+}
+.cta-box h2,.free-trial-box h2{position:relative;z-index:1;font-size:clamp(32px,5vw,50px);line-height:1.08;letter-spacing:-1.6px;font-weight:700;margin-bottom:14px}
+.cta-box p,.free-trial-box p{position:relative;z-index:1;color:#c0cff0;max-width:640px;margin:0 auto 30px;font-size:17px}
+.cta-buttons{justify-content:center;position:relative;z-index:1}
+.free-trial{padding:0 0 90px;background:linear-gradient(180deg,var(--bg-2),var(--bg-2))}
+.free-trial-content{position:relative;z-index:1}
+.free-trial-badge{display:inline-flex;align-items:center;gap:8px;background:#e6efff;color:#0a2a80;border:1px solid rgba(255,255,255,.6);padding:8px 16px;border-radius:999px;font-size:14px;font-weight:600;margin-bottom:16px;box-shadow:0 0 20px rgba(96,165,250,.2)}
+.free-trial-badge .ico{width:18px;height:18px;color:#0a3fb8}
+
+/* ===== Contact ===== */
+.contact-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:22px}
+.contact-info,.contact-form{padding:38px}
+.contact-info h3,.contact-form h3{font-size:26px;font-weight:600;color:#fff;margin-bottom:14px}
+.contact-info p{color:var(--muted);margin-bottom:26px}
+.contact-item{display:flex;gap:15px;margin:20px 0;align-items:center}
+.contact-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;color:var(--icon);background:rgba(30,123,255,.14);border:1px solid rgba(30,123,255,.4);box-shadow:0 0 18px rgba(30,123,255,.2)}
+.contact-icon .ico{width:22px;height:22px}
+.contact-item small{color:var(--muted);display:block;line-height:1.3}
+.contact-item strong{color:#fff;font-weight:600}
+.contact-item strong a{color:inherit;transition:color .2s}
+.contact-item strong a:hover{color:var(--blue-2)}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-weight:500;margin-bottom:8px;color:var(--silver);font-size:15px}
+.form-group input,.form-group textarea{width:100%;padding:14px 16px;color:#fff;border:1px solid var(--line-2);border-radius:12px;outline:none;transition:.25s;background:rgba(3,8,20,.65)}
+.form-group input::placeholder,.form-group textarea::placeholder{color:#5f6e8a}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--blue);background:rgba(3,8,20,.9);box-shadow:0 0 0 3px rgba(30,123,255,.2),0 0 24px rgba(30,123,255,.25)}
+.form-group textarea{min-height:140px;resize:vertical}
+
+/* ===== Footer ===== */
+footer{background:#030814;border-top:1px solid var(--line);padding:38px 0;position:relative;z-index:2}
+.footer-content{display:flex;justify-content:space-between;gap:18px 25px;align-items:center;flex-wrap:wrap}
+.footer-logo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;color:var(--silver)}
+.footer-logo .logo-nest{color:var(--blue)}
+.footer-content p{color:var(--steel);font-size:14px}
+.footer-links{display:flex;gap:22px;color:var(--steel);font-size:14px}
+.footer-links a{transition:.25s}
+.footer-links a:hover{color:#fff;text-shadow:0 0 12px rgba(96,165,250,.9)}
+.whatsapp-float{position:fixed;right:22px;bottom:22px;width:60px;height:60px;border-radius:50%;background:linear-gradient(180deg,#14409f,#0a2570);border:1px solid rgba(96,150,255,.5);color:#fff;display:grid;place-items:center;box-shadow:0 12px 32px rgba(2,10,40,.6);z-index:999;transition:.3s}
+.whatsapp-float .ico{width:28px;height:28px}
+.whatsapp-float:hover{transform:scale(1.1);box-shadow:0 0 0 1px rgba(96,165,255,.8),0 0 30px rgba(30,123,255,.8),0 0 70px rgba(30,123,255,.4)}
+
+/* ===== Reveal ===== */
+.fade-in{opacity:1;transform:none}
+.fade-in.show{opacity:1;transform:none}
+
+/* ===== Responsive ===== */
+@media(max-width:1000px){
+  .services-grid{grid-template-columns:repeat(2,1fr)}
+  .about-grid,.contact-grid,.reviews-grid{grid-template-columns:1fr}
+  .about-grid{gap:44px}
+  .about-text{text-align:center}
+}
+@media(max-width:900px){
+  /* navigation collapses into the menu button */
+  .menu-btn{display:grid}
+  .nav-right{gap:10px}
+  .nav-links{display:none;position:absolute;top:76px;left:0;width:100%;max-height:calc(100vh - 76px);max-height:calc(100dvh - 76px);overflow-y:auto;flex-direction:column;align-items:stretch;gap:0;padding:14px 20px;background:rgba(5,11,26,.97);border-bottom:1px solid var(--line);box-shadow:0 24px 40px rgba(0,0,0,.5)}
+  .nav-links.active{display:flex}
+  .nav-links li{border-bottom:1px solid var(--line)}
+  .nav-links li:last-child{border:0}
+  .nav-links a{padding:15px 6px}
+  .nav-links a:not(.nav-contact).active:after{display:none}
+  .nav-links .nav-contact{text-align:center;margin:12px 0 4px}
+}
+@media(max-width:860px){
+  .ai-showcase{padding:80px 0}
+  .ai-grid{grid-template-columns:1fr;gap:10px}
+  .ai-copy{align-items:center;text-align:center}
+  .ai-visual{margin:0 auto;max-width:420px}
+}
+@media(max-width:700px){
+  section{padding:80px 0}
+  .hero{padding-top:110px}
+  .hero-eyebrow{letter-spacing:3px;font-size:13px}
+  .hero-text h1 .l1{letter-spacing:-2px}
+  .services-grid{grid-template-columns:1fr}
+  .about-box{padding:36px 28px}
+  .cta-box{padding:52px 22px}
+  .contact-info,.contact-form{padding:28px 22px}
+  .comments{padding:26px 16px;margin-top:48px}
+  .comment-card{gap:10px}
+  .comment-body{padding:14px}
+  .comment-card>.avatar{width:40px;height:40px}
+  .replies{margin-left:6px;padding-left:12px}
+  .footer-content{flex-direction:column;text-align:center}
+  .footer-links{flex-wrap:wrap;justify-content:center}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .fade-in{opacity:1;transform:none;transition:none}
+  .btn:before{display:none}
+  .theme-toggle .knob{transition:none}
+  .just-added>.comment-body{animation:none}
+  .cta-box.is-touched,.free-trial-box.is-touched{transform:none}
+}
+
+/* =====================================================================
+   LIGHT THEME
+   Everything that was hard-coded for dark mode is re-mapped here.
+   The About box, CTA box, free-trial box intentionally stay dark
+   (they are accent panels), so their text is forced light.
+   The AI animation section now switches to light with the rest of the site.
+   ===================================================================== */
+html:has(#themeToggleBox:checked){
+  color-scheme:light;
+  --bg:#f3f6fc;
+  --bg-2:#e8eef9;
+  --panel:#ffffff;
+  --panel-2:#f1f5fc;
+  --line:rgba(15,23,42,.10);
+  --line-2:rgba(15,23,42,.18);
+  --blue:#1e6bf0;
+  --blue-2:#0a8fd6;
+  --icon:#0a3fb8;
+  --star-off:#b4bfd4;
+  --steel:#55627d;
+  --silver:#1b2744;
+  --text:#0f1a33;
+  --muted:#53607a;
+  --glow:0 0 0 1px rgba(30,123,255,.45),0 0 18px rgba(30,123,255,.35),0 0 40px rgba(25,182,255,.2);
+}
+/* texture in light mode: same grain + grid, drawn dark instead of light */
+html:has(#themeToggleBox:checked) body:before{opacity:.06;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+html:has(#themeToggleBox:checked) body:after{background-image:linear-gradient(rgba(15,23,42,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(15,23,42,.055) 1px,transparent 1px)}
+
+/* reactive background in light mode: normal blending, deeper blue */
+html:has(#themeToggleBox:checked) .bg-react .bg-glow{mix-blend-mode:multiply;background:radial-gradient(520px circle at var(--bx) var(--by),rgba(30,110,240,.16),rgba(25,150,230,.06) 45%,transparent 70%)}
+html:has(#themeToggleBox:checked) .bg-react .bg-grid{background-image:linear-gradient(rgba(20,95,225,.34) 1px,transparent 1px),linear-gradient(90deg,rgba(20,95,225,.34) 1px,transparent 1px)}
+
+/* header + nav */
+html:has(#themeToggleBox:checked) header{background:rgba(243,246,252,.7)}
+html:has(#themeToggleBox:checked) header.scrolled{background:rgba(243,246,252,.92)}
+html:has(#themeToggleBox:checked) .nav-links a:hover{color:var(--text);text-shadow:none}
+html:has(#themeToggleBox:checked) .nav-links a.active{color:var(--text)}
+html:has(#themeToggleBox:checked) .nav-links .nav-contact{color:var(--blue-deep);background:linear-gradient(180deg,rgba(30,123,255,.14),rgba(30,123,255,.05))}
+html:has(#themeToggleBox:checked) .nav-links .nav-contact:hover{color:#fff;background:var(--blue)}
+html:has(#themeToggleBox:checked) .menu-btn{background:rgba(15,23,42,.04);color:var(--text)}
+html:has(#themeToggleBox:checked) .menu-btn:hover{color:var(--blue-deep)}
+@media(max-width:900px){
+  html:has(#themeToggleBox:checked) .nav-links{background:rgba(243,246,252,.98);box-shadow:0 24px 40px rgba(15,30,70,.15)}
+}
+
+/* theme toggle in light mode: knob slides to the sun */
+html:has(#themeToggleBox:checked) .theme-toggle{background:rgba(15,23,42,.05)}
+html:has(#themeToggleBox:checked) .theme-toggle .knob{transform:translateX(0);background:linear-gradient(180deg,#ffd166,#f59e0b);box-shadow:0 0 14px rgba(245,158,11,.6)}
+html:has(#themeToggleBox:checked) .theme-toggle .ic-sun{color:#fff}
+html:has(#themeToggleBox:checked) .theme-toggle .ic-moon{color:var(--steel)}
+
+/* buttons */
+html:has(#themeToggleBox:checked) .btn-secondary{background:rgba(15,23,42,.04)}
+html:has(#themeToggleBox:checked) .btn-secondary:hover{color:var(--blue-deep);background:rgba(30,123,255,.1)}
+
+/* hero */
+html:has(#themeToggleBox:checked) .hero{background:
+   radial-gradient(ellipse 55% 60% at 80% 35%,rgba(30,123,255,.16),transparent 70%),
+   radial-gradient(ellipse 45% 50% at 5% 95%,rgba(25,182,255,.16),transparent 70%),
+   linear-gradient(180deg,#f7f9fe 0%,#e6edf9 100%)}
+html:has(#themeToggleBox:checked) .hero-eyebrow{text-shadow:none}
+html:has(#themeToggleBox:checked) .hero-text h1 .l1{background:linear-gradient(180deg,#0b1736 0%,#243459 60%,#3c4f7a 100%);-webkit-background-clip:text;background-clip:text}
+html:has(#themeToggleBox:checked) .hero-text h1 .l2{filter:drop-shadow(0 0 14px rgba(30,123,255,.2))}
+
+/* AI animation section in light mode */
+html:has(#themeToggleBox:checked) .ai-showcase{background:linear-gradient(180deg,#eaf0fb,#e2eaf8);border-color:var(--line)}
+html:has(#themeToggleBox:checked) .ai-showcase:before{background:radial-gradient(ellipse 50% 70% at 78% 50%,rgba(30,123,255,.14),transparent 70%),radial-gradient(ellipse 35% 45% at 8% 100%,rgba(25,182,255,.14),transparent 70%)}
+html:has(#themeToggleBox:checked) .ai-tag{color:var(--blue-2);text-shadow:none}
+html:has(#themeToggleBox:checked) .ai-label{color:var(--text)}
+
+/* section backgrounds + headings */
+html:has(#themeToggleBox:checked) .services,html:has(#themeToggleBox:checked) .contact{background:linear-gradient(180deg,var(--bg-2),#dde7f6)}
+html:has(#themeToggleBox:checked) .reviews{background:linear-gradient(180deg,#dde7f6,var(--bg-2))}
+html:has(#themeToggleBox:checked) .section-title h2{background:linear-gradient(180deg,#0b1736,#3a4c75);-webkit-background-clip:text;background-clip:text}
+html:has(#themeToggleBox:checked) .about-text h2{background:linear-gradient(180deg,#0b1736,#3a4c75);-webkit-background-clip:text;background-clip:text}
+
+/* cards */
+html:has(#themeToggleBox:checked) .service-card,
+html:has(#themeToggleBox:checked) .review-card,
+html:has(#themeToggleBox:checked) .contact-info,
+html:has(#themeToggleBox:checked) .contact-form,
+html:has(#themeToggleBox:checked) .comments{background:linear-gradient(160deg,rgba(255,255,255,.95),rgba(255,255,255,.7)),var(--panel);box-shadow:0 14px 40px rgba(20,40,90,.08),inset 0 1px 0 #fff}
+html:has(#themeToggleBox:checked) .service-card:hover{box-shadow:0 0 0 1px rgba(30,123,255,.25),0 22px 50px rgba(20,40,90,.16),0 0 34px rgba(30,123,255,.14)}
+html:has(#themeToggleBox:checked) .review-card:hover{box-shadow:0 22px 50px rgba(20,40,90,.16),0 0 28px rgba(30,123,255,.12)}
+html:has(#themeToggleBox:checked) .service-card h3,
+html:has(#themeToggleBox:checked) .contact-info h3,
+html:has(#themeToggleBox:checked) .contact-form h3,
+html:has(#themeToggleBox:checked) .review-author strong,
+html:has(#themeToggleBox:checked) .contact-item strong{color:var(--text)}
+html:has(#themeToggleBox:checked) .review-card p{color:#3a4763}
+
+/* comments */
+html:has(#themeToggleBox:checked) .comment-body{background:rgba(15,23,42,.035)}
+html:has(#themeToggleBox:checked) .reply-form{background:rgba(255,255,255,.75)}
+html:has(#themeToggleBox:checked) .link-btn:hover{color:var(--blue-deep)}
+
+/* dark accent panels keep light text */
+html:has(#themeToggleBox:checked) .about-list li{color:#e8edf6}
+html:has(#themeToggleBox:checked) .cta-box,html:has(#themeToggleBox:checked) .free-trial-box{color:#e8edf6}
+html:has(#themeToggleBox:checked) .free-trial{background:var(--bg-2)}
+
+/* form */
+html:has(#themeToggleBox:checked) .form-group input,
+html:has(#themeToggleBox:checked) .form-group textarea{background:#fff;color:var(--text)}
+html:has(#themeToggleBox:checked) .form-group input::placeholder,
+html:has(#themeToggleBox:checked) .form-group textarea::placeholder{color:#8a97b0}
+html:has(#themeToggleBox:checked) .form-group input:focus,
+html:has(#themeToggleBox:checked) .form-group textarea:focus{background:#fff}
+
+/* footer */
+html:has(#themeToggleBox:checked) footer{background:#e1e9f6}
+html:has(#themeToggleBox:checked) .footer-links a:hover{color:var(--blue-deep);text-shadow:none}
+
+/* =====================================================================
+   TRANSLATION-SAFE OVERRIDES
+   Keeps fonts, casing and layout stable when the page is auto-translated
+   (Google Translate / Edge / Safari etc.). Keep this block LAST in <style>.
+   ===================================================================== */
+
+/* ===== Small-phone polish ===== */
+@media(max-width:560px){
+  section{padding:64px 0}
+  .hero{padding:110px 0 70px}
+  .hero-text h1{margin-bottom:26px}
+  .hero-text p{margin-bottom:32px;font-size:16px}
+  .hero-buttons .btn,.cta-buttons .btn{flex:1 1 100%}
+  .section-title{margin-bottom:40px}
+  .section-title h2{font-size:clamp(28px,8vw,36px);letter-spacing:-1px}
+  .section-title p{font-size:16px}
+  .about-text h2{font-size:clamp(28px,8vw,36px)}
+  .about-box h3{font-size:24px}
+  .cta-box h2,.free-trial-box h2{font-size:clamp(26px,8vw,32px);letter-spacing:-1px}
+  .cta-box p,.free-trial-box p{font-size:16px}
+  .cta-box,.free-trial-box{padding:46px 20px}
+  .contact-info h3,.contact-form h3{font-size:22px}
+  .comments-head h3{font-size:22px}
+  .review-card{padding:26px 20px}
+  .service-card{padding:28px 20px}
+  .ai-orb{width:min(100%,280px)}
+  .footer-logo{font-size:19px}
+  .footer-links{gap:8px 16px;font-size:13px}
+  .footer-content p{font-size:13px}
+  .whatsapp-float{right:16px;bottom:16px;width:52px;height:52px}
+}
+@media(max-width:380px){
+  .hero-eyebrow{letter-spacing:2px;font-size:12px}
+  .nav-right{gap:8px}
+  .logo{font-size:20px}
+}
+
+/* ===== CSS-only interactivity (no JavaScript) ===== */
+.theme-checkbox,.menu-checkbox{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.theme-checkbox:focus-visible + .theme-toggle,.menu-checkbox:focus-visible ~ .menu-btn{outline:2px solid var(--blue-2);outline-offset:3px}
+.menu-btn .ic-close{display:none}
+#menuToggleBox:checked ~ #navLinks{display:flex}
+#menuToggleBox:checked ~ .menu-btn .ic-open{display:none}
+#menuToggleBox:checked ~ .menu-btn .ic-close{display:block}
+.ai-visual{display:grid;place-items:center}
+.ai-orb{position:relative;width:min(100%,360px);aspect-ratio:1/1}
+.orb-core{position:absolute;inset:27%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#8fd0ff,#1e7bff 48%,#0a2570 76%);box-shadow:0 0 44px rgba(30,123,255,.55),0 0 120px rgba(25,182,255,.28);animation:orbPulse 5s ease-in-out infinite}
+.orb-ring{position:absolute;border-radius:50%;border:1px solid rgba(60,150,255,.4)}
+.orb-ring.r1{inset:17%;animation:orbSpin 14s linear infinite}
+.orb-ring.r2{inset:7%;border-color:rgba(25,182,255,.3);animation:orbSpinRev 22s linear infinite}
+.orb-ring.r3{inset:-1%;border-color:rgba(60,150,255,.2);animation:orbSpin 32s linear infinite}
+.orb-ring i{position:absolute;top:-4px;left:50%;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:#19b6ff;box-shadow:0 0 12px #19b6ff}
+.orb-ring.r2 i{width:6px;height:6px}
+.orb-ring.r2 i:last-child{top:auto;bottom:-3px;left:20%}
+.orb-ring.r3 i{width:5px;height:5px;background:#7cc4ff}
+@keyframes orbSpin{to{transform:rotate(360deg)}}
+@keyframes orbSpinRev{to{transform:rotate(-360deg)}}
+@keyframes orbPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.bg-react .bg-glow{animation:drift1 16s ease-in-out infinite alternate}
+.bg-react .bg-grid{animation:drift2 22s ease-in-out infinite alternate}
+@keyframes drift1{from{transform:translate(-30px,-20px)}to{transform:translate(30px,20px)}}
+@keyframes drift2{from{transform:translate(20px,10px)}to{transform:translate(-20px,-10px)}}
+.cta-box:active,.free-trial-box:active{border-color:rgba(70,145,255,.75)}
+@media(prefers-reduced-motion:reduce){
+  .ai-orb *,.bg-react .bg-glow,.bg-react .bg-grid{animation:none}
+}
+
+/* 1. Stop mobile browsers from resizing text on their own */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+
+/* 2. Translators wrap every text node in <font> tags: make them inherit everything */
+font{font:inherit;letter-spacing:inherit;line-height:inherit;text-transform:inherit}
+
+/* 3. One font family everywhere, including translator-injected elements
+      (the hero .l2 line is the single exception: it sets its own serif with !important) */
+body,body *{font-family:var(--font)!important}
+.hero-text h1 .l2,.hero-text h1 .l2 *{font-family:var(--font-display)!important}
+
+/* 4. Casing: no forced upper/lowercase; just guarantee a capital first letter on titles
+      (the hero .l1/.l2 lines are left out on purpose: .l2 is a continuation of .l1).
+      The gradient-clipped headings (.section-title h2, .about-text h2) are ALSO left out:
+      ::first-letter on background-clip:text headings makes the first letter render wrong. */
+body,body *{text-transform:none}
+.service-card h3::first-letter,
+.about-box h3::first-letter,
+.contact-info h3::first-letter,
+.contact-form h3::first-letter,
+.comments-head h3::first-letter{text-transform:uppercase}
+
+/* 5. Long translated words wrap instead of stretching the layout */
+h1,h2,h3,h4,p,li,label,small,strong,.btn,.small-title,.hero-eyebrow,.free-trial-badge{overflow-wrap:break-word;word-wrap:break-word}
+p,li{-webkit-hyphens:manual;hyphens:manual}
+h1,h2,h3,h4{-webkit-hyphens:manual;hyphens:manual;text-wrap:balance}
+
+/* 6. Grid/flex children may shrink below their content width (prevents "blown-out" columns) */
+.hero-content>*,.services-grid>*,.about-grid>*,.reviews-grid>*,.contact-grid>*,.footer-content>*,.contact-item>div,.ai-grid>*{min-width:0}
+.contact-item strong{overflow-wrap:anywhere}
+
+/* 7. Buttons, badges, cards: tolerate longer English labels */
+.btn{max-width:100%;text-align:center;white-space:normal;line-height:1.3}
+.logo,.footer-logo{white-space:nowrap}
+.footer-links{flex-wrap:wrap}
+
+/* 8. Navigation: never break a menu item mid-label; tighten on tablets */
+.nav-links a{white-space:nowrap}
+/* Translated "Contact" button/links: no ::first-letter or case tricks, translator <font> wrappers inherit cleanly */
+.nav-links .nav-contact,.nav-links .nav-contact *,.footer-links a,.footer-links a *{text-transform:none!important;font-variant:normal!important}
+.nav-links .nav-contact::first-letter,.footer-links a::first-letter,.section-title span::first-letter,.contact-info h3::first-letter,.contact-form h3::first-letter,font::first-letter{text-transform:none!important;font-size:inherit!important;font-weight:inherit!important;color:inherit!important}
+/* translator <font> wrappers must stay plain inline text so a word is never split into styled pieces */
+.nav-links a font,.footer-links a font,.section-title span font,.contact-info h3 font,.contact-form h3 font{display:inline!important;text-transform:none!important}
+@media(max-width:1100px) and (min-width:901px){
+  .nav-links{gap:2px}
+  .nav-links a{padding:10px 9px;font-size:14px}
+  .nav-links .nav-contact{padding:10px 14px;margin-left:4px}
+  .nav-right{gap:8px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- REACTIVE BACKGROUND (light + grid that follow the pointer across the whole page) -->
+<div class="bg-react" id="bgReact" aria-hidden="true">
+  <div class="bg-glow"></div>
+  <div class="bg-grid"></div>
+</div>
+
+<!-- ICON SPRITE (modern line icons, recoloured with CSS) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+  <symbol id="i-reply" viewBox="0 0 24 24"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></symbol>
+</svg>
+
+<!-- NAVBAR -->
+<header id="siteHeader">
+  <div class="container navbar">
+    <a href="index.html#home" class="logo" aria-label="Code Nest Tirana - Home">
+      <span class="logo-text" translate="no"><span>Code</span><span class="logo-nest">Nest</span><span class="logo-city">Tirana</span></span>
+    </a>
+
+    <div class="nav-right">
+      <!-- Order: Home, AI, Shërbimet tona, Rreth nesh, Reviews, Provo falas, Kontakt -->
+      <input type="checkbox" class="menu-checkbox" id="menuToggleBox" aria-label="Menu">
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#home">Home</a></li>
+        <li><a href="index.html#ai" title="Animacioni" translate="no">AI</a></li>
+        <li><a href="index.html#sherbimet">Shërbimet tona</a></li>
+        <li><a href="index.html#rreth-nesh">Rreth nesh</a></li>
+        <li><a href="reviews.html" class="active">Reviews</a></li>
+        <li><a href="index.html#provo-falas">Provo falas</a></li>
+        <li><a href="index.html#kontakt" class="nav-contact">Kontakt</a></li>
+      </ul>
+
+      <!-- Dark / light toggle (top right, CSS-only) -->
+      <div class="lang-toggle" role="group" aria-label="Gjuha / Language" translate="no">
+        <button type="button" data-lang="sq" class="on" aria-pressed="true">SQ</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+
+      <input type="checkbox" class="theme-checkbox" id="themeToggleBox" aria-label="Theme">
+      <label class="theme-toggle" for="themeToggleBox" title="Theme">
+        <span class="knob"></span>
+        <svg class="ic-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="ic-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </label>
+
+      <label class="menu-btn" for="menuToggleBox" aria-label="Menu">
+        <svg class="ico ic-open" aria-hidden="true"><use href="#i-menu"/></svg>
+        <svg class="ico ic-close" aria-hidden="true"><use href="#i-close"/></svg>
+      </label>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- REVIEWS + COMMENTS -->
+<section class="reviews" id="reviews">
+  <div class="container">
+
+    <div class="section-title fade-in">
+      <span>Klientët tanë</span>
+      <h2>Çfarë thonë klientët</h2>
+      <p>Vlerësimet e klientëve që kanë punuar me ne.</p>
+    </div>
+
+    <div class="reviews-grid">
+
+      <div class="review-card fade-in">
+        <div class="stars"><span class="stars-static" role="img" aria-label="5 nga 5 yje"><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg></span></div>
+        <p>"Website-i doli shumë profesional dhe shumë më i bukur nga sa e imagjinoja."</p>
+        <div class="review-author">
+          <div class="avatar">A</div>
+          <div><strong translate="no">Ardit</strong><small>Klient</small></div>
+        </div>
+      </div>
+
+      <div class="review-card fade-in">
+        <div class="stars"><span class="stars-static" role="img" aria-label="5 nga 5 yje"><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg></span></div>
+        <p>"Shërbim shumë i mirë dhe komunikim korrekt. Videot për marketingun tonë dolën shumë mirë."</p>
+        <div class="review-author">
+          <div class="avatar">E</div>
+          <div><strong translate="no">Elona</strong><small>Klientja</small></div>
+        </div>
+      </div>
+
+      <div class="review-card fade-in">
+        <div class="stars"><span class="stars-static" role="img" aria-label="5 nga 5 yje"><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg></span></div>
+        <p>"Karta e biznesit dhe fletushkat ishin moderne dhe profesionale. Shumë i kënaqur!"</p>
+        <div class="review-author">
+          <div class="avatar">M</div>
+          <div><strong translate="no">Martin</strong><small>Klient</small></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- COMMENT SECTION: static list (HTML + CSS only) -->
+    <div class="comments fade-in" id="komente">
+      <div class="comments-head">
+        <h3>Komentet</h3>
+        <div class="comments-summary"><span>3 komente</span></div>
+      </div>
+
+      <ul class="comment-list">
+        <li class="comment">
+          <article class="comment-card">
+            <div class="avatar">A</div>
+            <div class="comment-body">
+              <div class="comment-head">
+                <strong class="comment-name">Ardit</strong>
+                <span class="comment-time">Klient i verifikuar</span>
+              </div>
+              <p class="comment-text">Website-i doli shumë profesional dhe shumë më i bukur nga sa e imagjinoja.</p>
+            </div>
+          </article>
+        </li>
+        <li class="comment">
+          <article class="comment-card">
+            <div class="avatar">E</div>
+            <div class="comment-body">
+              <div class="comment-head">
+                <strong class="comment-name">Elona</strong>
+                <span class="comment-time">Kliente e verifikuar</span>
+              </div>
+              <p class="comment-text">Shërbim shumë i mirë dhe komunikim korrekt. Videot për marketingun tonë dolën shumë mirë.</p>
+            </div>
+          </article>
+        </li>
+        <li class="comment">
+          <article class="comment-card">
+            <div class="avatar">M</div>
+            <div class="comment-body">
+              <div class="comment-head">
+                <strong class="comment-name">Martin</strong>
+                <span class="comment-time">Klient i verifikuar</span>
+              </div>
+              <p class="comment-text">Karta e biznesit dhe fletushkat ishin moderne dhe profesionale. Shumë i kënaqur!</p>
+            </div>
+          </article>
+        </li>
+      </ul>
+
+      <div class="comment-form">
+        <h4>Keni punuar me ne?</h4>
+        <p style="color:var(--muted);margin-bottom:18px">Dërgoni vlerësimin tuaj në WhatsApp dhe do ta shtojmë këtu.</p>
+        <a class="btn btn-primary" href="https://wa.me/355698543275?text=Punova%20me%20Code%20Nest%20Tirana%20dhe%20dua%20te%20le%20nje%20review." target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-send"/></svg> Lini një review në WhatsApp</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container footer-content">
+    <div class="footer-logo">
+      <span class="logo-text" translate="no"><span>Code</span><span class="logo-nest">Nest</span><span class="logo-city">Tirana</span></span>
+    </div>
+
+    <p>© 2026 <span translate="no">Code Nest Tirana</span>. Të gjitha të drejtat e rezervuara.</p>
+
+    <div class="footer-links">
+      <a href="index.html#home">Home</a>
+      <a href="index.html#ai" translate="no">AI</a>
+      <a href="index.html#sherbimet">Shërbimet tona</a>
+      <a href="index.html#rreth-nesh">Rreth nesh</a>
+      <a href="reviews.html">Reviews</a>
+      <a href="index.html#provo-falas">Provo falas</a>
+      <a href="index.html#kontakt">Kontakt</a>
+    </div>
+  </div>
+</footer>
+
+<!-- FLOATING WHATSAPP -->
+<a href="https://wa.me/355698543275" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Kontakt në WhatsApp"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg></a>
+
+<script>
+/* ===== SQ / EN language toggle (same as index.html) ===== */
+(function () {
+  var KEY = "cnt-lang";
+  var ITEMS = [
+    { s: '#navLinks a[href="index.html#sherbimet"],.footer-links a[href="index.html#sherbimet"]', en: "Our services" },
+    { s: '#navLinks a[href="index.html#rreth-nesh"],.footer-links a[href="index.html#rreth-nesh"]', en: "About us" },
+    { s: '#navLinks a[href="index.html#provo-falas"],.footer-links a[href="index.html#provo-falas"]', en: "Try for free" },
+    { s: '#navLinks a[href="index.html#kontakt"],.footer-links a[href="index.html#kontakt"]', en: "Contact" },
+    { s: ".reviews .section-title>span", en: "Our clients" },
+    { s: ".reviews .section-title>h2", en: "What clients say" },
+    { s: ".reviews .section-title>p", en: "Reviews from clients we have worked with." },
+    { s: ".reviews-grid .review-card:nth-child(1) p", en: '"The website turned out very professional and much more beautiful than I imagined."' },
+    { s: ".reviews-grid .review-card:nth-child(1) small", en: "Client" },
+    { s: ".reviews-grid .review-card:nth-child(2) p", en: '"Very good service and proper communication. The videos for our marketing turned out great."' },
+    { s: ".reviews-grid .review-card:nth-child(2) small", en: "Client" },
+    { s: ".reviews-grid .review-card:nth-child(3) p", en: '"The business card and flyers were modern and professional. Very satisfied!"' },
+    { s: ".reviews-grid .review-card:nth-child(3) small", en: "Client" },
+    { s: ".comments-head h3", en: "Comments" },
+    { s: ".comments-summary span", en: "3 comments" },
+    { s: ".comment-list>.comment:nth-child(1) .comment-time", en: "Verified client" },
+    { s: ".comment-list>.comment:nth-child(1) .comment-text", en: '"The website turned out very professional and much more beautiful than I imagined."' },
+    { s: ".comment-list>.comment:nth-child(2) .comment-time", en: "Verified client" },
+    { s: ".comment-list>.comment:nth-child(2) .comment-text", en: '"Very good service and proper communication. The videos for our marketing turned out great."' },
+    { s: ".comment-list>.comment:nth-child(3) .comment-time", en: "Verified client" },
+    { s: ".comment-list>.comment:nth-child(3) .comment-text", en: '"The business card and flyers were modern and professional. Very satisfied!"' },
+    { s: ".comment-form h4", en: "Have you worked with us?" },
+    { s: ".comment-form>p", en: "Send your review via WhatsApp and we will add it here." },
+    { s: ".comment-form .btn", en: "Leave a review on WhatsApp" },
+    { s: ".footer-content>p", parts: ["© 2026 ", ". All rights reserved."] }
+  ];
+  var ATTRS = [
+    { s: ".whatsapp-float", a: "aria-label", en: "Contact us on WhatsApp" },
+    { s: ".stars-static", a: "aria-label", en: "5 out of 5 stars" }
+  ];
+  var DOCTITLE_EN = "Code Nest Tirana | Client reviews";
+  var METADESC_EN = "Professional services for website creation, video editing, business cards and informative flyers.";
+  var origTitle = document.title;
+  var metaDesc = document.querySelector('meta[name="description"]');
+  var origDesc = metaDesc ? (metaDesc.getAttribute("content") || "") : "";
+  var textCache = new Map();
+  function textNodes(el) {
+    var out = [];
+    (function walk(n) {
+      for (var i = 0; i < n.childNodes.length; i++) {
+        var c = n.childNodes[i];
+        if (c.nodeType === 3) { if (c.nodeValue.trim() !== "") out.push(c); }
+        else if (c.nodeType === 1 && c.getAttribute("translate") !== "no") walk(c);
+      }
+    })(el);
+    return out;
+  }
+  function setLang(lang) {
+    for (var t = 0; t < ITEMS.length; t++) {
+      var it = ITEMS[t];
+      var els = document.querySelectorAll(it.s);
+      for (var k = 0; k < els.length; k++) {
+        var el = els[k];
+        if (!textCache.has(el)) textCache.set(el, textNodes(el).map(function (n) { return n.nodeValue; }));
+        var src = (lang === "en") ? (it.parts || [it.en]) : textCache.get(el);
+        var nodes = textNodes(el);
+        for (var i = 0; i < nodes.length; i++) {
+          if (src[i] !== undefined) nodes[i].nodeValue = src[i];
+        }
+      }
+    }
+    for (var q = 0; q < ATTRS.length; q++) {
+      var at = ATTRS[q];
+      var aes = document.querySelectorAll(at.s);
+      for (var m = 0; m < aes.length; m++) {
+        var ae = aes[m];
+        var dk = "data-orig-" + at.a;
+        if (!ae.hasAttribute(dk)) ae.setAttribute(dk, ae.getAttribute(at.a) || "");
+        ae.setAttribute(at.a, (lang === "en") ? at.en : ae.getAttribute(dk));
+      }
+    }
+    document.documentElement.setAttribute("lang", lang);
+    document.title = (lang === "en") ? DOCTITLE_EN : origTitle;
+    if (metaDesc) metaDesc.setAttribute("content", (lang === "en") ? METADESC_EN : origDesc);
+    var btns = document.querySelectorAll(".lang-toggle button");
+    for (var b = 0; b < btns.length; b++) {
+      var on = btns[b].getAttribute("data-lang") === lang;
+      btns[b].classList.toggle("on", on);
+      btns[b].setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    try { localStorage.setItem(KEY, lang); } catch (e) {}
+  }
+  var start = "sq";
+  try { start = localStorage.getItem(KEY) || "sq"; } catch (e) {}
+  if (start !== "en") start = "sq";
+  var btns0 = document.querySelectorAll(".lang-toggle button");
+  for (var j = 0; j < btns0.length; j++) {
+    (function (btn) {
+      btn.addEventListener("click", function () { setLang(btn.getAttribute("data-lang")); });
+    })(btns0[j]);
+  }
+  setLang(start);
+})();
+</script>
+
+</body>
+</html>
