@@ -18,15 +18,63 @@
 <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png?v=4">
 <link rel="manifest" href="site.webmanifest">
 
-<!-- Apply saved theme before first paint (no flash) -->
+<!-- Dark / light theme: saved choice → system preference → dark.
+     Applied in <head> before first paint so there is no flash.
+     data-theme is the single source of truth; the toggle checkbox is kept in sync. -->
 <script>
   (function(){
-    var KEY="cnt-theme", meta=document.getElementById("themeColorMeta");
-    try{var saved=localStorage.getItem(KEY);}catch(e){saved=null}
-    if(saved==="light"){
-      document.documentElement.setAttribute("data-theme","light");
-      if(meta) meta.setAttribute("content","#f3f6fc");
+    var KEY="cnt-theme";
+    var html=document.documentElement;
+    var meta=document.getElementById("themeColorMeta");
+    var box=document.getElementById("themeToggleBox");
+    var DARK="#050b1a";
+    var LIGHT="#f3f6fc";
+
+    function apply(light){
+      if(light){
+        html.setAttribute("data-theme","light");
+      } else {
+        html.removeAttribute("data-theme");
+      }
+      if(meta){
+        meta.setAttribute("content", light ? LIGHT : DARK);
+      }
+      if(box){
+        box.checked = light;
+      }
     }
+
+    var saved=null;
+    try{ saved=localStorage.getItem(KEY); }catch(e){ saved=null; }
+
+    var light;
+    if(saved==="light"){
+      light=true;
+    } else if(saved==="dark"){
+      light=false;
+    } else if(window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches){
+      light=true;
+    } else {
+      light=false;
+    }
+
+    apply(light);
+
+    if(box){
+      box.addEventListener("change", function(){
+        apply(box.checked);
+        try{ localStorage.setItem(KEY, box.checked ? "light" : "dark"); }catch(e){}
+      });
+    }
+
+    try{
+      if(window.matchMedia && saved===null){
+        var mq=window.matchMedia("(prefers-color-scheme: light)");
+        mq.addEventListener("change", function(e){
+          apply(e.matches);
+        });
+      }
+    }catch(e){}
   })();
 </script>
 
@@ -1308,26 +1356,6 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
 })();
 </script>
 
-<script>
-/* ===== Dark / light theme persistence =====
-   Remembers the user's theme choice in localStorage so it survives page
-   reloads and QR-code scans. The CSS-only toggle
-   (html:has(#themeToggleBox:checked)) does the styling; this script only
-   keeps the checkbox in sync and updates the mobile theme-color meta tag. */
-(function(){
-  var KEY="cnt-theme";
-  var box=document.getElementById("themeToggleBox");
-  var meta=document.getElementById("themeColorMeta");
-  if(!box) return;
-  function persist(light){
-    if(meta) meta.setAttribute("content", light ? "#f3f6fc" : "#050b1a");
-    try{ localStorage.setItem(KEY, light ? "light" : "dark"); }catch(e){}
-  }
-  try{ var saved=localStorage.getItem(KEY); }catch(e){ saved=null; }
-  if(saved==="light") box.checked=true;
-  box.addEventListener("change",function(){ persist(box.checked); });
-})();
-</script>
 
 </body>
 </html>
