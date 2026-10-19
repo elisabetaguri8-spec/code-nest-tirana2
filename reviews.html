@@ -7,15 +7,45 @@
 <meta name="keywords" content="website, marketing, video editing, karta biznesi, fletushka, Shqipëri">
 <meta name="author" content="Code Nest Tirana">
 <meta name="theme-color" content="#050b1a" id="themeColorMeta">
+<meta name="color-scheme" content="light dark">
 <meta name="google-site-verification" content="fA_9FSEQ1gjiVQi68hGGw6-mw8vn9Re9OgTd4uUmy4g" />
 <title>Code Nest Tirana | Reviews nga klientët</title>
 <link rel="alternate" hreflang="sq" href="reviews.html">
 <link rel="alternate" hreflang="x-default" href="reviews.html">
-<link rel="icon" type="image/jpeg" href="images/logo-codenest-tirana.jpg?v=2">
-<link rel="apple-touch-icon" href="images/logo-codenest-tirana.jpg?v=2">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon.svg">
 
 <!-- Apply saved theme before first paint (no flash) -->
-
+<script>
+(function(){
+  var html = document.documentElement;
+  var body = document.body;
+  var box = document.getElementById('themeToggleBox');
+  var saved = null;
+  try { saved = localStorage.getItem('cnt-theme'); } catch(e){}
+  function apply(theme){
+    theme = theme === 'light' ? 'light' : 'dark';
+    html.classList.remove('light','dark');
+    html.classList.add(theme);
+    html.setAttribute('data-theme', theme);
+    if(body){ body.classList.remove('light','dark'); body.classList.add(theme); }
+    if(box) { box.checked = theme === 'light'; }
+    try { localStorage.setItem('cnt-theme', theme); } catch(e){}
+  }
+  if(saved === 'light' || saved === 'dark'){
+    apply(saved);
+  } else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches){
+    apply('light');
+  } else {
+    apply('dark');
+  }
+  if(box){
+    box.addEventListener('change', function(){
+      apply(box.checked ? 'light' : 'dark');
+    });
+  }
+})();
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,9 +74,105 @@
   --font:"Outfit",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
   --font-display:"Playfair Display",Georgia,"Times New Roman",serif;
 }
+
+/* ===== Color scheme: light + dark themes (WebView-safe) =====
+   Custom properties are defined for both themes in two ways:
+   1) via @media (prefers-color-scheme) so the page follows the
+      system theme automatically, and
+   2) via explicit .light / .dark classes on <html> so the theme
+      can be forced regardless of the media query (useful inside
+      embedded WebViews such as WhatsApp's in-app browser).
+   The manual toggle (#themeToggleBox) keeps working through the
+   html:has(#themeToggleBox:checked) rules further down, which have
+   higher specificity and therefore win over these classes. */
+
+/* System preference: light theme */
+@media (prefers-color-scheme: light) {
+  :root, html.light {
+    color-scheme: light;
+    --bg:#f3f6fc;
+    --bg-2:#e8eef9;
+    --panel:#ffffff;
+    --panel-2:#f1f5fc;
+    --line:rgba(15,23,42,.10);
+    --line-2:rgba(15,23,42,.18);
+    --blue:#1e6bf0;
+    --blue-2:#0a8fd6;
+    --icon:#0a3fb8;
+    --star-off:#b4bfd4;
+    --steel:#55627d;
+    --silver:#1b2744;
+    --text:#0f1a33;
+    --muted:#53607a;
+    --glow:0 0 0 1px rgba(30,123,255,.45),0 0 18px rgba(30,123,255,.35),0 0 40px rgba(25,182,255,.2);
+  }
+}
+
+/* System preference: dark theme */
+@media (prefers-color-scheme: dark) {
+  :root, html.dark {
+    color-scheme: dark;
+    --bg:#050b1a;
+    --bg-2:#08122a;
+    --panel:#0c1830;
+    --panel-2:#101f3d;
+    --line:rgba(148,163,184,.14);
+    --line-2:rgba(148,163,184,.26);
+    --blue:#1e7bff;
+    --blue-2:#19b6ff;
+    --icon:#3b8bff;
+    --star-off:#56627f;
+    --steel:#8f9bb3;
+    --silver:#d3dae6;
+    --text:#e8edf6;
+    --muted:#93a0b8;
+    --glow:0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32);
+  }
+}
+
+/* Explicit class: force light theme (wins over a mismatched system preference) */
+html.light {
+  color-scheme: light;
+  --bg:#f3f6fc;
+  --bg-2:#e8eef9;
+  --panel:#ffffff;
+  --panel-2:#f1f5fc;
+  --line:rgba(15,23,42,.10);
+  --line-2:rgba(15,23,42,.18);
+  --blue:#1e6bf0;
+  --blue-2:#0a8fd6;
+  --icon:#0a3fb8;
+  --star-off:#b4bfd4;
+  --steel:#55627d;
+  --silver:#1b2744;
+  --text:#0f1a33;
+  --muted:#53607a;
+  --glow:0 0 0 1px rgba(30,123,255,.45),0 0 18px rgba(30,123,255,.35),0 0 40px rgba(25,182,255,.2);
+}
+
+/* Explicit class: force dark theme (wins over a mismatched system preference) */
+html.dark {
+  color-scheme: dark;
+  --bg:#050b1a;
+  --bg-2:#08122a;
+  --panel:#0c1830;
+  --panel-2:#101f3d;
+  --line:rgba(148,163,184,.14);
+  --line-2:rgba(148,163,184,.26);
+  --blue:#1e7bff;
+  --blue-2:#19b6ff;
+  --icon:#3b8bff;
+  --star-off:#56627f;
+  --steel:#8f9bb3;
+  --silver:#d3dae6;
+  --text:#e8edf6;
+  --muted:#93a0b8;
+  --glow:0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32);
+}
+
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;scroll-padding-top:84px;overflow-x:hidden}
-body{font-family:var(--font);color:var(--text);background:var(--bg);line-height:1.65;overflow-x:hidden;position:relative}
+body{font-family:var(--font);color:var(--text, #e8edf6);background:var(--bg, #050b1a);line-height:1.65;overflow-x:hidden;position:relative}
 a{text-decoration:none;color:inherit}
 button,input,textarea{font:inherit}
 img{max-width:100%;display:block}
