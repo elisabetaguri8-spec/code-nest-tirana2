@@ -9,6 +9,21 @@
 <meta name="theme-color" content="#050b1a" id="themeColorMeta">
 <meta name="color-scheme" content="light dark">
 <meta name="google-site-verification" content="fA_9FSEQ1gjiVQi68hGGw6-mw8vn9Re9OgTd4uUmy4g" />
+
+<!-- Open Graph / WhatsApp link preview (fixes wrong color & content when shared) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://elisabetaguri8-spec.github.io/code-nest-tirana2/">
+<meta property="og:site_name" content="Code Nest Tirana">
+<meta property="og:title" content="Code Nest Tirana | Zgjidhje Profesionale për Biznesin tuaj">
+<meta property="og:description" content="Shërbime profesionale për krijim websitesh, editim videosh, karta biznesi dhe fletushka informuese. Website, video editing, karta biznesi dhe fletushka në Tiranë, Shqipëri.">
+<meta property="og:image" content="https://elisabetaguri8-spec.github.io/code-nest-tirana2/images/logo-codenest-tirana.jpg.png">
+<meta property="og:image:width" content="1254">
+<meta property="og:image:height" content="1254">
+<meta property="og:image:alt" content="Code Nest Tirana logo">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Code Nest Tirana | Zgjidhje Profesionale për Biznesin tuaj">
+<meta name="twitter:description" content="Shërbime profesionale për krijim websitesh, editim videosh, karta biznesi dhe fletushka informuese.">
+<meta name="twitter:image" content="https://elisabetaguri8-spec.github.io/code-nest-tirana2/images/logo-codenest-tirana.jpg.png">
 <title>Code Nest Tirana | Zgjidhje Profesionale për Biznesin tuaj</title>
 <link rel="alternate" hreflang="sq" href="index.html">
 <link rel="alternate" hreflang="x-default" href="index.html">
@@ -20,7 +35,8 @@
 (function(){
   var html = document.documentElement;
   var body = document.body;
-  var box = document.getElementById('themeToggleBox');
+  var meta = document.getElementById('themeColorMeta');
+  var box = null;
   var saved = null;
   try { saved = localStorage.getItem('cnt-theme'); } catch(e){}
   function apply(theme){
@@ -29,8 +45,17 @@
     html.classList.add(theme);
     html.setAttribute('data-theme', theme);
     if(body){ body.classList.remove('light','dark'); body.classList.add(theme); }
-    if(box) { box.checked = theme === 'light'; }
+    if(meta){ meta.setAttribute('content', theme === 'light' ? '#f3f6fc' : '#050b1a'); }
+    if(box){ box.checked = theme === 'light'; }
     try { localStorage.setItem('cnt-theme', theme); } catch(e){}
+  }
+  function ready(){
+    box = document.getElementById('themeToggleBox');
+    if(!box){ return; }
+    box.checked = html.classList.contains('light');
+    box.addEventListener('change', function(){
+      apply(box.checked ? 'light' : 'dark');
+    });
   }
   if(saved === 'light' || saved === 'dark'){
     apply(saved);
@@ -39,10 +64,10 @@
   } else {
     apply('dark');
   }
-  if(box){
-    box.addEventListener('change', function(){
-      apply(box.checked ? 'light' : 'dark');
-    });
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', ready);
+  } else {
+    ready();
   }
 })();
 </script>
@@ -186,11 +211,11 @@ section{padding:110px 0;position:relative}
    Fine grain + blueprint grid, laid over the entire document (sections, cards, boxes, footer),
    so it looks identical everywhere. Both sit above content but never block clicks. */
 body:before{
-  content:"";position:fixed;inset:0;z-index:5;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
+  content:"";position:fixed;inset:0;z-index:5;pointer-events:none;display:none;opacity:.07;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 body:after{
-  content:"";position:absolute;inset:0;z-index:5;pointer-events:none;
+  content:"";position:absolute;inset:0;z-index:5;pointer-events:none;display:none;
   background-image:linear-gradient(rgba(148,163,184,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.05) 1px,transparent 1px);
   background-size:56px 56px;
 }
@@ -202,7 +227,7 @@ body:after{
    - the blueprint grid lights up around the pointer
    - the grid lines stay aligned with the page grid while scrolling
    JS only sets --bx / --by (pointer) and --sy (scroll offset). */
-.bg-react{position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden;--bx:50%;--by:40%;--sy:0px;--on:0}
+.bg-react{position:fixed;inset:0;z-index:4;pointer-events:none;display:none;overflow:hidden;--bx:50%;--by:40%;--sy:0px;--on:0}
 .bg-react .bg-glow{position:absolute;inset:0;opacity:calc(.55 + var(--on) * .45);
   background:radial-gradient(520px circle at var(--bx) var(--by),rgba(30,123,255,.20),rgba(25,182,255,.07) 45%,transparent 70%);
   mix-blend-mode:screen;transition:opacity .5s}
@@ -218,7 +243,7 @@ header{position:fixed;inset:0 0 auto 0;height:76px;z-index:1000;background:rgba(
 header.scrolled{background:rgba(5,11,26,.86);border-bottom-color:var(--line)}
 .navbar{height:76px;display:flex;align-items:center;justify-content:space-between}
 .nav-right{display:flex;align-items:center;gap:14px}
-.logo{display:flex;align-items:center;gap:11px;font-size:25px;font-weight:800;letter-spacing:-.8px;color:var(--silver)}
+.logo{display:flex;align-items:center;gap:11px;font-size:25px;font-weight:800;letter-spacing:-.8px;color:#fff}
 .logo-text{display:inline-flex;align-items:baseline;gap:.22em}
 .logo-nest{color:var(--blue)}
 .logo-city{font-style:normal;font-weight:inherit;letter-spacing:inherit;color:inherit;margin-left:0}
@@ -272,11 +297,7 @@ html:has(#themeToggleBox:checked) .lang-toggle button.on{color:#fff}
 :focus-visible{outline:2px solid var(--blue-2);outline-offset:3px}
 
 /* ===== Hero: text only, centered, symmetrical ===== */
-.hero{min-height:100vh;min-height:100svh;padding:120px 0 90px;display:flex;align-items:center;justify-content:center;overflow:hidden;
-  background:
-   radial-gradient(ellipse 55% 60% at 80% 35%,rgba(30,123,255,.28),transparent 70%),
-   radial-gradient(ellipse 45% 50% at 5% 95%,rgba(10,63,184,.30),transparent 70%),
-   linear-gradient(180deg,#040916 0%,#071228 100%)}
+.hero{min-height:100vh;min-height:100svh;padding:120px 0 90px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#050b1a}
 .hero-content{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .hero-text{display:flex;flex-direction:column;align-items:center;max-width:920px;margin:0 auto}
 
@@ -293,8 +314,8 @@ html:has(#themeToggleBox:checked) .lang-toggle button.on{color:#fff}
 .hero-buttons,.cta-buttons{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
 
 /* ===== AI showcase: static text left, quantum particle sphere right ===== */
-.ai-showcase{padding:100px 0;background:#030814;overflow:hidden;border-top:1px solid rgba(148,163,184,.12);border-bottom:1px solid rgba(148,163,184,.12)}
-.ai-showcase:before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 50% 70% at 78% 50%,rgba(30,123,255,.20),transparent 70%),radial-gradient(ellipse 35% 45% at 8% 100%,rgba(10,63,184,.22),transparent 70%)}
+.ai-showcase{padding:100px 0;background:#050b1a;overflow:hidden;border-top:1px solid rgba(148,163,184,.12);border-bottom:1px solid rgba(148,163,184,.12)}
+.ai-showcase:before{content:"";position:absolute;inset:0;pointer-events:none;display:none;z-index:0;background:radial-gradient(ellipse 50% 70% at 78% 50%,rgba(30,123,255,.20),transparent 70%),radial-gradient(ellipse 35% 45% at 8% 100%,rgba(10,63,184,.22),transparent 70%)}
 .ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
 .ai-copy{display:flex;flex-direction:column;align-items:flex-start}
 .ai-tag{display:inline-block;margin-bottom:22px;font-size:14px;font-weight:500;letter-spacing:4px;color:#19b6ff;text-shadow:0 0 16px rgba(25,182,255,.55)}
@@ -308,8 +329,8 @@ html:has(#themeToggleBox:checked) .lang-toggle button.on{color:#fff}
 .section-title span{display:inline-block;color:var(--blue-2);font-size:15px;font-weight:600;margin-bottom:6px}
 .section-title h2{font-size:clamp(34px,5vw,50px);line-height:1.15;letter-spacing:-1.8px;font-weight:700;margin:6px 0 16px;padding-bottom:.12em;background:linear-gradient(180deg,#fff,#aeb9cf);-webkit-background-clip:text;background-clip:text;color:transparent}
 .section-title p{color:var(--muted);font-size:17px}
-.services,.contact{background:linear-gradient(180deg,var(--bg-2),#06101f)}
-.reviews{background:linear-gradient(180deg,#06101f,var(--bg-2))}
+.services,.contact{background:#050b1a}
+.reviews{background:#050b1a}
 #rreth-nesh{background:var(--bg)}
 
 /* ===== Cards (spotlight + shine) ===== */
@@ -404,7 +425,7 @@ html:has(#themeToggleBox:checked) .lang-toggle button.on{color:#fff}
 .form-error[hidden]{display:none}
 
 /* ===== CTA + free trial: dark blue, no rings, reacts to touch ===== */
-.cta{padding:30px 0 110px;background:var(--bg-2)}
+.cta{padding:30px 0 110px;background:#050b1a}
 .cta-box,.free-trial-box{position:relative;overflow:hidden;text-align:center;border-radius:30px;border:1px solid rgba(96,150,255,.2);box-shadow:0 40px 100px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08);transition:border-color .35s,box-shadow .35s,transform .25s;-webkit-tap-highlight-color:transparent}
 .cta-box{padding:76px 35px;background:linear-gradient(135deg,#040b22 0%,#08194d 55%,#040b22 100%)}
 .free-trial-box{padding:60px 35px;background:linear-gradient(135deg,#040a1c 0%,#0a1f58 60%,#040a1c 100%)}
@@ -419,7 +440,7 @@ html:has(#themeToggleBox:checked) .lang-toggle button.on{color:#fff}
 .cta-box h2,.free-trial-box h2{position:relative;z-index:1;font-size:clamp(32px,5vw,50px);line-height:1.08;letter-spacing:-1.6px;font-weight:700;margin-bottom:14px}
 .cta-box p,.free-trial-box p{position:relative;z-index:1;color:#c0cff0;max-width:640px;margin:0 auto 30px;font-size:17px}
 .cta-buttons{justify-content:center;position:relative;z-index:1}
-.free-trial{padding:0 0 90px;background:linear-gradient(180deg,var(--bg-2),var(--bg-2))}
+.free-trial{padding:0 0 90px;background:#050b1a}
 .free-trial-content{position:relative;z-index:1}
 .free-trial-badge{display:inline-flex;align-items:center;gap:8px;background:#e6efff;color:#0a2a80;border:1px solid rgba(255,255,255,.6);padding:8px 16px;border-radius:999px;font-size:14px;font-weight:600;margin-bottom:16px;box-shadow:0 0 20px rgba(96,165,250,.2)}
 .free-trial-badge .ico{width:18px;height:18px;color:#0a3fb8}
@@ -445,17 +466,18 @@ html:has(#themeToggleBox:checked) .lang-toggle button.on{color:#fff}
 #message{resize:none}
 
 /* ===== Footer ===== */
-footer{background:#030814;border-top:1px solid var(--line);padding:38px 0;position:relative;z-index:2}
+footer{background:#050b1a;border-top:1px solid var(--line);padding:38px 0;position:relative;z-index:2}
 .footer-content{display:flex;justify-content:space-between;gap:18px 25px;align-items:center;flex-wrap:wrap}
-.footer-logo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;color:var(--silver)}
+.footer-logo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;color:#fff}
 .footer-logo .logo-nest{color:var(--blue)}
 .footer-content p{color:var(--steel);font-size:14px}
 .footer-links{display:flex;gap:22px;color:var(--steel);font-size:14px}
 .footer-links a{transition:.25s}
 .footer-links a:hover{color:#fff;text-shadow:0 0 12px rgba(96,165,250,.9)}
-.whatsapp-float{position:fixed;right:22px;bottom:22px;width:60px;height:60px;border-radius:50%;background:linear-gradient(180deg,#14409f,#0a2570);border:1px solid rgba(96,150,255,.5);color:#fff;display:grid;place-items:center;box-shadow:0 12px 32px rgba(2,10,40,.6);z-index:999;transition:.3s}
-.whatsapp-float .ico{width:28px;height:28px}
-.whatsapp-float:hover{transform:scale(1.1);box-shadow:0 0 0 1px rgba(96,165,255,.8),0 0 30px rgba(30,123,255,.8),0 0 70px rgba(30,123,255,.4)}
+.whatsapp-float{position:fixed;right:22px;bottom:22px;display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:999px;background:linear-gradient(180deg,#14409f,#0a2570);border:1px solid rgba(96,150,255,.5);color:#fff;box-shadow:0 12px 32px rgba(2,10,40,.6);z-index:999;transition:.3s;font-weight:700;font-size:15px;white-space:nowrap}
+.whatsapp-float .ico{width:24px;height:24px;flex:none}
+.whatsapp-float .wa-text{color:#fff}
+.whatsapp-float:hover{transform:scale(1.05);box-shadow:0 0 0 1px rgba(96,165,255,.8),0 0 30px rgba(30,123,255,.8),0 0 70px rgba(30,123,255,.4)}
 
 /* ===== Reveal ===== */
 .fade-in{opacity:1;transform:none}
@@ -654,7 +676,7 @@ html:has(#themeToggleBox:checked) .footer-links a:hover{color:var(--blue-deep);t
   .footer-logo{font-size:19px}
   .footer-links{gap:8px 16px;font-size:13px}
   .footer-content p{font-size:13px}
-  .whatsapp-float{right:16px;bottom:16px;width:52px;height:52px}
+  .whatsapp-float{right:16px;bottom:16px}
 }
 @media(max-width:380px){
   .hero-eyebrow{letter-spacing:2px;font-size:12px}
@@ -1117,7 +1139,7 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
 </footer>
 
 <!-- FLOATING WHATSAPP -->
-<a href="https://wa.me/355698543275" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Na kontaktoni në WhatsApp"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg></a>
+<a href="https://wa.me/355698543275" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Na kontaktoni në WhatsApp"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg><span class="wa-text">Na kontaktoni</span></a>
 
 <script>
 /* ===== Quantum / AI particle sphere (canvas) =====
