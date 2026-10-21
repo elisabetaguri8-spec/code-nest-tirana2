@@ -81,25 +81,27 @@
     }catch(e){}
 
     /* 1. Theme.
+       ONE identity for every browser. The dark brand look is the default
+       everywhere: opened from a QR code, from WhatsApp, from a Google
+       search, on a phone with forced dark mode and on a phone with a light
+       system theme. The site never guesses, so it can never look different
+       from one place to another - and it is never "dark by surprise",
+       because dark IS the design.
        The "light" / "dark" class on <html> is what the CSS reacts to
-       (html.light / html.dark define the colours, and the UA is told
-       with color-scheme which scheme is active). The old
+       (html.light / html.dark define the colours, and the UA is told with
+       color-scheme which scheme is active). The old
        "html:has(#themeToggleBox:checked)" selectors were dropped:
        they are unsupported in some in-app browsers (WhatsApp, Facebook, ...)
        and, when a selector in a list is invalid, the WHOLE rule is dropped -
        which left the page half light / half dark.
-       With no saved choice the site follows the phone/system theme, so it is
-       never "dark by surprise" when the link is opened from WhatsApp/QR. */
+       The switch in the header is the only thing that changes the theme,
+       and that choice is remembered in localStorage. */
     var KEY="cnt-theme",
         meta=document.getElementById("themeColorMeta"),
         saved=null;
     try{ saved=localStorage.getItem(KEY); }catch(e){}
-    var light = saved ? (saved==="light")
-                     : !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches);
-    /* If the browser insists on darkening the page anyway, start from the light
-       theme: the browser will darken it regardless, so painting light avoids the
-       "dark on dark" double-darkening that produced the black blobs. */
-    if(forcedDark) light = true;
+    /* dark unless the visitor explicitly chose light */
+    var light = (saved === "light");
     root.classList.remove("light","dark");
     root.classList.add(light ? "light" : "dark");
     root.setAttribute("data-theme", light ? "light" : "dark");
@@ -191,6 +193,8 @@
   --silver:#d3dae6;
   --text:#e8edf6;
   --muted:#93a0b8;
+  --ink-h:#eef3fb;           /* big headings (hero l1, section h2, about h2) */
+  --ink-a:#19b6ff;           /* accent headings (hero l2, ai-label em) */
   --glow:0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32);
   /* shadows: tinted navy, never pure black */
   --sh-card:0 14px 40px rgba(2,8,28,.42);
@@ -222,6 +226,8 @@
     --silver:#1b2744;
     --text:#0f1a33;
     --muted:#53607a;
+    --ink-h:#0f1a33;
+    --ink-a:#0a3fb8;
     --glow:0 0 0 1px rgba(30,123,255,.45),0 0 18px rgba(30,123,255,.35),0 0 40px rgba(25,182,255,.2);
     /* shadows: soft blue-grey, never black */
     --sh-card:0 12px 32px rgba(20,40,90,.10);
@@ -254,6 +260,8 @@
     --silver:#d3dae6;
     --text:#e8edf6;
     --muted:#93a0b8;
+    --ink-h:#eef3fb;
+    --ink-a:#19b6ff;
     --glow:0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32);
     --sh-card:0 14px 40px rgba(2,8,28,.42);
     --sh-card-h:0 22px 60px rgba(2,8,28,.50);
@@ -284,6 +292,8 @@ html.light{
   --silver:#1b2744;
   --text:#0f1a33;
   --muted:#53607a;
+  --ink-h:#0f1a33;
+  --ink-a:#0a3fb8;
   --glow:0 0 0 1px rgba(30,123,255,.45),0 0 18px rgba(30,123,255,.35),0 0 40px rgba(25,182,255,.2);
   --sh-card:0 12px 32px rgba(20,40,90,.10);
   --sh-card-h:0 22px 50px rgba(20,40,90,.16);
@@ -312,6 +322,8 @@ html.dark{
   --silver:#d3dae6;
   --text:#e8edf6;
   --muted:#93a0b8;
+  --ink-h:#eef3fb;
+  --ink-a:#19b6ff;
   --glow:0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32);
   --sh-card:0 14px 40px rgba(2,8,28,.42);
   --sh-card-h:0 22px 60px rgba(2,8,28,.50);
@@ -377,50 +389,59 @@ header.scrolled{background:rgba(5,11,26,.86);border-bottom-color:var(--line, rgb
 @media(max-width:420px){.logo{font-size:21px}.logo-city{display:none}}
 .nav-links{display:flex;align-items:center;gap:6px;list-style:none}
 .nav-links a{position:relative;display:block;padding:10px 14px;color:var(--steel, #8f9bb3);font-size:15px;font-weight:500;border-radius:10px;transition:.25s}
-.nav-links a:hover{color:#fff;text-shadow:0 0 14px rgba(96,165,250,.9)}
 .nav-links a.active{color:#fff}
 .nav-links a:not(.nav-contact).active:after{content:"";position:absolute;left:14px;right:14px;bottom:4px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--blue, #1e7bff),var(--blue-2, #19b6ff));box-shadow:0 0 10px var(--blue, #1e7bff)}
 .nav-links .nav-contact{color:#fff;margin-left:8px;padding:11px 20px;border:1px solid rgba(30,123,255,.55);background:linear-gradient(180deg,rgba(30,123,255,.22),rgba(30,123,255,.08));font-weight:600}
-.nav-links .nav-contact:hover{background:var(--blue, #1e7bff);box-shadow:var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32));text-shadow:none}
 .menu-btn{display:none;place-items:center;border:1px solid var(--line-2, rgba(148,163,184,.26));background:rgba(255,255,255,.03);width:44px;height:44px;border-radius:12px;cursor:pointer;color:var(--silver, #d3dae6);transition:.25s}
 .menu-btn .ico{width:22px;height:22px}
-.menu-btn:hover{box-shadow:var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32));color:#fff}
 
 /* ===== Theme toggle (sun / moon switch, top right) ===== */
 .theme-toggle{position:relative;flex:none;width:68px;height:36px;padding:0;border-radius:999px;cursor:pointer;border:1px solid var(--line-2, rgba(148,163,184,.26));background:rgba(255,255,255,.05);transition:background .3s,border-color .3s,box-shadow .3s}
-.theme-toggle:hover{border-color:rgba(30,123,255,.7);box-shadow:var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32))}
 .theme-toggle .knob{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:linear-gradient(180deg,#2f8bff,#1458d8);box-shadow:0 0 14px rgba(30,123,255,.7);transition:transform .35s cubic-bezier(.4,.1,.2,1),background .3s,box-shadow .3s;transform:translateX(32px)}
 .theme-toggle svg{position:absolute;top:50%;width:16px;height:16px;margin-top:-8px;z-index:2;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:color .3s}
 .theme-toggle .ic-sun{left:10px;color:var(--steel, #8f9bb3)}
 .theme-toggle .ic-moon{right:10px;color:#fff}
+/* The glow only appears on a real pointer. On a phone a tap leaves the
+   element in the :hover state, which used to keep a bright blue ring
+   around the switch for good (visible in the phone screenshot). */
+@media (hover:hover){
+  .nav-links a:hover{color:#fff;text-shadow:0 0 14px rgba(96,165,250,.9)}
+  .nav-links .nav-contact:hover{background:var(--blue, #1e7bff);box-shadow:var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32));text-shadow:none}
+  .menu-btn:hover{box-shadow:var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32));color:#fff}
+  .theme-toggle:hover{border-color:rgba(30,123,255,.7);box-shadow:var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32))}
+}
 
 /* ===== Language toggle (SQ / EN switch, top right) ===== */
 .lang-toggle{display:flex;align-items:center;gap:2px;padding:3px;border-radius:999px;border:1px solid var(--line-2, rgba(148,163,184,.26));background:rgba(255,255,255,.05);transition:border-color .3s,box-shadow .3s}
-.lang-toggle:hover{border-color:rgba(30,123,255,.7);box-shadow:var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32))}
 .lang-toggle button{border:0;background:transparent;color:var(--steel, #8f9bb3);font-size:12px;font-weight:700;letter-spacing:.6px;padding:7px 11px;border-radius:999px;cursor:pointer;transition:.25s}
-.lang-toggle button:hover{color:var(--silver, #d3dae6)}
 .lang-toggle button.on{color:#fff;background:linear-gradient(180deg,#2f8bff,#1458d8);box-shadow:0 0 12px rgba(30,123,255,.55)}
 html.light .lang-toggle{background:rgba(15,23,42,.05)}
-html.light .lang-toggle button:hover{color:var(--blue-deep, #0a3fb8)}
 html.light .lang-toggle button.on{color:#fff}
 @media(max-width:380px){.lang-toggle button{padding:6px 8px;font-size:11px}}
 
 /* ===== Buttons: shine sweep + glow on hover ===== */
 .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 26px;border-radius:14px;font-weight:600;font-size:16px;cursor:pointer;border:1px solid transparent;transition:transform .3s,box-shadow .3s,background .3s,border-color .3s,color .3s}
 .btn:before{content:"";position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);transform:skewX(-20deg);transition:left .7s ease}
-.btn:hover:before{left:130%}
-.btn:hover{transform:translateY(-3px)}
 .btn-sm{padding:10px 18px;font-size:14px;border-radius:12px}
 .btn-primary{color:#fff;background:linear-gradient(180deg,#2f8bff 0%,#1458d8 100%);border-color:rgba(120,180,255,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 10px 26px rgba(20,88,216,.35)}
-.btn-primary:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32))}
 .btn-secondary{color:var(--silver, #d3dae6);background:rgba(255,255,255,.04);border-color:var(--line-2, rgba(148,163,184,.26))}
-.btn-secondary:hover{color:#fff;border-color:rgba(30,123,255,.8);background:rgba(30,123,255,.12);box-shadow:var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32))}
 .btn-white{color:#0a1a3f;background:linear-gradient(180deg,#fff,#cfd8e6);box-shadow:inset 0 -2px 0 rgba(0,0,0,.08),var(--sh-float, 0 10px 28px rgba(20,40,90,.22))}
 .btn-white .ico{color:#0a3fb8}
-.btn-white:hover{box-shadow:0 0 0 1px rgba(255,255,255,.7),0 0 26px rgba(255,255,255,.55),0 0 70px rgba(96,165,250,.45)}
 /* dark blue button (CTA box) */
 .btn-navy{color:#fff;background:linear-gradient(180deg,#14409f 0%,#0a2570 100%);border-color:rgba(96,150,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 10px 26px rgba(2,10,40,.55)}
-.btn-navy:hover{border-color:rgba(96,165,255,.85);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 0 0 1px rgba(30,123,255,.5),0 0 26px rgba(30,123,255,.55),0 0 60px rgba(25,182,255,.28)}
+/* Hover effects only on a real pointer: on a phone a tap keeps the :hover
+   state, so the button would stay lifted and the shine would stay on. */
+@media (hover:hover){
+  .lang-toggle:hover{border-color:rgba(30,123,255,.7);box-shadow:var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32))}
+  .lang-toggle button:hover{color:var(--silver, #d3dae6)}
+  html.light .lang-toggle button:hover{color:var(--blue-deep, #0a3fb8)}
+  .btn:hover:before{left:130%}
+  .btn:hover{transform:translateY(-3px)}
+  .btn-primary:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32))}
+  .btn-secondary:hover{color:#fff;border-color:rgba(30,123,255,.8);background:rgba(30,123,255,.12);box-shadow:var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32))}
+  .btn-white:hover{box-shadow:0 0 0 1px rgba(255,255,255,.7),0 0 26px rgba(255,255,255,.55),0 0 70px rgba(96,165,250,.45)}
+  .btn-navy:hover{border-color:rgba(96,165,255,.85);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 0 0 1px rgba(30,123,255,.5),0 0 26px rgba(30,123,255,.55),0 0 60px rgba(25,182,255,.28)}
+}
 :focus-visible{outline:2px solid var(--blue-2, #19b6ff);outline-offset:3px}
 /* WebViews without :focus-visible() still get a visible focus ring */
 @supports not selector(:focus-visible){
@@ -440,11 +461,23 @@ html.light .lang-toggle button.on{color:#fff}
 /* line 0: small, wide-tracked, cyan */
 .hero-eyebrow{display:block;margin-bottom:28px;font-size:15px;font-weight:500;letter-spacing:5px;color:var(--blue-2, #19b6ff);text-shadow:0 0 18px rgba(25,182,255,.55)}
 /* line 1: huge, heavy sans, silver.
-   padding-bottom keeps the descender of "j" from being clipped by background-clip:text */
+   IMPORTANT - why a plain colour instead of a gradient:
+   "background-clip:text + color:transparent" CANNOT be re-mapped by a
+   browser that darkens the page on its own (Samsung Night mode, Android
+   WebView user-agent darkening, Chrome Auto Dark Theme). Those engines
+   re-map normal colours, but a gradient clipped to the text is invisible
+   to them: the background gets darker while the heading keeps its old
+   colours - and a dark heading then disappears on a dark background.
+   That was the "Bëjeni biznesin tuaj" line in the screenshot.
+   Plain colours are always re-mapped correctly, so the page looks the same
+   in every browser. The depth comes from text-shadow, not from a clip. */
 .hero-text h1{margin-bottom:34px;line-height:1.12;font-weight:800;overflow-wrap:break-word;word-wrap:break-word;white-space:normal}
-.hero-text h1 .l1{display:block;font-size:clamp(34px,10vw,96px);letter-spacing:-3.5px;font-weight:800;line-height:1.1;padding:0 .04em .16em;background:linear-gradient(180deg,#fff 0%,#c3cddd 55%,#8794ad 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-/* line 2: elegant italic serif, electric blue (padding avoids clipping italic overhang + descenders) */
-.hero-text h1 .l2{display:block;margin-top:0;font-family:var(--font-display, "Playfair Display",Georgia,"Times New Roman",serif)!important;font-style:italic;font-size:clamp(30px,8vw,80px);letter-spacing:-1px;font-weight:500;line-height:1.2;padding:0 .12em .14em .04em;background:linear-gradient(95deg,#1e7bff 0%,#19b6ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-filter:drop-shadow(0 0 22px rgba(30,123,255,.45));filter:drop-shadow(0 0 22px rgba(30,123,255,.45))}
+.hero-text h1 .l1{display:block;font-size:clamp(34px,10vw,96px);letter-spacing:-3.5px;font-weight:800;line-height:1.1;padding:0 .04em .16em;color:var(--ink-h,#eef3fb);text-shadow:0 6px 30px rgba(3,10,30,.55)}
+/* line 2: elegant italic serif, electric blue
+   (padding avoids clipping italic overhang + descenders).
+   text-shadow instead of filter:drop-shadow() - a filter is inverted by the
+   forced-dark engines, a shadow colour is re-mapped like every other colour. */
+.hero-text h1 .l2{display:block;margin-top:0;font-family:var(--font-display, "Playfair Display",Georgia,"Times New Roman",serif)!important;font-style:italic;font-size:clamp(30px,8vw,80px);letter-spacing:-1px;font-weight:500;line-height:1.2;padding:0 .12em .14em .04em;color:var(--ink-a,#19b6ff);text-shadow:0 0 26px rgba(30,123,255,.45)}
 /* line 3: light-weight, muted */
 .hero-text p{font-size:clamp(17px,2vw,21px);font-weight:300;letter-spacing:.2px;color:var(--muted, #93a0b8);max-width:620px;margin:0 auto 42px}
 .hero-buttons,.cta-buttons{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
@@ -457,13 +490,13 @@ html.light .lang-toggle button.on{color:#fff}
 .ai-tag{display:inline-block;margin-bottom:22px;font-size:14px;font-weight:500;letter-spacing:4px;color:#19b6ff;text-shadow:0 0 16px rgba(25,182,255,.55)}
 /* static label: no animation, no transform, never moves */
 .ai-label{font-size:clamp(28px,3.7vw,48px);font-weight:700;line-height:1.18;letter-spacing:-1.2px;color:#e8edf6}
-.ai-label em{font-style:normal;background:linear-gradient(95deg,#1e7bff,#19b6ff);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.08em}
+.ai-label em{font-style:normal;color:var(--ink-a,#19b6ff);padding-bottom:.08em}
 .ai-visual{position:relative;width:100%;max-width:540px;aspect-ratio:1/1;margin-left:auto}
 
 /* ===== Section titles ===== */
 .section-title{text-align:center;max-width:720px;margin:0 auto 58px}
 .section-title span{display:inline-block;color:var(--blue-2, #19b6ff);font-size:15px;font-weight:600;margin-bottom:6px}
-.section-title h2{font-size:clamp(34px,5vw,50px);line-height:1.15;letter-spacing:-1.8px;font-weight:700;margin:6px 0 16px;padding-bottom:.12em;background:linear-gradient(180deg,#fff,#aeb9cf);-webkit-background-clip:text;background-clip:text;color:transparent}
+.section-title h2{font-size:clamp(34px,5vw,50px);line-height:1.15;letter-spacing:-1.8px;font-weight:700;margin:6px 0 16px;padding-bottom:.12em;color:var(--ink-h,#eef3fb);text-shadow:0 4px 26px rgba(3,10,30,.45)}
 .section-title p{color:var(--muted, #93a0b8);font-size:17px}
 .services,.contact{background:linear-gradient(180deg,var(--bg-2, #08122a),#06101f)}
 .reviews{background:linear-gradient(180deg,#06101f,var(--bg-2, #08122a))}
@@ -473,9 +506,7 @@ html.light .lang-toggle button.on{color:#fff}
 .services-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
 .service-card,.review-card,.contact-info,.contact-form,.comments{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.012) 55%),var(--panel, #0c1830);border:1px solid var(--line, rgba(148,163,184,.14));border-radius:var(--radius, 20px);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
 .service-card:before,.review-card:before{content:"";position:absolute;top:0;right:0;bottom:0;left:0;inset:0;pointer-events:none;opacity:0;transition:opacity .35s;background:radial-gradient(320px circle at var(--mx,50%) var(--my,0%),rgba(30,123,255,.22),transparent 60%)}
-.service-card:hover:before,.review-card:hover:before{opacity:1}
 .service-card{padding:32px 26px;transition:transform .35s,border-color .35s,box-shadow .35s}
-.service-card:hover{transform:translateY(-8px);border-color:rgba(30,123,255,.6);box-shadow:0 0 0 1px rgba(30,123,255,.25),var(--sh-card-h, 0 22px 60px rgba(2,8,28,.5)),0 0 40px rgba(30,123,255,.22)}
 .service-icon{position:relative;width:60px;height:60px;display:grid;place-items:center;border-radius:16px;margin-bottom:22px;color:var(--blue-2, #19b6ff);background:linear-gradient(145deg,rgba(30,123,255,.28),rgba(30,123,255,.06));border:1px solid rgba(30,123,255,.4);box-shadow:0 0 24px rgba(30,123,255,.25)}
 .service-icon svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .service-card h3{font-size:21px;font-weight:600;color:#fff;margin-bottom:10px;position:relative}
@@ -492,15 +523,16 @@ html.light .lang-toggle button.on{color:#fff}
 .about-list li{margin:14px 0;color:var(--text, #e8edf6);font-weight:500}
 .about-list li:before{content:"✓";display:inline-grid;place-items:center;width:25px;height:25px;margin-right:12px;border-radius:50%;background:rgba(30,123,255,.18);border:1px solid rgba(30,123,255,.5);color:var(--blue-2, #19b6ff);font-size:13px;font-weight:800;box-shadow:0 0 12px rgba(30,123,255,.3)}
 /* "Idetë tuaja, puna jonë." : more line-height + bottom padding so the comma and the "j" descenders
-   are not cut off by background-clip:text; display:block keeps the gradient box tall enough */
-.about-text h2{display:block;font-size:clamp(36px,4.6vw,50px);line-height:1.18;letter-spacing:-1.6px;font-weight:700;margin-bottom:22px;padding:0 .06em .16em 0;background:linear-gradient(180deg,#fff,#a9b5cc);-webkit-background-clip:text;background-clip:text;color:transparent}
+   are not cut off; display:block keeps the line box tall enough.
+   Plain colour (not a gradient clipped to the text) so the forced-dark
+   engines of Samsung / Android WebView / Chrome can re-map it correctly. */
+.about-text h2{display:block;font-size:clamp(36px,4.6vw,50px);line-height:1.18;letter-spacing:-1.6px;font-weight:700;margin-bottom:22px;padding:0 .06em .16em 0;color:var(--ink-h,#eef3fb);text-shadow:0 4px 26px rgba(3,10,30,.45)}
 .about-text p{color:var(--muted, #93a0b8);font-size:17px;margin-bottom:18px}
 .about-text .btn{margin-top:10px}
 
 /* ===== Reviews ===== */
 .reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .review-card{padding:32px;transition:transform .3s,border-color .3s,box-shadow .3s}
-.review-card:hover{transform:translateY(-6px);border-color:rgba(30,123,255,.5);box-shadow:var(--sh-card-h, 0 22px 60px rgba(2,8,28,.5)),0 0 34px rgba(30,123,255,.18)}
 .stars{position:relative;color:#fbbf24;letter-spacing:3px;margin-bottom:18px;text-shadow:0 0 12px rgba(251,191,36,.45)}
 .review-card p{position:relative;color:#b9c4d9;margin-bottom:24px}
 .review-author{position:relative;display:flex;align-items:center;gap:13px}
@@ -525,8 +557,6 @@ html.light .lang-toggle button.on{color:#fff}
 .comment-actions{display:flex;flex-wrap:wrap;gap:4px}
 .link-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:6px 10px;margin-left:-10px;border-radius:10px;color:var(--steel, #8f9bb3);font-size:14px;font-weight:500;cursor:pointer;transition:color .2s,background .2s}
 .link-btn .ico{width:16px;height:16px}
-.link-btn:hover{color:var(--blue-2, #19b6ff);background:rgba(30,123,255,.1)}
-.link-btn.danger:hover{color:#f87171;background:rgba(248,113,113,.1)}
 .replies{margin:12px 0 0 22px;padding-left:18px;border-left:1px solid var(--line-2, rgba(148,163,184,.26))}
 .replies .comment{margin-top:12px}
 .replies.flat{margin-left:0;padding-left:0;border-left:0}
@@ -543,7 +573,6 @@ html.light .lang-toggle button.on{color:#fff}
 .star-input{display:inline-flex;gap:2px}
 .star-btn{background:none;border:0;padding:4px;cursor:pointer;line-height:0;border-radius:8px;color:var(--star-off, #56627f);transition:transform .15s,color .15s}
 .star-btn svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linejoin:round;transition:fill .15s}
-.star-btn:hover{transform:scale(1.15)}
 .star-btn.on{color:#fbbf24}
 .star-btn.on svg{fill:#fbbf24}
 .star-input.sm .star-btn svg{width:22px;height:22px}
@@ -592,7 +621,6 @@ html.light .lang-toggle button.on{color:#fff}
 .contact-item small{color:var(--muted, #93a0b8);display:block;line-height:1.3}
 .contact-item strong{color:#fff;font-weight:600}
 .contact-item strong a{color:inherit;transition:color .2s}
-.contact-item strong a:hover{color:var(--blue-2, #19b6ff)}
 .form-group{margin-bottom:18px}
 .form-group label{display:block;font-weight:500;margin-bottom:8px;color:var(--silver, #d3dae6);font-size:15px}
 .form-group input,.form-group textarea{width:100%;padding:14px 16px;color:#fff;border:1px solid var(--line-2, rgba(148,163,184,.26));border-radius:12px;outline:none;transition:.25s;background:rgba(3,8,20,.65)}
@@ -610,10 +638,8 @@ footer{background:#030814;border-top:1px solid var(--line, rgba(148,163,184,.14)
 .footer-content p{color:var(--steel, #8f9bb3);font-size:14px}
 .footer-links{display:flex;gap:22px;color:var(--steel, #8f9bb3);font-size:14px}
 .footer-links a{transition:.25s}
-.footer-links a:hover{color:#fff;text-shadow:0 0 12px rgba(96,165,250,.9)}
 .whatsapp-float{position:fixed;right:22px;bottom:22px;width:60px;height:60px;border-radius:50%;background:linear-gradient(180deg,#14409f,#0a2570);border:1px solid rgba(96,150,255,.5);color:#fff;display:grid;place-items:center;box-shadow:var(--sh-float, 0 10px 28px rgba(2,10,40,.55));z-index:999;transition:.3s}
 .whatsapp-float .ico{width:28px;height:28px}
-.whatsapp-float:hover{transform:scale(1.1);box-shadow:0 0 0 1px rgba(96,165,255,.8),0 0 30px rgba(30,123,255,.8),0 0 70px rgba(30,123,255,.4)}
 
 /* ===== Reveal ===== */
 .fade-in{opacity:1;transform:none}
@@ -697,25 +723,23 @@ html.light .bg-react .bg-grid{background-image:linear-gradient(rgba(20,95,225,.3
 /* header + nav */
 html.light header{background:rgba(243,246,252,.7)}
 html.light header.scrolled{background:rgba(243,246,252,.92)}
-html.light .nav-links a:hover{color:var(--text, #e8edf6);text-shadow:none}
 html.light .nav-links a.active{color:var(--text, #e8edf6)}
 html.light .nav-links .nav-contact{color:var(--blue-deep, #0a3fb8);background:linear-gradient(180deg,rgba(30,123,255,.14),rgba(30,123,255,.05))}
-html.light .nav-links .nav-contact:hover{color:#fff;background:var(--blue, #1e7bff)}
 html.light .menu-btn{background:rgba(15,23,42,.04);color:var(--text, #e8edf6)}
-html.light .menu-btn:hover{color:var(--blue-deep, #0a3fb8)}
 @media(max-width:900px){
   html.light .nav-links{background:rgba(243,246,252,.98);box-shadow:var(--sh-menu, 0 20px 36px rgba(15,30,70,.15))}
 }
 
-/* theme toggle in light mode: knob slides to the sun */
+/* theme toggle in light mode: knob slides to the sun.
+   The knob is a warm amber with a soft glow - the strong orange halo
+   looked like a rendering error on the phone. */
 html.light .theme-toggle{background:rgba(15,23,42,.05)}
-html.light .theme-toggle .knob{transform:translateX(0);background:linear-gradient(180deg,#ffd166,#f59e0b);box-shadow:0 0 14px rgba(245,158,11,.6)}
+html.light .theme-toggle .knob{transform:translateX(0);background:linear-gradient(180deg,#ffc94d,#f0a30a);box-shadow:0 0 10px rgba(245,158,11,.45)}
 html.light .theme-toggle .ic-sun{color:#fff}
 html.light .theme-toggle .ic-moon{color:var(--steel, #8f9bb3)}
 
 /* buttons */
 html.light .btn-secondary{background:rgba(15,23,42,.04)}
-html.light .btn-secondary:hover{color:var(--blue-deep, #0a3fb8);background:rgba(30,123,255,.1)}
 
 /* hero */
 html.light .hero{background:
@@ -723,8 +747,7 @@ html.light .hero{background:
    radial-gradient(ellipse 45% 50% at 5% 95%,rgba(25,182,255,.16),transparent 70%),
    linear-gradient(180deg,#f7f9fe 0%,#e6edf9 100%)}
 html.light .hero-eyebrow{text-shadow:none}
-html.light .hero-text h1 .l1{background:linear-gradient(180deg,#0b1736 0%,#243459 60%,#3c4f7a 100%);-webkit-background-clip:text;background-clip:text}
-html.light .hero-text h1 .l2{-webkit-filter:drop-shadow(0 0 14px rgba(30,123,255,.2));filter:drop-shadow(0 0 14px rgba(30,123,255,.2))}
+/* the headings use --ink-h / --ink-a, so they follow the theme automatically */
 
 /* AI animation section in light mode */
 html.light .ai-showcase{background:linear-gradient(180deg,#eaf0fb,#e2eaf8);border-color:var(--line, rgba(148,163,184,.14))}
@@ -732,11 +755,10 @@ html.light .ai-showcase:before{background:radial-gradient(ellipse 50% 70% at 78%
 html.light .ai-tag{color:var(--blue-2, #19b6ff);text-shadow:none}
 html.light .ai-label{color:var(--text, #e8edf6)}
 
-/* section backgrounds + headings */
+/* section backgrounds + headings
+   (the headings themselves use --ink-h, they need no extra rule here) */
 html.light .services,html.light .contact{background:linear-gradient(180deg,var(--bg-2, #08122a),#dde7f6)}
 html.light .reviews{background:linear-gradient(180deg,#dde7f6,var(--bg-2, #08122a))}
-html.light .section-title h2{background:linear-gradient(180deg,#0b1736,#3a4c75);-webkit-background-clip:text;background-clip:text}
-html.light .about-text h2{background:linear-gradient(180deg,#0b1736,#3a4c75);-webkit-background-clip:text;background-clip:text}
 
 /* cards */
 html.light .service-card,
@@ -744,8 +766,6 @@ html.light .review-card,
 html.light .contact-info,
 html.light .contact-form,
 html.light .comments{background:linear-gradient(160deg,rgba(255,255,255,.95),rgba(255,255,255,.7)),var(--panel, #0c1830);box-shadow:var(--sh-card, 0 12px 32px rgba(20,40,90,.10)),inset 0 1px 0 #fff}
-html.light .service-card:hover{box-shadow:0 0 0 1px rgba(30,123,255,.25),var(--sh-card-h, 0 22px 50px rgba(20,40,90,.16)),0 0 34px rgba(30,123,255,.14)}
-html.light .review-card:hover{box-shadow:var(--sh-card-h, 0 22px 50px rgba(20,40,90,.16)),0 0 28px rgba(30,123,255,.12)}
 html.light .service-card h3,
 html.light .contact-info h3,
 html.light .contact-form h3,
@@ -756,7 +776,6 @@ html.light .review-card p{color:#3a4763}
 /* comments */
 html.light .comment-body{background:rgba(15,23,42,.035)}
 html.light .reply-form{background:rgba(255,255,255,.75)}
-html.light .link-btn:hover{color:var(--blue-deep, #0a3fb8)}
 
 /* dark accent panels keep light text */
 html.light .about-list li{color:#e8edf6}
@@ -768,7 +787,7 @@ html.light .free-trial{background:var(--bg-2, #08122a)}
    into an even harder blob) */
 html.light .about-box{box-shadow:var(--sh-panel, 0 22px 55px rgba(20,40,90,.18)),inset 0 1px 0 rgba(255,255,255,.1)}
 html.light .cta-box,html.light .free-trial-box{box-shadow:var(--sh-panel, 0 22px 55px rgba(20,40,90,.18)),inset 0 1px 0 rgba(255,255,255,.08)}
-html.light .cta-box:hover,html.light .cta-box.is-touched{box-shadow:var(--sh-panel, 0 22px 55px rgba(20,40,90,.2)),0 0 0 1px rgba(30,123,255,.3)}
+html.light .cta-box.is-touched{box-shadow:var(--sh-panel, 0 22px 55px rgba(20,40,90,.2)),0 0 0 1px rgba(30,123,255,.3)}
 
 /* form */
 html.light .form-group input,
@@ -812,12 +831,11 @@ html.embedded.light header,html.embedded.light header.scrolled{
 @supports not (aspect-ratio:1/1){
   .ai-visual{height:0;padding-bottom:100%}
 }
-/* Same safety net for WebViews without background-clip:text -
-   without it the gradient headings would be invisible (color:transparent) */
-@supports not ((-webkit-background-clip:text) or (background-clip:text)){
-  .hero-text h1 .l1,.hero-text h1 .l2,.section-title h2,.about-text h2{background:none;color:var(--silver, #d3dae6)}
-  html.light .hero-text h1 .l1,html.light .hero-text h1 .l2,html.light .section-title h2,html.light .about-text h2{color:var(--text, #0f1a33)}
-}
+/* NOTE: the old "safety net for WebViews without background-clip:text" is
+   gone on purpose. The headings no longer use the gradient-clipped-to-text
+   trick, so there is no "color:transparent" left that could make a
+   heading invisible. Every heading is a normal colour now, which every
+   browser - including the ones that darken the page - can re-map. */
 
 /* =====================================================================
    FORCED DARK MODE (the browser darkens the page by itself)
@@ -846,8 +864,9 @@ html.auto-dark body:before{-webkit-mix-blend-mode:;mix-blend-mode:normal;opacity
 html.auto-dark .bg-react .bg-glow{-webkit-mix-blend-mode:;mix-blend-mode:normal}
 html.auto-dark .bg-react .bg-grid{opacity:.35}
 html.auto-dark header,html.auto-dark header.scrolled{
-  backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(243,246,252,.97)}
-html.auto-dark .hero-text h1 .l2{-webkit-filter:none;filter:none}
+  backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(5,11,26,.97)}
+html.auto-dark.light header,html.auto-dark.light header.scrolled{
+  background:rgba(243,246,252,.97)}
 html.auto-dark .stars{text-shadow:none}
 /* one flat, tinted shadow for every elevated element - no black blobs */
 html.auto-dark .service-card,
@@ -860,15 +879,16 @@ html.auto-dark .cta-box,
 html.auto-dark .free-trial-box,
 html.auto-dark .btn-primary,
 html.auto-dark .btn-navy,
-html.auto-dark .whatsapp-float{box-shadow:var(--sh-card, 0 12px 32px rgba(20,40,90,.10))}
+html.auto-dark .whatsapp-float{box-shadow:var(--sh-card, 0 14px 40px rgba(2,8,28,.42))}
 html.auto-dark .service-card:hover,
 html.auto-dark .review-card:hover,
 html.auto-dark .cta-box:hover,
 html.auto-dark .cta-box.is-touched,
 html.auto-dark .free-trial-box:hover,
-html.auto-dark .free-trial-box.is-touched{box-shadow:var(--sh-card-h, 0 22px 50px rgba(20,40,90,.16))}
+html.auto-dark .free-trial-box.is-touched{box-shadow:var(--sh-card-h, 0 22px 60px rgba(2,8,28,.5))}
 @media(max-width:900px){
-  html.auto-dark .nav-links{background:rgba(243,246,252,.98);box-shadow:var(--sh-menu, 0 20px 36px rgba(15,30,70,.15))}
+  html.auto-dark .nav-links{background:rgba(5,11,26,.98);box-shadow:var(--sh-menu, 0 20px 36px rgba(2,8,28,.5))}
+  html.auto-dark.light .nav-links{background:rgba(243,246,252,.98);box-shadow:var(--sh-menu, 0 20px 36px rgba(15,30,70,.15))}
 }
 
 /* =====================================================================
@@ -885,6 +905,35 @@ html.auto-dark .free-trial-box.is-touched{box-shadow:var(--sh-card-h, 0 22px 50p
   .nav-links a,.footer-links a,.muted,p,small{color:CanvasText}
   :focus-visible{outline:2px solid Highlight}
   .theme-toggle .knob{background:Highlight;box-shadow:none}
+}
+
+/* =====================================================================
+   HOVER EFFECTS - ONLY ON A REAL POINTER
+   On a phone a tap leaves the element in the :hover state, so the card
+   stayed lifted, the button stayed glowing and the theme switch kept a
+   bright blue ring around it (visible in the phone screenshot). All the
+   hover effects are therefore limited to devices that have a real mouse.
+   ===================================================================== */
+@media (hover:hover){
+  .service-card:hover:before,.review-card:hover:before{opacity:1}
+  .service-card:hover{transform:translateY(-8px);border-color:rgba(30,123,255,.6);box-shadow:0 0 0 1px rgba(30,123,255,.25),var(--sh-card-h, 0 22px 60px rgba(2,8,28,.5)),0 0 40px rgba(30,123,255,.22)}
+  .review-card:hover{transform:translateY(-6px);border-color:rgba(30,123,255,.5);box-shadow:var(--sh-card-h, 0 22px 60px rgba(2,8,28,.5)),0 0 34px rgba(30,123,255,.18)}
+  .link-btn:hover{color:var(--blue-2, #19b6ff);background:rgba(30,123,255,.1)}
+  .link-btn.danger:hover{color:#f87171;background:rgba(248,113,113,.1)}
+  .star-btn:hover{transform:scale(1.15)}
+  .contact-item strong a:hover{color:var(--blue-2, #19b6ff)}
+  .footer-links a:hover{color:#fff;text-shadow:0 0 12px rgba(96,165,250,.9)}
+  .whatsapp-float:hover{transform:scale(1.1);box-shadow:0 0 0 1px rgba(96,165,255,.8),0 0 30px rgba(30,123,255,.8),0 0 70px rgba(30,123,255,.4)}
+  /* light theme */
+  html.light .nav-links a:hover{color:var(--text, #0f1a33);text-shadow:none}
+  html.light .nav-links .nav-contact:hover{color:#fff;background:var(--blue, #1e6bf0)}
+  html.light .menu-btn:hover{color:var(--blue-deep, #0a3fb8)}
+  html.light .btn-secondary:hover{color:var(--blue-deep, #0a3fb8);background:rgba(30,123,255,.1)}
+  html.light .service-card:hover{box-shadow:0 0 0 1px rgba(30,123,255,.25),var(--sh-card-h, 0 22px 50px rgba(20,40,90,.16)),0 0 34px rgba(30,123,255,.14)}
+  html.light .review-card:hover{box-shadow:var(--sh-card-h, 0 22px 50px rgba(20,40,90,.16)),0 0 28px rgba(30,123,255,.12)}
+  html.light .link-btn:hover{color:var(--blue-deep, #0a3fb8)}
+  html.light .cta-box:hover{box-shadow:var(--sh-panel, 0 22px 55px rgba(20,40,90,.2)),0 0 0 1px rgba(30,123,255,.3)}
+  html.light .footer-links a:hover{color:var(--blue-deep, #0a3fb8);text-shadow:none}
 }
 
 /* =====================================================================
@@ -1689,8 +1738,10 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
    works in browsers that do not support ":has()" (older in-app browsers
    such as WhatsApp, where an unsupported selector silently kills the
    whole rule).
-   The choice is remembered in localStorage so it survives reloads and
-   QR-code scans; with no saved choice the site follows the phone theme.
+   The default is DARK on every device - the site must look the same when
+   it is opened from a QR code, from WhatsApp or from a Google search, no
+   matter what the phone's system theme is. Only the switch changes it,
+   and the choice is remembered in localStorage.
 
    The class on <html> also drives `color-scheme` (see the stylesheet):
    `html.light` -> `color-scheme: only light`, `html.dark` ->
@@ -1704,10 +1755,6 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
   var root=document.documentElement;
   if(!box) return;
   function apply(light, save){
-    /* If the browser force-darkens the page we stay on the light theme:
-       the UA darkens it anyway, so painting light avoids the double
-       darkening that produced the black blobs. */
-    if(root.classList.contains("auto-dark")) light = true;
     root.classList.remove("light","dark");
     root.classList.add(light ? "light" : "dark");
     root.setAttribute("data-theme", light ? "light" : "dark");
@@ -1721,21 +1768,8 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
   }
   var saved=null;
   try{ saved=localStorage.getItem(KEY); }catch(e){}
-  var mq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: light)") : null;
-  var systemLight = !!(mq && mq.matches);
-  apply(saved ? (saved==="light") : systemLight, false);
+  apply(saved === "light", false);
   box.addEventListener("change",function(){ apply(box.checked, true); });
-
-  /* Follow the phone when the visitor has not made an explicit choice */
-  if(mq){
-    var onChange=function(e){
-      var s=null;
-      try{ s=localStorage.getItem(KEY); }catch(err){}
-      if(!s) apply(e.matches, false);
-    };
-    if(mq.addEventListener) mq.addEventListener("change",onChange);
-    else if(mq.addListener) mq.addListener(onChange);   /* older WebViews */
-  }
 })();
 </script>
 

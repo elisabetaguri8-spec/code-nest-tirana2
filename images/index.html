@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!-- class="dark" is the fallback for visitors without JavaScript;
      the script below swaps it for "light" when the phone/system
      (or the saved preference) asks for the light theme -->
@@ -27,8 +27,9 @@
 (function(){
   var root=document.documentElement, meta=document.getElementById("stubThemeColor"), saved=null;
   try{ saved=localStorage.getItem("cnt-theme"); }catch(e){}
-  var light = saved ? (saved==="light")
-                   : !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches);
+  /* Dark by default on every device, exactly like the main site, so the
+     page looks the same everywhere it is opened. */
+  var light = (saved === "light");
   root.classList.remove("light","dark");
   root.classList.add(light ? "light" : "dark");
   root.setAttribute("data-theme", light ? "light" : "dark");
@@ -87,7 +88,7 @@
   <div class="box">
     <span class="mark">CN</span>
     <h1>Code Nest Tirana</h1>
-    <p>Faqja u zhvendos në adresën kryesore të faqes.</p>
+    <p>Faqja u zhvendos nÃ« adresÃ«n kryesore tÃ« faqes.</p>
     <a href="../">Hap faqen</a>
     <small>https://elisabetaguri8-spec.github.io/code-nest-tirana2/</small>
   </div>

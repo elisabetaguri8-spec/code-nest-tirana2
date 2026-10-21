@@ -23,11 +23,12 @@
     if(m) m.setAttribute('content', theme==='light' ? '#f3f6fc' : '#050b1a');
     try { localStorage.setItem('cnt-qr-theme', theme); } catch(e){}
   }
-  if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches){
-    apply('light');
-  } else {
-    apply('dark');
-  }
+  /* Dark by default on every device, exactly like the main site, so the
+     page looks the same when it is opened from a QR code, from WhatsApp
+     or from a Google search. Only an explicit choice switches it. */
+  var saved=null;
+  try{ saved = localStorage.getItem('cnt-qr-theme') || localStorage.getItem('cnt-theme'); }catch(e){}
+  apply(saved === 'light' ? 'light' : 'dark');
 })();
 </script>
 <link rel="icon" type="image/svg+xml" href="images/favicon.svg">

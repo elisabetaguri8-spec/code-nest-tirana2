@@ -23,8 +23,7 @@
 (function(){
   var root=document.documentElement, meta=document.getElementById("stubThemeColor"), saved=null;
   try{ saved=localStorage.getItem("cnt-theme"); }catch(e){}
-  var light = saved ? (saved==="light")
-                   : !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches);
+  var light = (saved === "light");
   root.classList.remove("light","dark");
   root.classList.add(light ? "light" : "dark");
   root.setAttribute("data-theme", light ? "light" : "dark");
