@@ -12,10 +12,24 @@
 <link rel="canonical" href="https://elisabetaguri8-spec.github.io/code-nest-tirana2/#reviews">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <!-- The reviews now live on the main page. This page only exists so old
-     links (/images/reviews.html) keep working. -->
-<meta http-equiv="refresh" content="0; url=../#reviews">
-<noscript><meta http-equiv="refresh" content="0; url=../#reviews"></noscript>
-<script>location.replace("../#reviews");</script>
+     links (/images/reviews.html) keep working.
+
+     !!  DO NOT UPLOAD THIS FILE TO THE SITE ROOT  !!
+     This is a REDIRECT STUB. If it is ever placed at /index.html the whole
+     homepage breaks, because it would redirect to "../" - a folder above
+     the site. Upload files from your computer with git, never with the
+     "Add files via upload" button on github.com. -->
+<script>
+/* Redirect ONLY when this page really lives in /images/.
+   The meta refresh is written by the script so it cannot fire in the
+   wrong place if the file is ever uploaded to the site root. */
+(function(){
+  if(/\/images\//i.test(location.pathname)){
+    document.write('<meta http-equiv="refresh" content="0; url=../#reviews">');
+    location.replace("../#reviews");
+  }
+})();
+</script>
 <script>
 /* Pick the theme BEFORE the first paint.
    "only" in color-scheme (see the stylesheet) forbids the browser from
