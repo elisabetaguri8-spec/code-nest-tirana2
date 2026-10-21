@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="sq" class="dark">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 <!-- "dark light" so Android WebView honours prefers-color-scheme instead of
      inverting the page. Keep in sync with :root{color-scheme} below. -->
 <meta name="color-scheme" content="dark light">
-<title>Reviews â€” Code Nest Tirana</title>
+<title>Reviews — Code Nest Tirana</title>
 <link rel="canonical" href="https://elisabetaguri8-spec.github.io/code-nest-tirana2/#reviews">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <!-- The reviews now live on the main page. This page only exists so old
@@ -31,16 +31,19 @@
 })();
 </script>
 <script>
-/* Pick the theme BEFORE the first paint.
-   "only" in color-scheme (see the stylesheet) forbids the browser from
-   force-darkening / inverting the page, so this page looks the same in a
-   QR-code browser with forced dark mode as everywhere else. */
+/* Pick the theme BEFORE the first paint - the same rule as the main site:
+   follow the phone/system theme, unless the visitor saved a choice. */
 (function(){
   var root=document.documentElement, meta=document.getElementById("stubThemeColor"), saved=null;
   try{ saved=localStorage.getItem("cnt-theme"); }catch(e){}
-  /* Dark by default on every device, exactly like the main site, so the
-     page looks the same everywhere it is opened. */
-  var light = (saved === "light");
+  if(saved===null||saved===undefined){
+    try{
+      var cm=("; "+document.cookie).match(/; ?cnt-theme=(light|dark)/);
+      if(cm) saved=cm[1];
+    }catch(e){}
+  }
+  var systemLight = !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches);
+  var light = saved ? (saved==="light") : systemLight;
   root.classList.remove("light","dark");
   root.classList.add(light ? "light" : "dark");
   root.setAttribute("data-theme", light ? "light" : "dark");
@@ -98,9 +101,9 @@
 <body>
   <div class="box">
     <span class="mark">CN</span>
-    <h1>Reviews â€” Code Nest Tirana</h1>
-    <p>Seksioni i review-ve tani ndodhet nÃ« faqen kryesore.</p>
-    <a href="../#reviews">Shfaq review-tÃ«</a>
+    <h1>Reviews — Code Nest Tirana</h1>
+    <p>Seksioni i review-ve tani ndodhet në faqen kryesore.</p>
+    <a href="../#reviews">Shfaq review-të</a>
   </div>
 </body>
 </html>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!-- class="dark" is the fallback for visitors without JavaScript;
      the script in <head> swaps it for "light" when the phone/system
      (or the saved preference) asks for the light theme -->
@@ -6,8 +6,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="description" content="ShÃ«rbime profesionale pÃ«r krijim websitesh, editim videosh, karta biznesi dhe fletushka informuese.">
-<meta name="keywords" content="website, marketing, video editing, karta biznesi, fletushka, ShqipÃ«ri">
+<meta name="description" content="Shërbime profesionale për krijim websitesh, editim videosh, karta biznesi dhe fletushka informuese.">
+<meta name="keywords" content="website, marketing, video editing, karta biznesi, fletushka, Shqipëri">
 <meta name="author" content="Code Nest Tirana">
 <meta name="theme-color" content="#050b1a" id="themeColorMeta">
 <!-- "dark light" (NOT "light dark"): Android WebView's default mode only honours the
@@ -17,7 +17,7 @@
      Keep this in sync with :root{color-scheme} in the stylesheet. -->
 <meta name="color-scheme" content="dark light">
 <meta name="google-site-verification" content="fA_9FSEQ1gjiVQi68hGGw6-mw8vn9Re9OgTd4uUmy4g" />
-<title>Code Nest Tirana | Zgjidhje Profesionale pÃ«r Biznesin tuaj</title>
+<title>Code Nest Tirana | Zgjidhje Profesionale për Biznesin tuaj</title>
 <link rel="canonical" href="https://elisabetaguri8-spec.github.io/code-nest-tirana2/">
 <link rel="alternate" hreflang="sq" href="https://elisabetaguri8-spec.github.io/code-nest-tirana2/">
 <link rel="alternate" hreflang="x-default" href="https://elisabetaguri8-spec.github.io/code-nest-tirana2/">
@@ -26,15 +26,15 @@
 <meta property="og:url" content="https://elisabetaguri8-spec.github.io/code-nest-tirana2/">
 <meta property="og:site_name" content="Code Nest Tirana">
 <meta property="og:locale" content="sq_AL">
-<meta property="og:title" content="Code Nest Tirana | Zgjidhje Profesionale pÃ«r Biznesin tuaj">
-<meta property="og:description" content="ShÃ«rbime profesionale pÃ«r krijim websitesh, editim videosh, karta biznesi dhe fletushka informuese.">
+<meta property="og:title" content="Code Nest Tirana | Zgjidhje Profesionale për Biznesin tuaj">
+<meta property="og:description" content="Shërbime profesionale për krijim websitesh, editim videosh, karta biznesi dhe fletushka informuese.">
 <meta property="og:image" content="https://elisabetaguri8-spec.github.io/code-nest-tirana2/images/og-cover.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Code Nest Tirana â€” Zgjidhje Profesionale pÃ«r Biznesin tuaj">
+<meta property="og:image:alt" content="Code Nest Tirana — Zgjidhje Profesionale për Biznesin tuaj">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Code Nest Tirana | Zgjidhje Profesionale pÃ«r Biznesin tuaj">
-<meta name="twitter:description" content="ShÃ«rbime profesionale pÃ«r krijim websitesh, editim videosh, karta biznesi dhe fletushka informuese.">
+<meta name="twitter:title" content="Code Nest Tirana | Zgjidhje Profesionale për Biznesin tuaj">
+<meta name="twitter:description" content="Shërbime profesionale për krijim websitesh, editim videosh, karta biznesi dhe fletushka informuese.">
 <meta name="twitter:image" content="https://elisabetaguri8-spec.github.io/code-nest-tirana2/images/og-cover.jpg">
 <link rel="icon" type="image/svg+xml" sizes="any" href="images/favicon.svg?v=4">
 <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png?v=4">
@@ -95,47 +95,29 @@
        and, when a selector in a list is invalid, the WHOLE rule is dropped -
        which left the page half light / half dark.
        The switch in the header is the only thing that changes the theme,
-       and that choice is remembered (localStorage, with a cookie as a
-       fallback for WebViews that block storage). */
+       and that choice is remembered in localStorage. */
     var KEY="cnt-theme",
         meta=document.getElementById("themeColorMeta"),
         saved=null;
     try{ saved=localStorage.getItem(KEY); }catch(e){}
+    /* some in-app WebViews block localStorage - use a cookie there */
     if(saved===null||saved===undefined){
-      /* some in-app WebViews block localStorage - use a cookie there */
       try{
         var cm=("; "+document.cookie).match(/; ?cnt-theme=(light|dark)/);
         if(cm) saved=cm[1];
       }catch(e){}
     }
-    /* dark unless the visitor explicitly chose light */
-    var light = (saved === "light");
+    var systemLight = !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches);
+    var light = saved ? (saved==="light") : systemLight;
     root.classList.remove("light","dark");
     root.classList.add(light ? "light" : "dark");
     root.setAttribute("data-theme", light ? "light" : "dark");
     if(forcedDark) root.classList.add("auto-dark");
     if(meta) meta.setAttribute("content", light ? "#f3f6fc" : "#050b1a");
-
-    /* 1b. Tell the USER AGENT which scheme is really in use - and tell it
-       that it is not allowed to override it.
-       The <meta name="color-scheme"> is the document-level declaration a
-       forced-dark browser (Samsung Internet "Night mode", Android WebView
-       "user-agent darkening", Chrome Auto Dark Theme) looks at FIRST. If it
-       still says "dark light" the browser may decide on its own to render
-       the page dark - that is what made the light theme look dark on the
-       phone. So it is kept in sync with the theme that is really painted:
-         light theme -> "only light"  (the browser must not darken it)
-         dark theme  -> "only dark"   (the browser must not invert it)
-       "only" is the documented way of forbidding the UA to override the
-       color scheme (MDN, color-scheme). */
+    /* tell the UA which scheme is really in use and forbid it to override it */
     var schemeMeta=document.querySelector('meta[name="color-scheme"]');
     if(schemeMeta) schemeMeta.setAttribute("content", light ? "only light" : "dark");
-
-    /* 1c. Put the visible switch in the right position from the very first
-       paint. Some browsers restore the checkbox state of a reloaded page
-       AFTER the scripts have run - without this the switch would show the
-       old position while the page is painted in the new theme, and the
-       first tap would then do the opposite of what the visitor expects. */
+    /* put the visible switch in the right position before the first paint */
     var tbox=document.getElementById("themeToggleBox");
     if(tbox) tbox.checked = light;
 
@@ -492,23 +474,16 @@ html.light .lang-toggle button.on{color:#fff}
 /* line 0: small, wide-tracked, cyan */
 .hero-eyebrow{display:block;margin-bottom:28px;font-size:15px;font-weight:500;letter-spacing:5px;color:var(--blue-2, #19b6ff);text-shadow:0 0 18px rgba(25,182,255,.55)}
 /* line 1: huge, heavy sans, silver.
-   IMPORTANT - why a plain colour instead of a gradient:
-   "background-clip:text + color:transparent" CANNOT be re-mapped by a
-   browser that darkens the page on its own (Samsung Night mode, Android
-   WebView user-agent darkening, Chrome Auto Dark Theme). Those engines
-   re-map normal colours, but a gradient clipped to the text is invisible
-   to them: the background gets darker while the heading keeps its old
-   colours - and a dark heading then disappears on a dark background.
-   That was the "BÃ«jeni biznesin tuaj" line in the screenshot.
-   Plain colours are always re-mapped correctly, so the page looks the same
-   in every browser. The depth comes from text-shadow, not from a clip. */
+   The gradient clipped to the text is the original look of the site and it
+   is kept. On browsers that darken the page themselves the "html.auto-dark"
+   rules further down swap it for a plain colour, because a gradient clipped
+   to the text cannot be re-mapped by those engines - the heading would end
+   up dark on a dark background.
+   padding-bottom keeps the descender of "j" from being clipped. */
 .hero-text h1{margin-bottom:34px;line-height:1.12;font-weight:800;overflow-wrap:break-word;word-wrap:break-word;white-space:normal}
-.hero-text h1 .l1{display:block;font-size:clamp(34px,10vw,96px);letter-spacing:-3.5px;font-weight:800;line-height:1.1;padding:0 .04em .16em;color:var(--ink-h,#eef3fb);text-shadow:0 6px 30px rgba(3,10,30,.55)}
-/* line 2: elegant italic serif, electric blue
-   (padding avoids clipping italic overhang + descenders).
-   text-shadow instead of filter:drop-shadow() - a filter is inverted by the
-   forced-dark engines, a shadow colour is re-mapped like every other colour. */
-.hero-text h1 .l2{display:block;margin-top:0;font-family:var(--font-display, "Playfair Display",Georgia,"Times New Roman",serif)!important;font-style:italic;font-size:clamp(30px,8vw,80px);letter-spacing:-1px;font-weight:500;line-height:1.2;padding:0 .12em .14em .04em;color:var(--ink-a,#19b6ff);text-shadow:0 0 26px rgba(30,123,255,.45)}
+.hero-text h1 .l1{display:block;font-size:clamp(34px,10vw,96px);letter-spacing:-3.5px;font-weight:800;line-height:1.1;padding:0 .04em .16em;background:linear-gradient(180deg,#fff 0%,#c3cddd 55%,#8794ad 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* line 2: elegant italic serif, electric blue (padding avoids clipping italic overhang + descenders) */
+.hero-text h1 .l2{display:block;margin-top:0;font-family:var(--font-display, "Playfair Display",Georgia,"Times New Roman",serif)!important;font-style:italic;font-size:clamp(30px,8vw,80px);letter-spacing:-1px;font-weight:500;line-height:1.2;padding:0 .12em .14em .04em;background:linear-gradient(95deg,#1e7bff 0%,#19b6ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-filter:drop-shadow(0 0 22px rgba(30,123,255,.45));filter:drop-shadow(0 0 22px rgba(30,123,255,.45))}
 /* line 3: light-weight, muted */
 .hero-text p{font-size:clamp(17px,2vw,21px);font-weight:300;letter-spacing:.2px;color:var(--muted, #93a0b8);max-width:620px;margin:0 auto 42px}
 .hero-buttons,.cta-buttons{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
@@ -521,13 +496,13 @@ html.light .lang-toggle button.on{color:#fff}
 .ai-tag{display:inline-block;margin-bottom:22px;font-size:14px;font-weight:500;letter-spacing:4px;color:#19b6ff;text-shadow:0 0 16px rgba(25,182,255,.55)}
 /* static label: no animation, no transform, never moves */
 .ai-label{font-size:clamp(28px,3.7vw,48px);font-weight:700;line-height:1.18;letter-spacing:-1.2px;color:#e8edf6}
-.ai-label em{font-style:normal;color:var(--ink-a,#19b6ff);padding-bottom:.08em}
+.ai-label em{font-style:normal;background:linear-gradient(95deg,#1e7bff,#19b6ff);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.08em}
 .ai-visual{position:relative;width:100%;max-width:540px;aspect-ratio:1/1;margin-left:auto}
 
 /* ===== Section titles ===== */
 .section-title{text-align:center;max-width:720px;margin:0 auto 58px}
 .section-title span{display:inline-block;color:var(--blue-2, #19b6ff);font-size:15px;font-weight:600;margin-bottom:6px}
-.section-title h2{font-size:clamp(34px,5vw,50px);line-height:1.15;letter-spacing:-1.8px;font-weight:700;margin:6px 0 16px;padding-bottom:.12em;color:var(--ink-h,#eef3fb);text-shadow:0 4px 26px rgba(3,10,30,.45)}
+.section-title h2{font-size:clamp(34px,5vw,50px);line-height:1.15;letter-spacing:-1.8px;font-weight:700;margin:6px 0 16px;padding-bottom:.12em;background:linear-gradient(180deg,#fff,#aeb9cf);-webkit-background-clip:text;background-clip:text;color:transparent}
 .section-title p{color:var(--muted, #93a0b8);font-size:17px}
 .services,.contact{background:linear-gradient(180deg,var(--bg-2, #08122a),#06101f)}
 .reviews{background:linear-gradient(180deg,#06101f,var(--bg-2, #08122a))}
@@ -552,12 +527,10 @@ html.light .lang-toggle button.on{color:#fff}
 .about-box p{color:#b5c0d6;position:relative;z-index:1}
 .about-list{list-style:none;margin-top:28px;position:relative;z-index:1}
 .about-list li{margin:14px 0;color:var(--text, #e8edf6);font-weight:500}
-.about-list li:before{content:"âœ“";display:inline-grid;place-items:center;width:25px;height:25px;margin-right:12px;border-radius:50%;background:rgba(30,123,255,.18);border:1px solid rgba(30,123,255,.5);color:var(--blue-2, #19b6ff);font-size:13px;font-weight:800;box-shadow:0 0 12px rgba(30,123,255,.3)}
-/* "IdetÃ« tuaja, puna jonÃ«." : more line-height + bottom padding so the comma and the "j" descenders
-   are not cut off; display:block keeps the line box tall enough.
-   Plain colour (not a gradient clipped to the text) so the forced-dark
-   engines of Samsung / Android WebView / Chrome can re-map it correctly. */
-.about-text h2{display:block;font-size:clamp(36px,4.6vw,50px);line-height:1.18;letter-spacing:-1.6px;font-weight:700;margin-bottom:22px;padding:0 .06em .16em 0;color:var(--ink-h,#eef3fb);text-shadow:0 4px 26px rgba(3,10,30,.45)}
+.about-list li:before{content:"✓";display:inline-grid;place-items:center;width:25px;height:25px;margin-right:12px;border-radius:50%;background:rgba(30,123,255,.18);border:1px solid rgba(30,123,255,.5);color:var(--blue-2, #19b6ff);font-size:13px;font-weight:800;box-shadow:0 0 12px rgba(30,123,255,.3)}
+/* "Idetë tuaja, puna jonë." : more line-height + bottom padding so the comma and the "j" descenders
+   are not cut off by background-clip:text; display:block keeps the gradient box tall enough */
+.about-text h2{display:block;font-size:clamp(36px,4.6vw,50px);line-height:1.18;letter-spacing:-1.6px;font-weight:700;margin-bottom:22px;padding:0 .06em .16em 0;background:linear-gradient(180deg,#fff,#a9b5cc);-webkit-background-clip:text;background-clip:text;color:transparent}
 .about-text p{color:var(--muted, #93a0b8);font-size:17px;margin-bottom:18px}
 .about-text .btn{margin-top:10px}
 
@@ -778,7 +751,8 @@ html.light .hero{background:
    radial-gradient(ellipse 45% 50% at 5% 95%,rgba(25,182,255,.16),transparent 70%),
    linear-gradient(180deg,#f7f9fe 0%,#e6edf9 100%)}
 html.light .hero-eyebrow{text-shadow:none}
-/* the headings use --ink-h / --ink-a, so they follow the theme automatically */
+html.light .hero-text h1 .l1{background:linear-gradient(180deg,#0b1736 0%,#243459 60%,#3c4f7a 100%);-webkit-background-clip:text;background-clip:text}
+html.light .hero-text h1 .l2{-webkit-filter:drop-shadow(0 0 14px rgba(30,123,255,.2));filter:drop-shadow(0 0 14px rgba(30,123,255,.2))}
 
 /* AI animation section in light mode */
 html.light .ai-showcase{background:linear-gradient(180deg,#eaf0fb,#e2eaf8);border-color:var(--line, rgba(148,163,184,.14))}
@@ -790,6 +764,8 @@ html.light .ai-label{color:var(--text, #e8edf6)}
    (the headings themselves use --ink-h, they need no extra rule here) */
 html.light .services,html.light .contact{background:linear-gradient(180deg,var(--bg-2, #08122a),#dde7f6)}
 html.light .reviews{background:linear-gradient(180deg,#dde7f6,var(--bg-2, #08122a))}
+html.light .section-title h2{background:linear-gradient(180deg,#0b1736,#3a4c75);-webkit-background-clip:text;background-clip:text}
+html.light .about-text h2{background:linear-gradient(180deg,#0b1736,#3a4c75);-webkit-background-clip:text;background-clip:text}
 
 /* cards */
 html.light .service-card,
@@ -862,11 +838,12 @@ html.embedded.light header,html.embedded.light header.scrolled{
 @supports not (aspect-ratio:1/1){
   .ai-visual{height:0;padding-bottom:100%}
 }
-/* NOTE: the old "safety net for WebViews without background-clip:text" is
-   gone on purpose. The headings no longer use the gradient-clipped-to-text
-   trick, so there is no "color:transparent" left that could make a
-   heading invisible. Every heading is a normal colour now, which every
-   browser - including the ones that darken the page - can re-map. */
+/* Same safety net for WebViews without background-clip:text -
+   without it the gradient headings would be invisible (color:transparent) */
+@supports not ((-webkit-background-clip:text) or (background-clip:text)){
+  .hero-text h1 .l1,.hero-text h1 .l2,.section-title h2,.about-text h2{background:none;color:var(--silver, #d3dae6)}
+  html.light .hero-text h1 .l1,html.light .hero-text h1 .l2,html.light .section-title h2,html.light .about-text h2{color:var(--text, #0f1a33)}
+}
 
 /* =====================================================================
    FORCED DARK MODE (the browser darkens the page by itself)
@@ -899,6 +876,19 @@ html.auto-dark header,html.auto-dark header.scrolled{
 html.auto-dark.light header,html.auto-dark.light header.scrolled{
   background:rgba(243,246,252,.97)}
 html.auto-dark .stars{text-shadow:none}
+/* THE HEADINGS BECOME PLAIN COLOURS HERE.
+   A gradient that is clipped to the text cannot be re-mapped by a browser
+   that darkens the page on its own: the background gets darker while the
+   gradient keeps its original colours, and a dark heading then vanishes
+   on a dark background (that was the "Bëjeni biznesin tuaj" line on the
+   phone). A plain colour is re-mapped like every other colour, so the
+   heading stays readable. --ink-h / --ink-a carry the right value for
+   whichever theme is active. */
+html.auto-dark .hero-text h1 .l1{background:none;color:var(--ink-h,#0f1a33);-webkit-text-fill-color:currentColor;text-fill-color:currentColor}
+html.auto-dark .hero-text h1 .l2{background:none;color:var(--ink-a,#0a3fb8);-webkit-text-fill-color:currentColor;text-fill-color:currentColor;-webkit-filter:none;filter:none}
+html.auto-dark .ai-label em{background:none;color:var(--ink-a,#0a3fb8);-webkit-text-fill-color:currentColor;text-fill-color:currentColor}
+html.auto-dark .section-title h2{background:none;color:var(--ink-h,#0f1a33);-webkit-text-fill-color:currentColor;text-fill-color:currentColor}
+html.auto-dark .about-text h2{background:none;color:var(--ink-h,#0f1a33);-webkit-text-fill-color:currentColor;text-fill-color:currentColor}
 /* one flat, tinted shadow for every elevated element - no black blobs */
 html.auto-dark .service-card,
 html.auto-dark .review-card,
@@ -1099,12 +1089,12 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
     </a>
 
     <div class="nav-right">
-      <!-- Order: Home, AI, ShÃ«rbimet tona, Rreth nesh, Reviews, Provo falas, Kontakt -->
+      <!-- Order: Home, AI, Shërbimet tona, Rreth nesh, Reviews, Provo falas, Kontakt -->
       <input type="checkbox" class="menu-checkbox" id="menuToggleBox" aria-label="Menu">
       <ul class="nav-links" id="navLinks">
         <li><a href="#home">Home</a></li>
         <li><a href="#ai" title="Animacioni" translate="no">AI</a></li>
-        <li><a href="#sherbimet">ShÃ«rbimet tona</a></li>
+        <li><a href="#sherbimet">Shërbimet tona</a></li>
         <li><a href="#rreth-nesh">Rreth nesh</a></li>
         <li><a href="#reviews">Reviews</a></li>
         <li><a href="#provo-falas">Provo falas</a></li>
@@ -1139,17 +1129,17 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
   <div class="container hero-content">
 
     <div class="hero-text fade-in">
-      <span class="hero-eyebrow">Zgjidhje digjitale pÃ«r biznesin tuaj</span>
+      <span class="hero-eyebrow">Zgjidhje digjitale për biznesin tuaj</span>
 
       <h1>
-        <span class="l1">BÃ«jeni biznesin tuaj</span>
-        <span class="l2">mÃ« profesional.</span>
+        <span class="l1">Bëjeni biznesin tuaj</span>
+        <span class="l2">më profesional.</span>
       </h1>
 
-      <p>Ne krijojmÃ« prezencÃ«n digjitale qÃ« biznesi juaj meriton â€” nga website moderne deri te materialet profesionale tÃ« marketingut.</p>
+      <p>Ne krijojmë prezencën digjitale që biznesi juaj meriton — nga website moderne deri te materialet profesionale të marketingut.</p>
 
       <div class="hero-buttons">
-        <a href="#sherbimet" class="btn btn-primary">Shiko shÃ«rbimet</a>
+        <a href="#sherbimet" class="btn btn-primary">Shiko shërbimet</a>
         <a href="#kontakt" class="btn btn-secondary">Na kontakto</a>
       </div>
     </div>
@@ -1158,12 +1148,12 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
 </section>
 
 <!-- AI SHOWCASE: static text on the left, quantum particle sphere on the right (reachable from nav: "AI") -->
-<section class="ai-showcase" id="ai" aria-label="Website me inteligjencÃ« artificiale">
+<section class="ai-showcase" id="ai" aria-label="Website me inteligjencë artificiale">
   <div class="container ai-grid">
 
     <div class="ai-copy">
-      <span class="ai-tag" translate="no">WEB Ã— AI</span>
-      <h2 class="ai-label">Ne ndÃ«rtojmÃ« website me performancÃ« tÃ« lartÃ«, tÃ« fuqizuara nga integrimi me <em>inteligjencÃ«n artificiale</em></h2>
+      <span class="ai-tag" translate="no">WEB × AI</span>
+      <h2 class="ai-label">Ne ndërtojmë website me performancë të lartë, të fuqizuara nga integrimi me <em>inteligjencën artificiale</em></h2>
     </div>
 
     <div class="ai-visual" aria-hidden="true">
@@ -1178,9 +1168,9 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
   <div class="container">
 
     <div class="section-title fade-in">
-      <span>Ã‡farÃ« bÃ«jmÃ«</span>
-      <h2>ShÃ«rbimet tona</h2>
-      <p>GjithÃ§ka qÃ« ju nevojitet pÃ«r ta paraqitur biznesin tuaj nÃ« mÃ«nyrÃ« profesionale.</p>
+      <span>Çfarë bëjmë</span>
+      <h2>Shërbimet tona</h2>
+      <p>Gjithçka që ju nevojitet për ta paraqitur biznesin tuaj në mënyrë profesionale.</p>
     </div>
 
     <div class="services-grid">
@@ -1190,7 +1180,7 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
           <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/><path d="m10 8-2 2 2 2M14 8l2 2-2 2"/></svg>
         </div>
         <h3>Krijim Website</h3>
-        <p>KrijojmÃ« website moderne, tÃ« shpejta, responsive dhe tÃ« pÃ«rshtatura me identitetin e biznesit tuaj.</p>
+        <p>Krijojmë website moderne, të shpejta, responsive dhe të përshtatura me identitetin e biznesit tuaj.</p>
       </div>
 
       <div class="service-card fade-in">
@@ -1198,7 +1188,7 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
           <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9.5 5 2.5-5 2.5z"/></svg>
         </div>
         <h3>Editim Videosh</h3>
-        <p>EditojmÃ« video profesionale pÃ«r marketing, rrjete sociale, reklama dhe promovimin e biznesit tuaj.</p>
+        <p>Editojmë video profesionale për marketing, rrjete sociale, reklama dhe promovimin e biznesit tuaj.</p>
       </div>
 
       <div class="service-card fade-in">
@@ -1206,7 +1196,7 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
           <svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2"/><circle cx="8.5" cy="11" r="1.8"/><path d="M6 16c.6-1.6 1.6-2.2 2.5-2.2S10.4 14.4 11 16M14 10h4.5M14 13h3"/></svg>
         </div>
         <h3>Karta Biznesi</h3>
-        <p>DizajnojmÃ« karta biznesi moderne qÃ« ndihmojnÃ« klientÃ«t tuaj tÃ« mbajnÃ« mend markÃ«n dhe kontaktet tuaja.</p>
+        <p>Dizajnojmë karta biznesi moderne që ndihmojnë klientët tuaj të mbajnë mend markën dhe kontaktet tuaja.</p>
       </div>
 
       <div class="service-card fade-in">
@@ -1214,7 +1204,7 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
           <svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 15.5h7M9 19h4"/></svg>
         </div>
         <h3>Fletushka</h3>
-        <p>KrijojmÃ« fletushka informuese dhe reklamuese pÃ«r tÃ« prezantuar ofertat dhe shÃ«rbimet e biznesit tuaj.</p>
+        <p>Krijojmë fletushka informuese dhe reklamuese për të prezantuar ofertat dhe shërbimet e biznesit tuaj.</p>
       </div>
 
     </div>
@@ -1226,22 +1216,22 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
   <div class="container about-grid">
 
     <div class="about-box fade-in">
-      <h3>NjÃ« partner pÃ«r biznesin tuaj.</h3>
-      <p>QÃ«llimi ynÃ« Ã«shtÃ« tÃ« ndihmojmÃ« bizneset tÃ« kenÃ« njÃ« prezencÃ« mÃ« tÃ« fortÃ« dhe profesionale online dhe offline.</p>
+      <h3>Një partner për biznesin tuaj.</h3>
+      <p>Qëllimi ynë është të ndihmojmë bizneset të kenë një prezencë më të fortë dhe profesionale online dhe offline.</p>
 
       <ul class="about-list">
         <li>Dizajn modern</li>
-        <li>Zgjidhje tÃ« pÃ«rshtatura</li>
-        <li>Komunikim i drejtpÃ«rdrejtÃ«</li>
+        <li>Zgjidhje të përshtatura</li>
+        <li>Komunikim i drejtpërdrejtë</li>
         <li>Fokus tek biznesi juaj</li>
       </ul>
     </div>
 
     <div class="about-text fade-in">
-      <h2>IdetÃ« tuaja, puna jonÃ«.</h2>
-      <p>Ã‡do biznes ka njÃ« histori. Ne ju ndihmojmÃ« ta tregoni atÃ« nÃ« mÃ«nyrÃ«n e duhur.</p>
-      <p>Nga njÃ« website i thjeshtÃ« deri te materialet e marketingut, krijojmÃ« zgjidhje qÃ« duken profesionale dhe i pÃ«rshtaten nevojave tuaja.</p>
-      <a href="#kontakt" class="btn btn-primary">Flasim pÃ«r projektin tuaj</a>
+      <h2>Idetë tuaja, puna jonë.</h2>
+      <p>Çdo biznes ka një histori. Ne ju ndihmojmë ta tregoni atë në mënyrën e duhur.</p>
+      <p>Nga një website i thjeshtë deri te materialet e marketingut, krijojmë zgjidhje që duken profesionale dhe i përshtaten nevojave tuaja.</p>
+      <a href="#kontakt" class="btn btn-primary">Flasim për projektin tuaj</a>
     </div>
 
   </div>
@@ -1252,16 +1242,16 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
   <div class="container">
 
     <div class="section-title fade-in">
-      <span>KlientÃ«t tanÃ«</span>
-      <h2>Ã‡farÃ« thonÃ« klientÃ«t</h2>
-      <p>VlerÃ«simet e klientÃ«ve qÃ« kanÃ« punuar me ne.</p>
+      <span>Klientët tanë</span>
+      <h2>Çfarë thonë klientët</h2>
+      <p>Vlerësimet e klientëve që kanë punuar me ne.</p>
     </div>
 
     <div class="reviews-grid">
 
       <div class="review-card fade-in">
         <div class="stars"><span class="stars-static" role="img" aria-label="5 nga 5 yje"><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg></span></div>
-        <p>"Website-i doli shumÃ« profesional dhe shumÃ« mÃ« i bukur nga sa e imagjinoja."</p>
+        <p>"Website-i doli shumë profesional dhe shumë më i bukur nga sa e imagjinoja."</p>
         <div class="review-author">
           <div class="avatar">A</div>
           <div><strong translate="no">Ardit</strong><small>Klient</small></div>
@@ -1270,7 +1260,7 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
 
       <div class="review-card fade-in">
         <div class="stars"><span class="stars-static" role="img" aria-label="5 nga 5 yje"><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg></span></div>
-        <p>"ShÃ«rbim shumÃ« i mirÃ« dhe komunikim korrekt. Videot pÃ«r marketingun tonÃ« dolÃ«n shumÃ« mirÃ«."</p>
+        <p>"Shërbim shumë i mirë dhe komunikim korrekt. Videot për marketingun tonë dolën shumë mirë."</p>
         <div class="review-author">
           <div class="avatar">E</div>
           <div><strong translate="no">Elona</strong><small>Klientja</small></div>
@@ -1279,7 +1269,7 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
 
       <div class="review-card fade-in">
         <div class="stars"><span class="stars-static" role="img" aria-label="5 nga 5 yje"><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg></span></div>
-        <p>"Karta e biznesit dhe fletushkat ishin moderne dhe profesionale. ShumÃ« i kÃ«naqur!"</p>
+        <p>"Karta e biznesit dhe fletushkat ishin moderne dhe profesionale. Shumë i kënaqur!"</p>
         <div class="review-author">
           <div class="avatar">M</div>
           <div><strong translate="no">Martin</strong><small>Klient</small></div>
@@ -1304,7 +1294,7 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
                 <strong class="comment-name">Ardit</strong>
                 <span class="comment-time">Klient i verifikuar</span>
               </div>
-              <p class="comment-text">Website-i doli shumÃ« profesional dhe shumÃ« mÃ« i bukur nga sa e imagjinoja.</p>
+              <p class="comment-text">Website-i doli shumë profesional dhe shumë më i bukur nga sa e imagjinoja.</p>
             </div>
           </article>
         </li>
@@ -1316,7 +1306,7 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
                 <strong class="comment-name">Elona</strong>
                 <span class="comment-time">Kliente e verifikuar</span>
               </div>
-              <p class="comment-text">ShÃ«rbim shumÃ« i mirÃ« dhe komunikim korrekt. Videot pÃ«r marketingun tonÃ« dolÃ«n shumÃ« mirÃ«.</p>
+              <p class="comment-text">Shërbim shumë i mirë dhe komunikim korrekt. Videot për marketingun tonë dolën shumë mirë.</p>
             </div>
           </article>
         </li>
@@ -1328,7 +1318,7 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
                 <strong class="comment-name">Martin</strong>
                 <span class="comment-time">Klient i verifikuar</span>
               </div>
-              <p class="comment-text">Karta e biznesit dhe fletushkat ishin moderne dhe profesionale. ShumÃ« i kÃ«naqur!</p>
+              <p class="comment-text">Karta e biznesit dhe fletushkat ishin moderne dhe profesionale. Shumë i kënaqur!</p>
             </div>
           </article>
         </li>
@@ -1336,8 +1326,8 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
 
       <div class="comment-form">
         <h4>Keni punuar me ne?</h4>
-        <p style="color:var(--muted, #93a0b8);margin-bottom:18px">DÃ«rgoni vlerÃ«simin tuaj nÃ« WhatsApp dhe do ta shtojmÃ« kÃ«tu.</p>
-        <a class="btn btn-primary" href="https://wa.me/355698543275?text=Punova%20me%20Code%20Nest%20Tirana%20dhe%20dua%20te%20le%20nje%20review." target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-send"/></svg> Lini njÃ« review nÃ« WhatsApp</a>
+        <p style="color:var(--muted, #93a0b8);margin-bottom:18px">Dërgoni vlerësimin tuaj në WhatsApp dhe do ta shtojmë këtu.</p>
+        <a class="btn btn-primary" href="https://wa.me/355698543275?text=Punova%20me%20Code%20Nest%20Tirana%20dhe%20dua%20te%20le%20nje%20review." target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-send"/></svg> Lini një review në WhatsApp</a>
       </div>
     </div>
 
@@ -1348,8 +1338,8 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
 <section class="cta">
   <div class="container">
     <div class="cta-box fade-in">
-      <h2>Gati ta Ã§oni biznesin mÃ« lart?</h2>
-      <p>Na kontaktoni sot dhe na tregoni Ã§farÃ« projekti keni nÃ« mendje.</p>
+      <h2>Gati ta çoni biznesin më lart?</h2>
+      <p>Na kontaktoni sot dhe na tregoni çfarë projekti keni në mendje.</p>
 
       <div class="cta-buttons">
         <a href="tel:+355698543275" class="btn btn-navy"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg> <span translate="no">069 854 3275</span></a>
@@ -1364,10 +1354,10 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
   <div class="container">
     <div class="free-trial-box fade-in">
       <div class="free-trial-content">
-        <span class="free-trial-badge"><svg class="ico" aria-hidden="true"><use href="#i-gift"/></svg> OfertÃ« speciale</span>
+        <span class="free-trial-badge"><svg class="ico" aria-hidden="true"><use href="#i-gift"/></svg> Ofertë speciale</span>
         <h2>Provo falas!</h2>
-        <p>DÃ«shiron tÃ« provosh shÃ«rbimet tona? Na dÃ«rgo njÃ« mesazh dhe na trego Ã§farÃ« tÃ« nevojitet. Le ta fillojmÃ« bashkÃ«!</p>
-        <a href="#kontakt" class="btn btn-white"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg> Na dÃ«rgo njÃ« mesazh</a>
+        <p>Dëshiron të provosh shërbimet tona? Na dërgo një mesazh dhe na trego çfarë të nevojitet. Le ta fillojmë bashkë!</p>
+        <a href="#kontakt" class="btn btn-white"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg> Na dërgo një mesazh</a>
       </div>
     </div>
   </div>
@@ -1379,15 +1369,15 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
 
     <div class="section-title fade-in">
       <span>Kontakt</span>
-      <h2>Le tÃ« flasim</h2>
-      <p>Keni njÃ« ide? Na kontaktoni dhe mund tÃ« diskutojmÃ« pÃ«r projektin tuaj.</p>
+      <h2>Le të flasim</h2>
+      <p>Keni një ide? Na kontaktoni dhe mund të diskutojmë për projektin tuaj.</p>
     </div>
 
     <div class="contact-grid">
 
       <div class="contact-info fade-in">
-        <h3>Na gjeni kÃ«tu</h3>
-        <p>PÃ«r pyetje, oferta ose projekte tÃ« reja, mund tÃ« na kontaktoni direkt.</p>
+        <h3>Na gjeni këtu</h3>
+        <p>Për pyetje, oferta ose projekte të reja, mund të na kontaktoni direkt.</p>
 
         <div class="contact-item">
           <div class="contact-icon"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg></div>
@@ -1406,12 +1396,12 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
 
         <div class="contact-item">
           <div class="contact-icon"><svg class="ico" aria-hidden="true"><use href="#i-globe"/></svg></div>
-          <div><small>ShÃ«rbime</small><strong>Online &amp; Offline</strong></div>
+          <div><small>Shërbime</small><strong>Online &amp; Offline</strong></div>
         </div>
       </div>
 
       <div class="contact-form fade-in">
-        <h3>Na dÃ«rgo njÃ« mesazh</h3>
+        <h3>Na dërgo një mesazh</h3>
 
         <form action="https://wa.me/355698543275" method="get" target="_blank">
           <div class="form-group">
@@ -1419,7 +1409,7 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
             <textarea id="message" name="text" placeholder="Shkruani emrin, telefonin dhe detajet e projektit tuaj..." required></textarea>
           </div>
 
-          <button type="submit" class="btn btn-primary">DÃ«rgo mesazhin nÃ« WhatsApp</button>
+          <button type="submit" class="btn btn-primary">Dërgo mesazhin në WhatsApp</button>
         </form>
       </div>
 
@@ -1436,12 +1426,12 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
       <span class="logo-text" translate="no"><span>Code</span> <span class="logo-nest">Nest</span> <span class="logo-city">Tirana</span></span>
     </div>
 
-    <p>Â© 2026 <span translate="no">Code Nest Tirana</span>. TÃ« gjitha tÃ« drejtat e rezervuara.</p>
+    <p>© 2026 <span translate="no">Code Nest Tirana</span>. Të gjitha të drejtat e rezervuara.</p>
 
     <div class="footer-links">
       <a href="#home">Home</a>
       <a href="#ai" translate="no">AI</a>
-      <a href="#sherbimet">ShÃ«rbimet tona</a>
+      <a href="#sherbimet">Shërbimet tona</a>
       <a href="#rreth-nesh">Rreth nesh</a>
       <a href="#reviews">Reviews</a>
       <a href="#provo-falas">Provo falas</a>
@@ -1451,7 +1441,7 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
 </footer>
 
 <!-- FLOATING WHATSAPP -->
-<a href="https://wa.me/355698543275" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Na kontaktoni nÃ« WhatsApp"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg></a>
+<a href="https://wa.me/355698543275" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Na kontaktoni në WhatsApp"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg></a>
 
 <script>
 /* ===== Quantum / AI particle sphere (canvas) =====
@@ -1627,7 +1617,7 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
     { s: ".hero-eyebrow", en: "Digital solutions for your business" },
     { s: ".hero-text h1 .l1", en: "Make your business" },
     { s: ".hero-text h1 .l2", en: "more professional." },
-    { s: ".hero-text>p", en: "We create the digital presence your business deserves â€” from modern websites to professional marketing materials." },
+    { s: ".hero-text>p", en: "We create the digital presence your business deserves — from modern websites to professional marketing materials." },
     { s: '.hero-buttons a[href="#sherbimet"]', en: "View services" },
     { s: '.hero-buttons a[href="#kontakt"]', en: "Contact us" },
     { s: ".ai-label", parts: ["We build high-performance websites, powered by ", "artificial intelligence"] },
@@ -1688,7 +1678,7 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
     { s: ".contact-form h3", en: "Send us a message" },
     { s: '.contact-form label[for="message"]', en: "Your message" },
     { s: '.contact-form button[type="submit"]', en: "Send the message via WhatsApp" },
-    { s: ".footer-content>p", parts: ["Â© 2026 ", ". All rights reserved."] }
+    { s: ".footer-content>p", parts: ["© 2026 ", ". All rights reserved."] }
   ];
   var ATTRS = [
     { s: "#message", a: "placeholder", en: "Write your name, phone and project details..." },
@@ -1783,7 +1773,6 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
   var KEY="cnt-theme";
   var box=document.getElementById("themeToggleBox");
   var meta=document.getElementById("themeColorMeta");
-  var schemeMeta=document.querySelector('meta[name="color-scheme"]');
   var root=document.documentElement;
   if(!box) return;
   function apply(light, save){
@@ -1792,8 +1781,9 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
     root.setAttribute("data-theme", light ? "light" : "dark");
     box.checked=light;
     if(meta) meta.setAttribute("content", light ? "#f3f6fc" : "#050b1a");
-    /* keep the UA in sync: it must not darken or invert the page */
-    if(schemeMeta) schemeMeta.setAttribute("content", light ? "only light" : "dark");
+    /* tell the UA which scheme is really in use and forbid it to override it */
+    var sm=document.querySelector('meta[name="color-scheme"]');
+    if(sm) sm.setAttribute("content", light ? "only light" : "dark");
     /* keep the accessible name of the switch in sync with what it does */
     var lbl=document.querySelector(".theme-toggle");
     if(lbl) lbl.setAttribute("title", light ? "Switch to dark theme" : "Switch to light theme");
@@ -1812,8 +1802,20 @@ font{text-transform:inherit!important;font-variant:inherit!important;font-varian
       if(cm) saved=cm[1];
     }catch(e){}
   }
-  apply(saved === "light", false);
+  var mq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: light)") : null;
+  apply(saved ? (saved==="light") : !!(mq && mq.matches), false);
   box.addEventListener("change",function(){ apply(box.checked, true); });
+
+  /* follow the phone when the visitor has not made an explicit choice */
+  if(mq){
+    var onChange=function(e){
+      var s=null;
+      try{ s=localStorage.getItem(KEY); }catch(err){}
+      if(!s) apply(e.matches, false);
+    };
+    if(mq.addEventListener) mq.addEventListener("change",onChange);
+    else if(mq.addListener) mq.addListener(onChange);   /* older WebViews */
+  }
 })();
 </script>
 
