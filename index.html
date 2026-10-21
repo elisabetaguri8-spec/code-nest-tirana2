@@ -1,96 +1,1835 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!-- class="dark" is the fallback for visitors without JavaScript;
-     the script below swaps it for "light" when the phone/system
+     the script in <head> swaps it for "light" when the phone/system
      (or the saved preference) asks for the light theme -->
 <html lang="sq" class="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, follow">
-<meta name="theme-color" content="#050b1a" id="stubThemeColor">
-<!-- "dark light" so Android WebView honours prefers-color-scheme instead of
-     inverting the page. Keep in sync with :root{color-scheme} below. -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Shërbime profesionale për krijim websitesh, editim videosh, karta biznesi dhe fletushka informuese.">
+<meta name="keywords" content="website, marketing, video editing, karta biznesi, fletushka, Shqipëri">
+<meta name="author" content="Code Nest Tirana">
+<meta name="theme-color" content="#050b1a" id="themeColorMeta">
+<!-- "dark light" (NOT "light dark"): Android WebView's default mode only honours the
+     page's prefers-color-scheme when the meta tag declares BOTH schemes, and it reads
+     the FIRST one as the preferred one. Declaring "light dark" makes WebView treat the
+     document as light-only and apply "user-agent darkening" (it inverts the colours).
+     Keep this in sync with :root{color-scheme} in the stylesheet. -->
 <meta name="color-scheme" content="dark light">
-<title>Code Nest Tirana</title>
+<meta name="google-site-verification" content="fA_9FSEQ1gjiVQi68hGGw6-mw8vn9Re9OgTd4uUmy4g" />
+<title>Code Nest Tirana | Zgjidhje Profesionale për Biznesin tuaj</title>
 <link rel="canonical" href="https://elisabetaguri8-spec.github.io/code-nest-tirana2/">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
-<!-- The site now lives at the root of the domain. This page only exists so
-     old links (/images/) keep working - it forwards to the real site. -->
-<meta http-equiv="refresh" content="0; url=../">
-<noscript><meta http-equiv="refresh" content="0; url=../"></noscript>
-<script>location.replace("../");</script>
+<link rel="alternate" hreflang="sq" href="https://elisabetaguri8-spec.github.io/code-nest-tirana2/">
+<link rel="alternate" hreflang="x-default" href="https://elisabetaguri8-spec.github.io/code-nest-tirana2/">
+<!-- Open Graph / WhatsApp link preview -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://elisabetaguri8-spec.github.io/code-nest-tirana2/">
+<meta property="og:site_name" content="Code Nest Tirana">
+<meta property="og:locale" content="sq_AL">
+<meta property="og:title" content="Code Nest Tirana | Zgjidhje Profesionale për Biznesin tuaj">
+<meta property="og:description" content="Shërbime profesionale për krijim websitesh, editim videosh, karta biznesi dhe fletushka informuese.">
+<meta property="og:image" content="https://elisabetaguri8-spec.github.io/code-nest-tirana2/images/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Code Nest Tirana — Zgjidhje Profesionale për Biznesin tuaj">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Code Nest Tirana | Zgjidhje Profesionale për Biznesin tuaj">
+<meta name="twitter:description" content="Shërbime profesionale për krijim websitesh, editim videosh, karta biznesi dhe fletushka informuese.">
+<meta name="twitter:image" content="https://elisabetaguri8-spec.github.io/code-nest-tirana2/images/og-cover.jpg">
+<link rel="icon" type="image/svg+xml" sizes="any" href="images/favicon.svg?v=4">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png?v=4">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png?v=4">
+<link rel="shortcut icon" href="favicon.ico?v=4">
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png?v=4">
+<link rel="manifest" href="site.webmanifest">
+
+<!-- Apply the theme before the first paint (no flash) + detect embedded browsers (WhatsApp, etc.) -->
 <script>
-/* Pick the theme BEFORE the first paint.
-   "only" in color-scheme (see the stylesheet) forbids the browser from
-   force-darkening / inverting the page, so this page looks the same in a
-   QR-code browser with forced dark mode as everywhere else. */
-(function(){
-  var root=document.documentElement, meta=document.getElementById("stubThemeColor"), saved=null;
-  try{ saved=localStorage.getItem("cnt-theme"); }catch(e){}
-  /* Dark by default on every device, exactly like the main site, so the
-     page looks the same everywhere it is opened. */
-  var light = (saved === "light");
-  root.classList.remove("light","dark");
-  root.classList.add(light ? "light" : "dark");
-  root.setAttribute("data-theme", light ? "light" : "dark");
-  if(meta) meta.setAttribute("content", light ? "#f3f6fc" : "#050b1a");
-})();
+  (function(){
+    var root = document.documentElement;
+
+    /* 0. Is the browser force-darkening the page on its own?
+       Chrome "Auto Dark Theme", Android WebView "user-agent darkening" and
+       Samsung Internet "force dark" repaint the page with an inverted or
+       algorithmically darkened palette - that is what produced the "dark
+       version", the broken toggle and the black blobs behind the elements.
+       The real fix is the "only" keyword on color-scheme (see the stylesheet):
+       it forbids the UA from overriding the scheme. This probe is only a
+       safety net for browsers that ignore "only".
+       Detection trick documented by Chrome:
+       https://developer.chrome.com/blog/auto-dark-theme */
+    var forcedDark = false;
+    try{
+      /* "canvas" only exists in browsers that understand color-scheme.
+         Without that check an old browser would report a transparent
+         background and the probe would wrongly flag "forced dark". */
+      var canProbe = !!(window.CSS && CSS.supports && CSS.supports("background-color","canvas"));
+      if(canProbe){
+        var probe = document.createElement("div");
+        probe.style.cssText = "display:none;background-color:canvas;color-scheme:light";
+        (document.head || root).appendChild(probe);
+        var bg = window.getComputedStyle ? window.getComputedStyle(probe).backgroundColor : "";
+        var m = /rgba?\(([^)]+)\)/.exec(bg || "");
+        var parts = m ? m[1].split(",") : [];
+        /* anything that is not (nearly) pure white means the UA repainted it */
+        forcedDark = !(parts.length >= 3 &&
+                       parseFloat(parts[0]) >= 254 &&
+                       parseFloat(parts[1]) >= 254 &&
+                       parseFloat(parts[2]) >= 254);
+        if(probe.parentNode) probe.parentNode.removeChild(probe);
+      }
+    }catch(e){}
+
+    /* 1. Theme.
+       ONE identity for every browser. The dark brand look is the default
+       everywhere: opened from a QR code, from WhatsApp, from a Google
+       search, on a phone with forced dark mode and on a phone with a light
+       system theme. The site never guesses, so it can never look different
+       from one place to another - and it is never "dark by surprise",
+       because dark IS the design.
+       The "light" / "dark" class on <html> is what the CSS reacts to
+       (html.light / html.dark define the colours, and the UA is told with
+       color-scheme which scheme is active). The old
+       "html:has(#themeToggleBox:checked)" selectors were dropped:
+       they are unsupported in some in-app browsers (WhatsApp, Facebook, ...)
+       and, when a selector in a list is invalid, the WHOLE rule is dropped -
+       which left the page half light / half dark.
+       The switch in the header is the only thing that changes the theme,
+       and that choice is remembered in localStorage. */
+    var KEY="cnt-theme",
+        meta=document.getElementById("themeColorMeta"),
+        saved=null;
+    try{ saved=localStorage.getItem(KEY); }catch(e){}
+    /* dark unless the visitor explicitly chose light */
+    var light = (saved === "light");
+    root.classList.remove("light","dark");
+    root.classList.add(light ? "light" : "dark");
+    root.setAttribute("data-theme", light ? "light" : "dark");
+    if(forcedDark) root.classList.add("auto-dark");
+    if(meta) meta.setAttribute("content", light ? "#f3f6fc" : "#050b1a");
+
+    /* 2. Embedded browsers (WhatsApp / Instagram / Facebook in-app browser, ...).
+       Those WebViews render blend modes and backdrop-filter incorrectly (the
+       whole page ends up under a dark veil), so they get a simplified,
+       bug-free rendering - see the "html.embedded" rules in the stylesheet. */
+    var ua = navigator.userAgent || "";
+    if(/WhatsApp|FBAN|FBAV|Instagram|Line\/|Twitter|TikTok|LinkedInApp|SamsungBrowser|GSA\/|;\s*wv\)/i.test(ua)
+       || (window.self !== window.top && !window.opener)){
+      root.classList.add("embedded");
+    }
+  })();
 </script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@1,500;1,700&display=swap" rel="stylesheet">
+
 <style>
-  /* --- theme tokens -------------------------------------------------------
-     The colours are painted by us in BOTH modes, so the UA must not be
-     allowed to override them: `color-scheme: only <mode>` forbids the
-     browser's forced-dark / auto-dark / invert filter.
-     The first declaration in each rule is the fallback for browsers that
-     do not understand the "only" keyword. */
+/* =====================================================================
+   THEME VARIABLES
+   The colours are declared FOUR times, on purpose:
+     1) :root                                 -> dark defaults
+     2) @media (prefers-color-scheme: light)  -> follow the phone/system
+     3) @media (prefers-color-scheme: dark)   -> follow the phone/system
+     4) html.light / html.dark                -> the visitor's own choice
+   Rule 4 has a higher specificity than 1-3, so an explicit choice always
+   wins over the system. The same values are repeated in the rules above
+   so that embedded WebViews (WhatsApp, Facebook, ...) - which sometimes
+   ignore one of the two mechanisms - still render the right colours.
+   Every variable is also used with a hard-coded fallback further down
+   the stylesheet, so a WebView that drops custom properties altogether
+   still shows a readable, correctly coloured page.
+
+   COLOR-SCHEME (the important part for phones that force a dark theme)
+   ---------------------------------------------------------------------
+   `color-scheme` is declared with a SINGLE value that always matches the
+   theme actually painted on screen, and with the `only` keyword:
+
+       color-scheme: only light;   /   color-scheme: only dark;
+
+   `only` means "forbid the user agent from overriding the color scheme for
+   this element" (MDN, color-scheme). It is the ONLY standards-based way for
+   a web page to tell the browser "do not touch my colours", and it is what
+   switches off:
+     - Chrome "Auto Dark Theme" / force dark
+       (:root{color-scheme:only light} is the documented whole-page opt-out)
+     - Android WebView "algorithmic darkening" / "user-agent darkening"
+       (the WebView inverts the page unless the author disables darkening)
+     - Samsung Internet / Edge / other Chromium in-app browsers
+
+   Without `only`, those browsers repaint the page with an inverted or
+   algorithmically darkened palette ON TOP of the theme we already painted:
+   the site looked "dark" although light was selected, the toggle appeared
+   broken, and every box-shadow turned into a hard black blob.
+
+   The first declaration in each rule ("light"/"dark") is the fallback for
+   browsers that do not understand the `only` keyword - it still fixes the
+   canvas, the scrollbars and the form-control colours.
+
+   BOX-SHADOW tokens
+   -----------------
+   Shadows are NOT hard-coded black any more. Pure black shadows are the
+   worst case for forced dark rendering: the UA darkens/inverts the surface
+   but not the shadow, and the result is an ugly black halo around every
+   element. The shadows below are tinted to the theme (navy in dark mode,
+   blue-grey in light mode) and are swapped with the theme, so they always
+   read as depth - never as a blob - in every browser.
+   ===================================================================== */
+:root{
+  color-scheme:dark;          /* fallback for browsers without "only" */
+  color-scheme:only dark;     /* forbid the UA to override our colours */
+  --bg:#050b1a;            /* deep navy */
+  --bg-2:#08122a;          /* section navy */
+  --panel:#0c1830;         /* card surface */
+  --panel-2:#101f3d;
+  --line:rgba(148,163,184,.14);
+  --line-2:rgba(148,163,184,.26);
+  --blue:#1e7bff;
+  --blue-2:#19b6ff;
+  --blue-deep:#0a3fb8;
+  --icon:#3b8bff;          /* icon blue */
+  --star-off:#56627f;
+  --steel:#8f9bb3;
+  --silver:#d3dae6;
+  --text:#e8edf6;
+  --muted:#93a0b8;
+  --ink-h:#eef3fb;           /* big headings (hero l1, section h2, about h2) */
+  --ink-a:#19b6ff;           /* accent headings (hero l2, ai-label em) */
+  --glow:0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32);
+  /* shadows: tinted navy, never pure black */
+  --sh-card:0 14px 40px rgba(2,8,28,.42);
+  --sh-card-h:0 22px 60px rgba(2,8,28,.50);
+  --sh-panel:0 30px 80px rgba(2,8,28,.55);
+  --sh-menu:0 20px 36px rgba(2,8,28,.50);
+  --sh-float:0 10px 28px rgba(2,10,40,.55);
+  --radius:20px;
+  --font:"Outfit",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --font-display:"Playfair Display",Georgia,"Times New Roman",serif;
+}
+/* 2) system = light */
+@media (prefers-color-scheme: light){
   :root{
     color-scheme:light;
     color-scheme:only light;
     --bg:#f3f6fc;
-    --box:#ffffff;
+    --bg-2:#e8eef9;
+    --panel:#ffffff;
+    --panel-2:#f1f5fc;
+    --line:rgba(15,23,42,.10);
+    --line-2:rgba(15,23,42,.18);
+    --blue:#1e6bf0;
+    --blue-2:#0a8fd6;
+    --blue-deep:#0a3fb8;
+    --icon:#0a3fb8;
+    --star-off:#b4bfd4;
+    --steel:#55627d;
+    --silver:#1b2744;
     --text:#0f1a33;
     --muted:#53607a;
-    --line:rgba(15,23,42,.10);
-    --sh:0 18px 50px rgba(20,40,90,.12);   /* tinted, never pure black */
+    --ink-h:#0f1a33;
+    --ink-a:#0a3fb8;
+    --glow:0 0 0 1px rgba(30,123,255,.45),0 0 18px rgba(30,123,255,.35),0 0 40px rgba(25,182,255,.2);
+    /* shadows: soft blue-grey, never black */
+    --sh-card:0 12px 32px rgba(20,40,90,.10);
+    --sh-card-h:0 22px 50px rgba(20,40,90,.16);
+    --sh-panel:0 22px 55px rgba(20,40,90,.18);
+    --sh-menu:0 20px 36px rgba(15,30,70,.15);
+    --sh-float:0 10px 28px rgba(20,40,90,.22);
+    --radius:20px;
+    --font:"Outfit",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+    --font-display:"Playfair Display",Georgia,"Times New Roman",serif;
   }
-  html.dark{
+}
+/* 3) system = dark */
+@media (prefers-color-scheme: dark){
+  :root{
     color-scheme:dark;
     color-scheme:only dark;
     --bg:#050b1a;
-    --box:#0c1830;
+    --bg-2:#08122a;
+    --panel:#0c1830;
+    --panel-2:#101f3d;
+    --line:rgba(148,163,184,.14);
+    --line-2:rgba(148,163,184,.26);
+    --blue:#1e7bff;
+    --blue-2:#19b6ff;
+    --blue-deep:#0a3fb8;
+    --icon:#3b8bff;
+    --star-off:#56627f;
+    --steel:#8f9bb3;
+    --silver:#d3dae6;
     --text:#e8edf6;
     --muted:#93a0b8;
-    --line:rgba(148,163,184,.14);
-    --sh:0 18px 50px rgba(2,8,28,.55);
+    --ink-h:#eef3fb;
+    --ink-a:#19b6ff;
+    --glow:0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32);
+    --sh-card:0 14px 40px rgba(2,8,28,.42);
+    --sh-card-h:0 22px 60px rgba(2,8,28,.50);
+    --sh-panel:0 30px 80px rgba(2,8,28,.55);
+    --sh-menu:0 20px 36px rgba(2,8,28,.50);
+    --sh-float:0 10px 28px rgba(2,10,40,.55);
+    --radius:20px;
+    --font:"Outfit",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+    --font-display:"Playfair Display",Georgia,"Times New Roman",serif;
   }
-  html,body{height:100%}
-  body{margin:0;display:grid;place-items:center;background:var(--bg,#f3f6fc);color:var(--text,#0f1a33);
-       font-family:Arial,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:center;padding:24px}
-  .box{max-width:420px;background:var(--box,#fff);border:1px solid var(--line,rgba(15,23,42,.1));border-radius:20px;
-       padding:38px 28px;box-shadow:var(--sh,0 18px 50px rgba(20,40,90,.12))}
-  .mark{display:inline-grid;place-items:center;width:64px;height:64px;border-radius:18px;
-        background:linear-gradient(145deg,#1e7bff,#0a2570);color:#fff;font-weight:800;font-size:26px;
-        letter-spacing:-1px;margin-bottom:18px;box-shadow:0 10px 26px rgba(20,88,216,.35)}
-  h1{margin:0 0 10px;font-size:22px;letter-spacing:-.4px}
-  p{margin:0 0 22px;color:var(--muted,#53607a);font-size:15px;line-height:1.6}
-  a{display:inline-block;padding:14px 28px;border-radius:14px;text-decoration:none;font-weight:700;color:#fff;
-    background:linear-gradient(180deg,#2f8bff 0%,#1458d8 100%);box-shadow:0 10px 26px rgba(20,88,216,.35)}
-  small{display:block;margin-top:18px;color:var(--muted,#8a97b0);font-size:13px}
-  /* High-contrast / forced-colours mode: the UA drops shadows, so the box
-     must stay readable on its own. */
-  @media (forced-colors: active){
-    .box{background:Canvas;color:CanvasText;border:1px solid CanvasText;box-shadow:none}
-    a{background:ButtonFace;color:ButtonText;border:1px solid ButtonText;box-shadow:none}
-  }
+}
+/* 4) explicit choice - always wins over the system (higher specificity) */
+html.light{
+  color-scheme:light;
+  color-scheme:only light;
+  --bg:#f3f6fc;
+  --bg-2:#e8eef9;
+  --panel:#ffffff;
+  --panel-2:#f1f5fc;
+  --line:rgba(15,23,42,.10);
+  --line-2:rgba(15,23,42,.18);
+  --blue:#1e6bf0;
+  --blue-2:#0a8fd6;
+  --blue-deep:#0a3fb8;
+  --icon:#0a3fb8;
+  --star-off:#b4bfd4;
+  --steel:#55627d;
+  --silver:#1b2744;
+  --text:#0f1a33;
+  --muted:#53607a;
+  --ink-h:#0f1a33;
+  --ink-a:#0a3fb8;
+  --glow:0 0 0 1px rgba(30,123,255,.45),0 0 18px rgba(30,123,255,.35),0 0 40px rgba(25,182,255,.2);
+  --sh-card:0 12px 32px rgba(20,40,90,.10);
+  --sh-card-h:0 22px 50px rgba(20,40,90,.16);
+  --sh-panel:0 22px 55px rgba(20,40,90,.18);
+  --sh-menu:0 20px 36px rgba(15,30,70,.15);
+  --sh-float:0 10px 28px rgba(20,40,90,.22);
+  --radius:20px;
+  --font:"Outfit",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --font-display:"Playfair Display",Georgia,"Times New Roman",serif;
+}
+html.dark{
+  color-scheme:dark;
+  color-scheme:only dark;
+  --bg:#050b1a;
+  --bg-2:#08122a;
+  --panel:#0c1830;
+  --panel-2:#101f3d;
+  --line:rgba(148,163,184,.14);
+  --line-2:rgba(148,163,184,.26);
+  --blue:#1e7bff;
+  --blue-2:#19b6ff;
+  --blue-deep:#0a3fb8;
+  --icon:#3b8bff;
+  --star-off:#56627f;
+  --steel:#8f9bb3;
+  --silver:#d3dae6;
+  --text:#e8edf6;
+  --muted:#93a0b8;
+  --ink-h:#eef3fb;
+  --ink-a:#19b6ff;
+  --glow:0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32);
+  --sh-card:0 14px 40px rgba(2,8,28,.42);
+  --sh-card-h:0 22px 60px rgba(2,8,28,.50);
+  --sh-panel:0 30px 80px rgba(2,8,28,.55);
+  --sh-menu:0 20px 36px rgba(2,8,28,.50);
+  --sh-float:0 10px 28px rgba(2,10,40,.55);
+  --radius:20px;
+  --font:"Outfit",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --font-display:"Playfair Display",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px;overflow-x:hidden;background:var(--bg,#050b1a)}
+body{font-family:var(--font, "Outfit",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif);color:var(--text, #e8edf6);background:var(--bg, #050b1a);line-height:1.65;overflow-x:hidden;position:relative}
+a{text-decoration:none;color:inherit}
+button,input,textarea{font:inherit}
+img{max-width:100%;display:block}
+.container{width:min(1160px,92%);margin:auto}
+section{padding:110px 0;position:relative}
+
+/* ===== Icons (inline SVG sprite) ===== */
+.ico{width:1.2em;height:1.2em;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+/* ===== ONE texture for the whole page =====
+   Fine grain + blueprint grid, laid over the entire document (sections, cards, boxes, footer),
+   so it looks identical everywhere. Both sit above content but never block clicks. */
+body:before{
+  content:"";position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:5;pointer-events:none;opacity:.07;-webkit-mix-blend-mode:;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+body:after{
+  content:"";position:absolute;top:0;right:0;bottom:0;left:0;inset:0;z-index:5;pointer-events:none;
+  background-image:linear-gradient(rgba(148,163,184,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.05) 1px,transparent 1px);
+  background-size:56px 56px;
+}
+.container{position:relative;z-index:2}
+
+/* ===== REACTIVE BACKGROUND =====
+   One fixed layer over the whole page (sits under the header, never blocks clicks).
+   - a soft blue light follows the cursor / finger across every section
+   - the blueprint grid lights up around the pointer
+   - the grid lines stay aligned with the page grid while scrolling
+   JS only sets --bx / --by (pointer) and --sy (scroll offset). */
+.bg-react{position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:4;pointer-events:none;overflow:hidden;--bx:50%;--by:40%;--sy:0px;--on:0}
+.bg-react .bg-glow{position:absolute;top:0;right:0;bottom:0;left:0;inset:0;opacity:calc(.55 + var(--on) * .45);
+  background:radial-gradient(520px circle at var(--bx) var(--by),rgba(30,123,255,.20),rgba(25,182,255,.07) 45%,transparent 70%);
+  -webkit-mix-blend-mode:;mix-blend-mode:screen;transition:opacity .5s}
+.bg-react .bg-grid{position:absolute;top:0;right:0;bottom:0;left:0;inset:0;opacity:calc(.5 + var(--on) * .5);
+  background-image:linear-gradient(rgba(60,150,255,.42) 1px,transparent 1px),linear-gradient(90deg,rgba(60,150,255,.42) 1px,transparent 1px);
+  background-size:56px 56px;background-position:0 var(--sy);
+  -webkit-mask-image:radial-gradient(300px circle at var(--bx) var(--by),#000,transparent 70%);
+          mask-image:radial-gradient(300px circle at var(--bx) var(--by),#000,transparent 70%);
+  transition:opacity .5s}
+
+/* ===== Header ===== */
+header{position:fixed;top:0;right:0;bottom:0;left:0;inset:0 0 auto 0;height:76px;z-index:1000;background:rgba(5,11,26,.86);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--line, rgba(148,163,184,.14))}
+header.scrolled{background:rgba(5,11,26,.86);border-bottom-color:var(--line, rgba(148,163,184,.14))}
+.navbar{height:76px;display:flex;align-items:center;justify-content:space-between}
+.nav-right{display:flex;align-items:center;gap:14px}
+.logo{display:flex;align-items:center;gap:11px;font-size:25px;font-weight:800;letter-spacing:-.8px;color:var(--silver, #d3dae6)}
+.logo-text{display:inline-flex;align-items:baseline;gap:.22em}
+.logo-nest{color:var(--blue, #1e7bff)}
+.logo-city{font-style:normal;font-weight:inherit;letter-spacing:inherit;color:inherit;margin-left:0}
+@media(max-width:420px){.logo{font-size:21px}.logo-city{display:none}}
+.nav-links{display:flex;align-items:center;gap:6px;list-style:none}
+.nav-links a{position:relative;display:block;padding:10px 14px;color:var(--steel, #8f9bb3);font-size:15px;font-weight:500;border-radius:10px;transition:.25s}
+.nav-links a.active{color:#fff}
+.nav-links a:not(.nav-contact).active:after{content:"";position:absolute;left:14px;right:14px;bottom:4px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--blue, #1e7bff),var(--blue-2, #19b6ff));box-shadow:0 0 10px var(--blue, #1e7bff)}
+.nav-links .nav-contact{color:#fff;margin-left:8px;padding:11px 20px;border:1px solid rgba(30,123,255,.55);background:linear-gradient(180deg,rgba(30,123,255,.22),rgba(30,123,255,.08));font-weight:600}
+.menu-btn{display:none;place-items:center;border:1px solid var(--line-2, rgba(148,163,184,.26));background:rgba(255,255,255,.03);width:44px;height:44px;border-radius:12px;cursor:pointer;color:var(--silver, #d3dae6);transition:.25s}
+.menu-btn .ico{width:22px;height:22px}
+
+/* ===== Theme toggle (sun / moon switch, top right) ===== */
+.theme-toggle{position:relative;flex:none;width:68px;height:36px;padding:0;border-radius:999px;cursor:pointer;border:1px solid var(--line-2, rgba(148,163,184,.26));background:rgba(255,255,255,.05);transition:background .3s,border-color .3s,box-shadow .3s}
+.theme-toggle .knob{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:linear-gradient(180deg,#2f8bff,#1458d8);box-shadow:0 0 14px rgba(30,123,255,.7);transition:transform .35s cubic-bezier(.4,.1,.2,1),background .3s,box-shadow .3s;transform:translateX(32px)}
+.theme-toggle svg{position:absolute;top:50%;width:16px;height:16px;margin-top:-8px;z-index:2;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:color .3s}
+.theme-toggle .ic-sun{left:10px;color:var(--steel, #8f9bb3)}
+.theme-toggle .ic-moon{right:10px;color:#fff}
+/* The glow only appears on a real pointer. On a phone a tap leaves the
+   element in the :hover state, which used to keep a bright blue ring
+   around the switch for good (visible in the phone screenshot). */
+@media (hover:hover){
+  .nav-links a:hover{color:#fff;text-shadow:0 0 14px rgba(96,165,250,.9)}
+  .nav-links .nav-contact:hover{background:var(--blue, #1e7bff);box-shadow:var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32));text-shadow:none}
+  .menu-btn:hover{box-shadow:var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32));color:#fff}
+  .theme-toggle:hover{border-color:rgba(30,123,255,.7);box-shadow:var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32))}
+}
+
+/* ===== Language toggle (SQ / EN switch, top right) ===== */
+.lang-toggle{display:flex;align-items:center;gap:2px;padding:3px;border-radius:999px;border:1px solid var(--line-2, rgba(148,163,184,.26));background:rgba(255,255,255,.05);transition:border-color .3s,box-shadow .3s}
+.lang-toggle button{border:0;background:transparent;color:var(--steel, #8f9bb3);font-size:12px;font-weight:700;letter-spacing:.6px;padding:7px 11px;border-radius:999px;cursor:pointer;transition:.25s}
+.lang-toggle button.on{color:#fff;background:linear-gradient(180deg,#2f8bff,#1458d8);box-shadow:0 0 12px rgba(30,123,255,.55)}
+html.light .lang-toggle{background:rgba(15,23,42,.05)}
+html.light .lang-toggle button.on{color:#fff}
+@media(max-width:380px){.lang-toggle button{padding:6px 8px;font-size:11px}}
+
+/* ===== Buttons: shine sweep + glow on hover ===== */
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 26px;border-radius:14px;font-weight:600;font-size:16px;cursor:pointer;border:1px solid transparent;transition:transform .3s,box-shadow .3s,background .3s,border-color .3s,color .3s}
+.btn:before{content:"";position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);transform:skewX(-20deg);transition:left .7s ease}
+.btn-sm{padding:10px 18px;font-size:14px;border-radius:12px}
+.btn-primary{color:#fff;background:linear-gradient(180deg,#2f8bff 0%,#1458d8 100%);border-color:rgba(120,180,255,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 10px 26px rgba(20,88,216,.35)}
+.btn-secondary{color:var(--silver, #d3dae6);background:rgba(255,255,255,.04);border-color:var(--line-2, rgba(148,163,184,.26))}
+.btn-white{color:#0a1a3f;background:linear-gradient(180deg,#fff,#cfd8e6);box-shadow:inset 0 -2px 0 rgba(0,0,0,.08),var(--sh-float, 0 10px 28px rgba(20,40,90,.22))}
+.btn-white .ico{color:#0a3fb8}
+/* dark blue button (CTA box) */
+.btn-navy{color:#fff;background:linear-gradient(180deg,#14409f 0%,#0a2570 100%);border-color:rgba(96,150,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 10px 26px rgba(2,10,40,.55)}
+/* Hover effects only on a real pointer: on a phone a tap keeps the :hover
+   state, so the button would stay lifted and the shine would stay on. */
+@media (hover:hover){
+  .lang-toggle:hover{border-color:rgba(30,123,255,.7);box-shadow:var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32))}
+  .lang-toggle button:hover{color:var(--silver, #d3dae6)}
+  html.light .lang-toggle button:hover{color:var(--blue-deep, #0a3fb8)}
+  .btn:hover:before{left:130%}
+  .btn:hover{transform:translateY(-3px)}
+  .btn-primary:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32))}
+  .btn-secondary:hover{color:#fff;border-color:rgba(30,123,255,.8);background:rgba(30,123,255,.12);box-shadow:var(--glow, 0 0 0 1px rgba(30,123,255,.55),0 0 22px rgba(30,123,255,.55),0 0 64px rgba(25,182,255,.32))}
+  .btn-white:hover{box-shadow:0 0 0 1px rgba(255,255,255,.7),0 0 26px rgba(255,255,255,.55),0 0 70px rgba(96,165,250,.45)}
+  .btn-navy:hover{border-color:rgba(96,165,255,.85);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 0 0 1px rgba(30,123,255,.5),0 0 26px rgba(30,123,255,.55),0 0 60px rgba(25,182,255,.28)}
+}
+:focus-visible{outline:2px solid var(--blue-2, #19b6ff);outline-offset:3px}
+/* WebViews without :focus-visible() still get a visible focus ring */
+@supports not selector(:focus-visible){
+  a:focus,button:focus,input:focus,textarea:focus,label:focus{outline:2px solid var(--blue-2, #19b6ff);outline-offset:3px}
+  .theme-checkbox:focus + .theme-toggle,.menu-checkbox:focus ~ .menu-btn{outline:2px solid var(--blue-2, #19b6ff);outline-offset:3px}
+}
+
+/* ===== Hero: text only, centered, symmetrical ===== */
+.hero{min-height:100vh;min-height:100svh;padding:120px 0 90px;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  background:
+   radial-gradient(ellipse 55% 60% at 80% 35%,rgba(30,123,255,.28),transparent 70%),
+   radial-gradient(ellipse 45% 50% at 5% 95%,rgba(10,63,184,.30),transparent 70%),
+   linear-gradient(180deg,#040916 0%,#071228 100%)}
+.hero-content{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.hero-text{display:flex;flex-direction:column;align-items:center;max-width:920px;margin:0 auto}
+
+/* line 0: small, wide-tracked, cyan */
+.hero-eyebrow{display:block;margin-bottom:28px;font-size:15px;font-weight:500;letter-spacing:5px;color:var(--blue-2, #19b6ff);text-shadow:0 0 18px rgba(25,182,255,.55)}
+/* line 1: huge, heavy sans, silver.
+   IMPORTANT - why a plain colour instead of a gradient:
+   "background-clip:text + color:transparent" CANNOT be re-mapped by a
+   browser that darkens the page on its own (Samsung Night mode, Android
+   WebView user-agent darkening, Chrome Auto Dark Theme). Those engines
+   re-map normal colours, but a gradient clipped to the text is invisible
+   to them: the background gets darker while the heading keeps its old
+   colours - and a dark heading then disappears on a dark background.
+   That was the "Bëjeni biznesin tuaj" line in the screenshot.
+   Plain colours are always re-mapped correctly, so the page looks the same
+   in every browser. The depth comes from text-shadow, not from a clip. */
+.hero-text h1{margin-bottom:34px;line-height:1.12;font-weight:800;overflow-wrap:break-word;word-wrap:break-word;white-space:normal}
+.hero-text h1 .l1{display:block;font-size:clamp(34px,10vw,96px);letter-spacing:-3.5px;font-weight:800;line-height:1.1;padding:0 .04em .16em;color:var(--ink-h,#eef3fb);text-shadow:0 6px 30px rgba(3,10,30,.55)}
+/* line 2: elegant italic serif, electric blue
+   (padding avoids clipping italic overhang + descenders).
+   text-shadow instead of filter:drop-shadow() - a filter is inverted by the
+   forced-dark engines, a shadow colour is re-mapped like every other colour. */
+.hero-text h1 .l2{display:block;margin-top:0;font-family:var(--font-display, "Playfair Display",Georgia,"Times New Roman",serif)!important;font-style:italic;font-size:clamp(30px,8vw,80px);letter-spacing:-1px;font-weight:500;line-height:1.2;padding:0 .12em .14em .04em;color:var(--ink-a,#19b6ff);text-shadow:0 0 26px rgba(30,123,255,.45)}
+/* line 3: light-weight, muted */
+.hero-text p{font-size:clamp(17px,2vw,21px);font-weight:300;letter-spacing:.2px;color:var(--muted, #93a0b8);max-width:620px;margin:0 auto 42px}
+.hero-buttons,.cta-buttons{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+
+/* ===== AI showcase: static text left, quantum particle sphere right ===== */
+.ai-showcase{padding:100px 0;background:#030814;overflow:hidden;border-top:1px solid rgba(148,163,184,.12);border-bottom:1px solid rgba(148,163,184,.12)}
+.ai-showcase:before{content:"";position:absolute;top:0;right:0;bottom:0;left:0;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 50% 70% at 78% 50%,rgba(30,123,255,.20),transparent 70%),radial-gradient(ellipse 35% 45% at 8% 100%,rgba(10,63,184,.22),transparent 70%)}
+.ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.ai-copy{display:flex;flex-direction:column;align-items:flex-start}
+.ai-tag{display:inline-block;margin-bottom:22px;font-size:14px;font-weight:500;letter-spacing:4px;color:#19b6ff;text-shadow:0 0 16px rgba(25,182,255,.55)}
+/* static label: no animation, no transform, never moves */
+.ai-label{font-size:clamp(28px,3.7vw,48px);font-weight:700;line-height:1.18;letter-spacing:-1.2px;color:#e8edf6}
+.ai-label em{font-style:normal;color:var(--ink-a,#19b6ff);padding-bottom:.08em}
+.ai-visual{position:relative;width:100%;max-width:540px;aspect-ratio:1/1;margin-left:auto}
+
+/* ===== Section titles ===== */
+.section-title{text-align:center;max-width:720px;margin:0 auto 58px}
+.section-title span{display:inline-block;color:var(--blue-2, #19b6ff);font-size:15px;font-weight:600;margin-bottom:6px}
+.section-title h2{font-size:clamp(34px,5vw,50px);line-height:1.15;letter-spacing:-1.8px;font-weight:700;margin:6px 0 16px;padding-bottom:.12em;color:var(--ink-h,#eef3fb);text-shadow:0 4px 26px rgba(3,10,30,.45)}
+.section-title p{color:var(--muted, #93a0b8);font-size:17px}
+.services,.contact{background:linear-gradient(180deg,var(--bg-2, #08122a),#06101f)}
+.reviews{background:linear-gradient(180deg,#06101f,var(--bg-2, #08122a))}
+#rreth-nesh{background:var(--bg, #050b1a)}
+
+/* ===== Cards (spotlight + shine) ===== */
+.services-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.service-card,.review-card,.contact-info,.contact-form,.comments{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.012) 55%),var(--panel, #0c1830);border:1px solid var(--line, rgba(148,163,184,.14));border-radius:var(--radius, 20px);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
+.service-card:before,.review-card:before{content:"";position:absolute;top:0;right:0;bottom:0;left:0;inset:0;pointer-events:none;opacity:0;transition:opacity .35s;background:radial-gradient(320px circle at var(--mx,50%) var(--my,0%),rgba(30,123,255,.22),transparent 60%)}
+.service-card{padding:32px 26px;transition:transform .35s,border-color .35s,box-shadow .35s}
+.service-icon{position:relative;width:60px;height:60px;display:grid;place-items:center;border-radius:16px;margin-bottom:22px;color:var(--blue-2, #19b6ff);background:linear-gradient(145deg,rgba(30,123,255,.28),rgba(30,123,255,.06));border:1px solid rgba(30,123,255,.4);box-shadow:0 0 24px rgba(30,123,255,.25)}
+.service-icon svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.service-card h3{font-size:21px;font-weight:600;color:#fff;margin-bottom:10px;position:relative}
+.service-card p{color:var(--muted, #93a0b8);font-size:15px;position:relative}
+
+/* ===== About ===== */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center}
+.about-box{position:relative;overflow:hidden;padding:50px;border-radius:28px;color:#fff;background:linear-gradient(150deg,#0e1f48 0%,#081533 55%,#0b1226 100%);border:1px solid var(--line-2, rgba(148,163,184,.26));box-shadow:var(--sh-panel, 0 30px 80px rgba(2,8,28,.55)),inset 0 1px 0 rgba(255,255,255,.1)}
+.about-box:before{content:"";position:absolute;width:320px;height:320px;border-radius:50%;right:-110px;bottom:-120px;background:radial-gradient(circle,rgba(30,123,255,.6),transparent 68%)}
+.about-box:after{content:"";position:absolute;top:0;right:0;bottom:0;left:0;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.06) 50%,transparent 62%)}
+.about-box h3{font-size:32px;line-height:1.15;letter-spacing:-1px;font-weight:700;margin-bottom:16px;position:relative;z-index:1}
+.about-box p{color:#b5c0d6;position:relative;z-index:1}
+.about-list{list-style:none;margin-top:28px;position:relative;z-index:1}
+.about-list li{margin:14px 0;color:var(--text, #e8edf6);font-weight:500}
+.about-list li:before{content:"✓";display:inline-grid;place-items:center;width:25px;height:25px;margin-right:12px;border-radius:50%;background:rgba(30,123,255,.18);border:1px solid rgba(30,123,255,.5);color:var(--blue-2, #19b6ff);font-size:13px;font-weight:800;box-shadow:0 0 12px rgba(30,123,255,.3)}
+/* "Idetë tuaja, puna jonë." : more line-height + bottom padding so the comma and the "j" descenders
+   are not cut off; display:block keeps the line box tall enough.
+   Plain colour (not a gradient clipped to the text) so the forced-dark
+   engines of Samsung / Android WebView / Chrome can re-map it correctly. */
+.about-text h2{display:block;font-size:clamp(36px,4.6vw,50px);line-height:1.18;letter-spacing:-1.6px;font-weight:700;margin-bottom:22px;padding:0 .06em .16em 0;color:var(--ink-h,#eef3fb);text-shadow:0 4px 26px rgba(3,10,30,.45)}
+.about-text p{color:var(--muted, #93a0b8);font-size:17px;margin-bottom:18px}
+.about-text .btn{margin-top:10px}
+
+/* ===== Reviews ===== */
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.review-card{padding:32px;transition:transform .3s,border-color .3s,box-shadow .3s}
+.stars{position:relative;color:#fbbf24;letter-spacing:3px;margin-bottom:18px;text-shadow:0 0 12px rgba(251,191,36,.45)}
+.review-card p{position:relative;color:#b9c4d9;margin-bottom:24px}
+.review-author{position:relative;display:flex;align-items:center;gap:13px}
+.avatar{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;background:linear-gradient(145deg,var(--blue, #1e7bff),var(--blue-deep, #0a3fb8));box-shadow:0 0 16px rgba(30,123,255,.4)}
+.review-author strong{color:#fff;font-weight:600}
+.review-author small{display:block;color:var(--muted, #93a0b8)}
+
+/* ===== Comments: list on top, form BELOW the list ===== */
+.comments{margin-top:64px;padding:38px}
+.comments-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-bottom:26px}
+.comments-head h3{font-size:26px;font-weight:600;color:var(--text, #e8edf6)}
+.comments-summary{display:flex;align-items:center;gap:10px;color:var(--muted, #93a0b8);font-size:15px}
+.comment-list,.replies{list-style:none}
+.comment-list>.comment{margin-bottom:16px}
+.comment-card{display:flex;gap:14px;align-items:flex-start}
+.comment-body{flex:1;min-width:0;padding:16px 18px;border-radius:16px;background:rgba(148,163,184,.07);border:1px solid var(--line, rgba(148,163,184,.14))}
+.comment-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:6px}
+.comment-name{color:var(--text, #e8edf6);font-weight:600}
+.comment-badge{font-size:12px;font-weight:600;padding:1px 9px;border-radius:999px;color:var(--blue-2, #19b6ff);border:1px solid rgba(30,123,255,.45);background:rgba(30,123,255,.12)}
+.comment-time{color:var(--muted, #93a0b8);font-size:13px}
+.comment-text{color:var(--text, #e8edf6);margin:8px 0 8px;white-space:pre-wrap;overflow-wrap:anywhere;hyphens:none}
+.comment-actions{display:flex;flex-wrap:wrap;gap:4px}
+.link-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:6px 10px;margin-left:-10px;border-radius:10px;color:var(--steel, #8f9bb3);font-size:14px;font-weight:500;cursor:pointer;transition:color .2s,background .2s}
+.link-btn .ico{width:16px;height:16px}
+.replies{margin:12px 0 0 22px;padding-left:18px;border-left:1px solid var(--line-2, rgba(148,163,184,.26))}
+.replies .comment{margin-top:12px}
+.replies.flat{margin-left:0;padding-left:0;border-left:0}
+.replies .avatar{width:38px;height:38px;font-size:14px}
+.comment-empty{padding:28px;margin-bottom:16px;text-align:center;color:var(--muted, #93a0b8);border:1px dashed var(--line-2, rgba(148,163,184,.26));border-radius:16px}
+
+.just-added>.comment-body{animation:flash 1.8s ease}
+@keyframes flash{0%{box-shadow:0 0 0 2px rgba(30,123,255,.85),0 0 30px rgba(30,123,255,.5)}100%{box-shadow:0 0 0 0 rgba(30,123,255,0)}}
+
+/* star rating: static display + interactive input */
+.stars-static{display:inline-flex;gap:2px;line-height:0;vertical-align:middle}
+.stars-static .s{width:16px;height:16px;fill:none;stroke:var(--star-off, #56627f);stroke-width:1.7;stroke-linejoin:round}
+.stars-static .s.on{fill:#fbbf24;stroke:#fbbf24}
+.star-input{display:inline-flex;gap:2px}
+.star-btn{background:none;border:0;padding:4px;cursor:pointer;line-height:0;border-radius:8px;color:var(--star-off, #56627f);transition:transform .15s,color .15s}
+.star-btn svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linejoin:round;transition:fill .15s}
+.star-btn.on{color:#fbbf24}
+.star-btn.on svg{fill:#fbbf24}
+.star-input.sm .star-btn svg{width:22px;height:22px}
+.rating-label{display:block;font-weight:500;margin-bottom:6px;color:var(--silver, #d3dae6);font-size:15px}
+.rating-label small{color:var(--muted, #93a0b8);font-weight:400}
+
+/* forms inside the comment area */
+.comment-form{margin-top:28px;padding-top:28px;border-top:1px solid var(--line, rgba(148,163,184,.14))}
+.comment-form h4{font-size:20px;font-weight:600;color:var(--text, #e8edf6);margin-bottom:18px}
+.reply-form{margin-top:14px;padding:16px;border-radius:14px;border:1px solid var(--line-2, rgba(148,163,184,.26));background:rgba(3,8,20,.35)}
+.reply-form .form-group{margin-bottom:12px}
+.reply-form textarea{min-height:90px}
+.form-row{display:flex;flex-wrap:wrap;gap:10px}
+.form-error{color:#f87171;font-size:14px;margin-bottom:14px}
+.form-error[hidden]{display:none}
+
+/* ===== CTA + free trial: dark blue, no rings, reacts to touch ===== */
+.cta{padding:30px 0 110px;background:var(--bg-2, #08122a)}
+.cta-box,.free-trial-box{position:relative;overflow:hidden;text-align:center;border-radius:30px;border:1px solid rgba(96,150,255,.2);box-shadow:var(--sh-panel, 0 30px 80px rgba(2,8,28,.55)),inset 0 1px 0 rgba(255,255,255,.08);transition:border-color .35s,box-shadow .35s,transform .25s;-webkit-tap-highlight-color:transparent}
+.cta-box{padding:76px 35px;background:linear-gradient(135deg,#040b22 0%,#08194d 55%,#040b22 100%)}
+.free-trial-box{padding:60px 35px;background:linear-gradient(135deg,#040a1c 0%,#0a1f58 60%,#040a1c 100%)}
+/* touch / cursor glow (follows the finger or mouse) */
+.cta-box:before,.free-trial-box:before{content:"";position:absolute;top:0;right:0;bottom:0;left:0;inset:0;pointer-events:none;opacity:0;transition:opacity .35s;background:radial-gradient(380px circle at var(--mx,50%) var(--my,50%),rgba(30,123,255,.36),transparent 62%)}
+.cta-box.is-touched,.free-trial-box.is-touched{border-color:rgba(70,145,255,.75);box-shadow:0 0 0 1px rgba(30,123,255,.3),var(--sh-panel, 0 30px 80px rgba(2,8,28,.55)),0 0 50px rgba(30,123,255,.3);transform:scale(.992)}
+.cta-box.is-touched:before,.free-trial-box.is-touched:before{opacity:1}
+@media(hover:hover){
+  .cta-box:hover,.free-trial-box:hover{border-color:rgba(70,145,255,.75);box-shadow:0 0 0 1px rgba(30,123,255,.3),var(--sh-panel, 0 30px 80px rgba(2,8,28,.55)),0 0 50px rgba(30,123,255,.3)}
+  .cta-box:hover:before,.free-trial-box:hover:before{opacity:1}
+}
+.cta-box h2,.free-trial-box h2{position:relative;z-index:1;font-size:clamp(32px,5vw,50px);line-height:1.08;letter-spacing:-1.6px;font-weight:700;margin-bottom:14px}
+.cta-box p,.free-trial-box p{position:relative;z-index:1;color:#c0cff0;max-width:640px;margin:0 auto 30px;font-size:17px}
+.cta-buttons{justify-content:center;position:relative;z-index:1}
+.free-trial{padding:0 0 90px;background:linear-gradient(180deg,var(--bg-2, #08122a),var(--bg-2, #08122a))}
+.free-trial-content{position:relative;z-index:1}
+.free-trial-badge{display:inline-flex;align-items:center;gap:8px;background:#e6efff;color:#0a2a80;border:1px solid rgba(255,255,255,.6);padding:8px 16px;border-radius:999px;font-size:14px;font-weight:600;margin-bottom:16px;box-shadow:0 0 20px rgba(96,165,250,.2)}
+.free-trial-badge .ico{width:18px;height:18px;color:#0a3fb8}
+
+/* ===== Contact ===== */
+.contact-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:22px}
+.contact-info,.contact-form{padding:38px}
+.contact-info h3,.contact-form h3{font-size:26px;font-weight:600;color:#fff;margin-bottom:14px}
+.contact-info p{color:var(--muted, #93a0b8);margin-bottom:26px}
+.contact-item{display:flex;gap:15px;margin:20px 0;align-items:center}
+.contact-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;color:var(--icon, #3b8bff);background:rgba(30,123,255,.14);border:1px solid rgba(30,123,255,.4);box-shadow:0 0 18px rgba(30,123,255,.2)}
+.contact-icon .ico{width:22px;height:22px}
+.contact-item small{color:var(--muted, #93a0b8);display:block;line-height:1.3}
+.contact-item strong{color:#fff;font-weight:600}
+.contact-item strong a{color:inherit;transition:color .2s}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-weight:500;margin-bottom:8px;color:var(--silver, #d3dae6);font-size:15px}
+.form-group input,.form-group textarea{width:100%;padding:14px 16px;color:#fff;border:1px solid var(--line-2, rgba(148,163,184,.26));border-radius:12px;outline:none;transition:.25s;background:rgba(3,8,20,.65)}
+.form-group input::-webkit-input-placeholder,.form-group textarea::-webkit-input-placeholder{color:#5f6e8a}
+.form-group input::placeholder,.form-group textarea::placeholder{color:#5f6e8a}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--blue, #1e7bff);background:rgba(3,8,20,.9);box-shadow:0 0 0 3px rgba(30,123,255,.2),0 0 24px rgba(30,123,255,.25)}
+.form-group textarea{min-height:140px;resize:vertical}
+#message{resize:none}
+
+/* ===== Footer ===== */
+footer{background:#030814;border-top:1px solid var(--line, rgba(148,163,184,.14));padding:38px 0;position:relative;z-index:2}
+.footer-content{display:flex;justify-content:space-between;gap:18px 25px;align-items:center;flex-wrap:wrap}
+.footer-logo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;color:var(--silver, #d3dae6)}
+.footer-logo .logo-nest{color:var(--blue, #1e7bff)}
+.footer-content p{color:var(--steel, #8f9bb3);font-size:14px}
+.footer-links{display:flex;gap:22px;color:var(--steel, #8f9bb3);font-size:14px}
+.footer-links a{transition:.25s}
+.whatsapp-float{position:fixed;right:22px;bottom:22px;width:60px;height:60px;border-radius:50%;background:linear-gradient(180deg,#14409f,#0a2570);border:1px solid rgba(96,150,255,.5);color:#fff;display:grid;place-items:center;box-shadow:var(--sh-float, 0 10px 28px rgba(2,10,40,.55));z-index:999;transition:.3s}
+.whatsapp-float .ico{width:28px;height:28px}
+
+/* ===== Reveal ===== */
+.fade-in{opacity:1;transform:none}
+.fade-in.show{opacity:1;transform:none}
+
+/* ===== Responsive ===== */
+@media(max-width:1000px){
+  .services-grid{grid-template-columns:repeat(2,1fr)}
+  .about-grid,.contact-grid,.reviews-grid{grid-template-columns:1fr}
+  .about-grid{gap:44px}
+  .about-text{text-align:center}
+}
+@media(max-width:900px){
+  /* navigation collapses into the menu button */
+  .menu-btn{display:grid}
+  .nav-right{gap:10px}
+  .nav-links{display:none;position:absolute;top:76px;left:0;width:100%;max-height:calc(100vh - 76px);max-height:calc(100dvh - 76px);overflow-y:auto;flex-direction:column;align-items:stretch;gap:0;padding:14px 20px;background:rgba(5,11,26,.97);border-bottom:1px solid var(--line, rgba(148,163,184,.14));box-shadow:var(--sh-menu, 0 20px 36px rgba(2,8,28,.5))}
+  .nav-links.active{display:flex}
+  .nav-links li{border-bottom:1px solid var(--line, rgba(148,163,184,.14))}
+  .nav-links li:last-child{border:0}
+  .nav-links a{padding:15px 6px}
+  .nav-links a:not(.nav-contact).active:after{display:none}
+  .nav-links .nav-contact{text-align:center;margin:12px 0 4px}
+}
+@media(max-width:860px){
+  .ai-showcase{padding:80px 0}
+  .ai-grid{grid-template-columns:1fr;gap:10px}
+  .ai-copy{align-items:center;text-align:center}
+  .ai-visual{margin:0 auto;max-width:420px}
+}
+@media(max-width:700px){
+  section{padding:80px 0}
+  .hero{padding-top:110px}
+  .hero-eyebrow{letter-spacing:3px;font-size:13px}
+  .hero-text h1 .l1{letter-spacing:-2px}
+  .services-grid{grid-template-columns:1fr}
+  .about-box{padding:36px 28px}
+  .cta-box{padding:52px 22px}
+  .contact-info,.contact-form{padding:28px 22px}
+  .comments{padding:26px 16px;margin-top:48px}
+  .comment-card{gap:10px}
+  .comment-body{padding:14px}
+  .comment-card>.avatar{width:40px;height:40px}
+  .replies{margin-left:6px;padding-left:12px}
+  .footer-content{flex-direction:column;text-align:center}
+  .footer-links{flex-wrap:wrap;justify-content:center}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .fade-in{opacity:1;transform:none;transition:none}
+  .btn:before{display:none}
+  .theme-toggle .knob{transition:none}
+  .just-added>.comment-body{animation:none}
+  .cta-box.is-touched,.free-trial-box.is-touched{transform:none}
+}
+
+/* =====================================================================
+   LIGHT THEME
+   Everything that was hard-coded for dark mode is re-mapped here.
+   The About box, CTA box, free-trial box intentionally stay dark
+   (they are accent panels), so their text is forced light.
+   The AI animation section now switches to light with the rest of the site.
+
+   IMPORTANT: every rule below is scoped with "html.light".
+   The class is set by the small script in <head> (before the first
+   paint) and by the theme script at the end of the page, so the light
+   theme is identical in every browser - including the in-app browsers
+   of WhatsApp / Facebook, where ":has()" is often not supported.
+   The colours themselves live in the THEME VARIABLES block at the top
+   (declared for :root, for both prefers-color-scheme queries and for
+   the explicit .light / .dark classes).
+   ===================================================================== */
+/* texture in light mode: same grain + grid, drawn dark instead of light */
+html.light body:before{opacity:.06;-webkit-mix-blend-mode:;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+html.light body:after{background-image:linear-gradient(rgba(15,23,42,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(15,23,42,.055) 1px,transparent 1px)}
+
+/* reactive background in light mode: normal blending, deeper blue */
+html.light .bg-react .bg-glow{-webkit-mix-blend-mode:;mix-blend-mode:multiply;background:radial-gradient(520px circle at var(--bx) var(--by),rgba(30,110,240,.16),rgba(25,150,230,.06) 45%,transparent 70%)}
+html.light .bg-react .bg-grid{background-image:linear-gradient(rgba(20,95,225,.34) 1px,transparent 1px),linear-gradient(90deg,rgba(20,95,225,.34) 1px,transparent 1px)}
+
+/* header + nav */
+html.light header{background:rgba(243,246,252,.7)}
+html.light header.scrolled{background:rgba(243,246,252,.92)}
+html.light .nav-links a.active{color:var(--text, #e8edf6)}
+html.light .nav-links .nav-contact{color:var(--blue-deep, #0a3fb8);background:linear-gradient(180deg,rgba(30,123,255,.14),rgba(30,123,255,.05))}
+html.light .menu-btn{background:rgba(15,23,42,.04);color:var(--text, #e8edf6)}
+@media(max-width:900px){
+  html.light .nav-links{background:rgba(243,246,252,.98);box-shadow:var(--sh-menu, 0 20px 36px rgba(15,30,70,.15))}
+}
+
+/* theme toggle in light mode: knob slides to the sun.
+   The knob is a warm amber with a soft glow - the strong orange halo
+   looked like a rendering error on the phone. */
+html.light .theme-toggle{background:rgba(15,23,42,.05)}
+html.light .theme-toggle .knob{transform:translateX(0);background:linear-gradient(180deg,#ffc94d,#f0a30a);box-shadow:0 0 10px rgba(245,158,11,.45)}
+html.light .theme-toggle .ic-sun{color:#fff}
+html.light .theme-toggle .ic-moon{color:var(--steel, #8f9bb3)}
+
+/* buttons */
+html.light .btn-secondary{background:rgba(15,23,42,.04)}
+
+/* hero */
+html.light .hero{background:
+   radial-gradient(ellipse 55% 60% at 80% 35%,rgba(30,123,255,.16),transparent 70%),
+   radial-gradient(ellipse 45% 50% at 5% 95%,rgba(25,182,255,.16),transparent 70%),
+   linear-gradient(180deg,#f7f9fe 0%,#e6edf9 100%)}
+html.light .hero-eyebrow{text-shadow:none}
+/* the headings use --ink-h / --ink-a, so they follow the theme automatically */
+
+/* AI animation section in light mode */
+html.light .ai-showcase{background:linear-gradient(180deg,#eaf0fb,#e2eaf8);border-color:var(--line, rgba(148,163,184,.14))}
+html.light .ai-showcase:before{background:radial-gradient(ellipse 50% 70% at 78% 50%,rgba(30,123,255,.14),transparent 70%),radial-gradient(ellipse 35% 45% at 8% 100%,rgba(25,182,255,.14),transparent 70%)}
+html.light .ai-tag{color:var(--blue-2, #19b6ff);text-shadow:none}
+html.light .ai-label{color:var(--text, #e8edf6)}
+
+/* section backgrounds + headings
+   (the headings themselves use --ink-h, they need no extra rule here) */
+html.light .services,html.light .contact{background:linear-gradient(180deg,var(--bg-2, #08122a),#dde7f6)}
+html.light .reviews{background:linear-gradient(180deg,#dde7f6,var(--bg-2, #08122a))}
+
+/* cards */
+html.light .service-card,
+html.light .review-card,
+html.light .contact-info,
+html.light .contact-form,
+html.light .comments{background:linear-gradient(160deg,rgba(255,255,255,.95),rgba(255,255,255,.7)),var(--panel, #0c1830);box-shadow:var(--sh-card, 0 12px 32px rgba(20,40,90,.10)),inset 0 1px 0 #fff}
+html.light .service-card h3,
+html.light .contact-info h3,
+html.light .contact-form h3,
+html.light .review-author strong,
+html.light .contact-item strong{color:var(--text, #e8edf6)}
+html.light .review-card p{color:#3a4763}
+
+/* comments */
+html.light .comment-body{background:rgba(15,23,42,.035)}
+html.light .reply-form{background:rgba(255,255,255,.75)}
+
+/* dark accent panels keep light text */
+html.light .about-list li{color:#e8edf6}
+html.light .cta-box,html.light .free-trial-box{color:#e8edf6}
+html.light .free-trial{background:var(--bg-2, #08122a)}
+/* the accent panels stay dark in light mode, so their heavy shadow is
+   softened and tinted - on a light page a 0 40px 100px rgba(0,0,0,.55) shadow
+   looks like a black blob around the box (and a forced-dark browser turns it
+   into an even harder blob) */
+html.light .about-box{box-shadow:var(--sh-panel, 0 22px 55px rgba(20,40,90,.18)),inset 0 1px 0 rgba(255,255,255,.1)}
+html.light .cta-box,html.light .free-trial-box{box-shadow:var(--sh-panel, 0 22px 55px rgba(20,40,90,.18)),inset 0 1px 0 rgba(255,255,255,.08)}
+html.light .cta-box.is-touched{box-shadow:var(--sh-panel, 0 22px 55px rgba(20,40,90,.2)),0 0 0 1px rgba(30,123,255,.3)}
+
+/* form */
+html.light .form-group input,
+html.light .form-group textarea{background:#fff;color:var(--text, #e8edf6)}
+html.light .form-group input::-webkit-input-placeholder,
+html.light .form-group textarea::-webkit-input-placeholder{color:#8a97b0}
+html.light .form-group input::placeholder,
+html.light .form-group textarea::placeholder{color:#8a97b0}
+html.light .form-group input:focus,
+html.light .form-group textarea:focus{background:#fff}
+
+/* footer */
+html.light footer{background:#e1e9f6}
+html.light .footer-links a:hover{color:var(--blue-deep, #0a3fb8);text-shadow:none}
+
+/* =====================================================================
+   EMBEDDED BROWSERS (WhatsApp / Instagram / Facebook in-app browser, ...)
+   Those WebViews composite "mix-blend-mode" and "backdrop-filter" in a
+   broken way: the full-screen blend layer ends up painting a dark veil
+   over the whole page (the site looks black / the colours look off) and
+   the blurred header can turn into a solid black bar.
+   "html.embedded" is added by the script in <head>; here those effects
+   are simply switched off and solid colours are used instead.
+   ===================================================================== */
+html.embedded body:before{-webkit-mix-blend-mode:;mix-blend-mode:normal;opacity:.05}
+html.embedded .bg-react .bg-glow{-webkit-mix-blend-mode:;mix-blend-mode:normal}
+html.embedded header,html.embedded header.scrolled{
+  backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(5,11,26,.96)}
+html.embedded.light header,html.embedded.light header.scrolled{
+  background:rgba(243,246,252,.97)}
+@media(max-width:900px){
+  html.embedded .nav-links{background:#050b1a;box-shadow:var(--sh-menu, 0 20px 36px rgba(2,8,28,.5))}
+  html.embedded.light .nav-links{background:#f3f6fc;box-shadow:var(--sh-menu, 0 20px 36px rgba(15,30,70,.15))}
+}
+/* Same safety net for browsers without backdrop-filter support */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  header,header.scrolled{background:rgba(5,11,26,.97)}
+  html.light header,html.light header.scrolled{background:rgba(243,246,252,.97)}
+}
+/* Same safety net for WebViews without aspect-ratio (the AI sphere box) */
+@supports not (aspect-ratio:1/1){
+  .ai-visual{height:0;padding-bottom:100%}
+}
+/* NOTE: the old "safety net for WebViews without background-clip:text" is
+   gone on purpose. The headings no longer use the gradient-clipped-to-text
+   trick, so there is no "color:transparent" left that could make a
+   heading invisible. Every heading is a normal colour now, which every
+   browser - including the ones that darken the page - can re-map. */
+
+/* =====================================================================
+   FORCED DARK MODE (the browser darkens the page by itself)
+   ---------------------------------------------------------------------
+   This is the case on phones that open a QR-code link in a built-in
+   browser that has "force dark" / "dark mode" switched on:
+     - Android WebView "user-agent darkening": "the WebView automatically
+       inverts colors of the web page" (invert filter!)
+     - Chrome / Edge / Samsung Internet "Auto Dark Theme"
+   The page already paints BOTH themes itself, so the UA must not repaint
+   it. The fix is the `only` keyword on color-scheme (see the variables
+   block at the top). The rules below are the second line of defence for
+   browsers that ignore `only`: the script in <head> detects the forced
+   darkening (Chrome's documented `canvas` probe) and adds "html.auto-dark".
+
+   What goes wrong without them:
+     - mix-blend-mode layers get inverted -> a dark veil over the whole page
+     - backdrop-filter turns the header into a solid black bar
+     - filter:drop-shadow() on the gradient headline is inverted too
+     - box-shadows are re-mapped by the UA -> hard black blobs
+
+   So: switch the blend modes and the backdrop-filter off, drop the
+   filters and flatten every shadow to a single soft, tinted one.
+   ===================================================================== */
+html.auto-dark body:before{-webkit-mix-blend-mode:;mix-blend-mode:normal;opacity:.05}
+html.auto-dark .bg-react .bg-glow{-webkit-mix-blend-mode:;mix-blend-mode:normal}
+html.auto-dark .bg-react .bg-grid{opacity:.35}
+html.auto-dark header,html.auto-dark header.scrolled{
+  backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(5,11,26,.97)}
+html.auto-dark.light header,html.auto-dark.light header.scrolled{
+  background:rgba(243,246,252,.97)}
+html.auto-dark .stars{text-shadow:none}
+/* one flat, tinted shadow for every elevated element - no black blobs */
+html.auto-dark .service-card,
+html.auto-dark .review-card,
+html.auto-dark .contact-info,
+html.auto-dark .contact-form,
+html.auto-dark .comments,
+html.auto-dark .about-box,
+html.auto-dark .cta-box,
+html.auto-dark .free-trial-box,
+html.auto-dark .btn-primary,
+html.auto-dark .btn-navy,
+html.auto-dark .whatsapp-float{box-shadow:var(--sh-card, 0 14px 40px rgba(2,8,28,.42))}
+html.auto-dark .service-card:hover,
+html.auto-dark .review-card:hover,
+html.auto-dark .cta-box:hover,
+html.auto-dark .cta-box.is-touched,
+html.auto-dark .free-trial-box:hover,
+html.auto-dark .free-trial-box.is-touched{box-shadow:var(--sh-card-h, 0 22px 60px rgba(2,8,28,.5))}
+@media(max-width:900px){
+  html.auto-dark .nav-links{background:rgba(5,11,26,.98);box-shadow:var(--sh-menu, 0 20px 36px rgba(2,8,28,.5))}
+  html.auto-dark.light .nav-links{background:rgba(243,246,252,.98);box-shadow:var(--sh-menu, 0 20px 36px rgba(15,30,70,.15))}
+}
+
+/* =====================================================================
+   FORCED COLOURS (Windows High Contrast / Edge)
+   The UA drops box-shadows and repaints with its own palette, so the
+   layout must not depend on a shadow to be readable.
+   ===================================================================== */
+@media (forced-colors: active){
+  .service-card,.review-card,.contact-info,.contact-form,.comments,
+  .about-box,.cta-box,.free-trial-box,.comment-body,.reply-form{
+    background:Canvas;color:CanvasText;border:1px solid CanvasText;box-shadow:none}
+  .btn-primary,.btn-navy,.btn-white,.btn-secondary,.lang-toggle button.on{
+    background:ButtonFace;color:ButtonText;border:1px solid ButtonText;box-shadow:none}
+  .nav-links a,.footer-links a,.muted,p,small{color:CanvasText}
+  :focus-visible{outline:2px solid Highlight}
+  .theme-toggle .knob{background:Highlight;box-shadow:none}
+}
+
+/* =====================================================================
+   HOVER EFFECTS - ONLY ON A REAL POINTER
+   On a phone a tap leaves the element in the :hover state, so the card
+   stayed lifted, the button stayed glowing and the theme switch kept a
+   bright blue ring around it (visible in the phone screenshot). All the
+   hover effects are therefore limited to devices that have a real mouse.
+   ===================================================================== */
+@media (hover:hover){
+  .service-card:hover:before,.review-card:hover:before{opacity:1}
+  .service-card:hover{transform:translateY(-8px);border-color:rgba(30,123,255,.6);box-shadow:0 0 0 1px rgba(30,123,255,.25),var(--sh-card-h, 0 22px 60px rgba(2,8,28,.5)),0 0 40px rgba(30,123,255,.22)}
+  .review-card:hover{transform:translateY(-6px);border-color:rgba(30,123,255,.5);box-shadow:var(--sh-card-h, 0 22px 60px rgba(2,8,28,.5)),0 0 34px rgba(30,123,255,.18)}
+  .link-btn:hover{color:var(--blue-2, #19b6ff);background:rgba(30,123,255,.1)}
+  .link-btn.danger:hover{color:#f87171;background:rgba(248,113,113,.1)}
+  .star-btn:hover{transform:scale(1.15)}
+  .contact-item strong a:hover{color:var(--blue-2, #19b6ff)}
+  .footer-links a:hover{color:#fff;text-shadow:0 0 12px rgba(96,165,250,.9)}
+  .whatsapp-float:hover{transform:scale(1.1);box-shadow:0 0 0 1px rgba(96,165,255,.8),0 0 30px rgba(30,123,255,.8),0 0 70px rgba(30,123,255,.4)}
+  /* light theme */
+  html.light .nav-links a:hover{color:var(--text, #0f1a33);text-shadow:none}
+  html.light .nav-links .nav-contact:hover{color:#fff;background:var(--blue, #1e6bf0)}
+  html.light .menu-btn:hover{color:var(--blue-deep, #0a3fb8)}
+  html.light .btn-secondary:hover{color:var(--blue-deep, #0a3fb8);background:rgba(30,123,255,.1)}
+  html.light .service-card:hover{box-shadow:0 0 0 1px rgba(30,123,255,.25),var(--sh-card-h, 0 22px 50px rgba(20,40,90,.16)),0 0 34px rgba(30,123,255,.14)}
+  html.light .review-card:hover{box-shadow:var(--sh-card-h, 0 22px 50px rgba(20,40,90,.16)),0 0 28px rgba(30,123,255,.12)}
+  html.light .link-btn:hover{color:var(--blue-deep, #0a3fb8)}
+  html.light .cta-box:hover{box-shadow:var(--sh-panel, 0 22px 55px rgba(20,40,90,.2)),0 0 0 1px rgba(30,123,255,.3)}
+  html.light .footer-links a:hover{color:var(--blue-deep, #0a3fb8);text-shadow:none}
+}
+
+/* =====================================================================
+   TRANSLATION-SAFE OVERRIDES
+   Keeps fonts, casing and layout stable when the page is auto-translated
+   (Google Translate / Edge / Safari etc.). Keep this block LAST in <style>.
+   ===================================================================== */
+
+/* ===== Small-phone polish ===== */
+@media(max-width:560px){
+  section{padding:64px 0}
+  .hero{padding:110px 0 70px}
+  .hero-text h1{margin-bottom:26px}
+  .hero-text p{margin-bottom:32px;font-size:16px}
+  .hero-buttons .btn,.cta-buttons .btn{flex:1 1 100%}
+  .section-title{margin-bottom:40px}
+  .section-title h2{font-size:clamp(28px,8vw,36px);letter-spacing:-1px}
+  .section-title p{font-size:16px}
+  .about-text h2{font-size:clamp(28px,8vw,36px)}
+  .about-box h3{font-size:24px}
+  .cta-box h2,.free-trial-box h2{font-size:clamp(26px,8vw,32px);letter-spacing:-1px}
+  .cta-box p,.free-trial-box p{font-size:16px}
+  .cta-box,.free-trial-box{padding:46px 20px}
+  .contact-info h3,.contact-form h3{font-size:22px}
+  .comments-head h3{font-size:22px}
+  .review-card{padding:26px 20px}
+  .service-card{padding:28px 20px}
+  .footer-logo{font-size:19px}
+  .footer-links{gap:8px 16px;font-size:13px}
+  .footer-content p{font-size:13px}
+  .whatsapp-float{right:16px;bottom:16px;width:52px;height:52px}
+}
+@media(max-width:380px){
+  .hero-eyebrow{letter-spacing:2px;font-size:12px}
+  .nav-right{gap:8px}
+  .logo{font-size:20px}
+}
+
+/* ===== CSS-only interactivity (no JavaScript) ===== */
+.theme-checkbox,.menu-checkbox{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.theme-checkbox:focus-visible + .theme-toggle,.menu-checkbox:focus-visible ~ .menu-btn{outline:2px solid var(--blue-2, #19b6ff);outline-offset:3px}
+.menu-btn .ic-close{display:none}
+#menuToggleBox:checked ~ #navLinks{display:flex}
+#menuToggleBox:checked ~ .menu-btn .ic-open{display:none}
+#menuToggleBox:checked ~ .menu-btn .ic-close{display:block}
+.ai-visual canvas{position:absolute;top:0;right:0;bottom:0;left:0;inset:0;width:100%;height:100%;display:block}
+.cta-box:active,.free-trial-box:active{border-color:rgba(70,145,255,.75)}
+
+/* 1. Stop mobile browsers from resizing text on their own */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+
+/* 2. Translators wrap every text node in <font> tags: make them inherit everything */
+font{font:inherit;letter-spacing:inherit;line-height:inherit;text-transform:inherit;vertical-align:baseline!important;white-space:inherit}
+
+/* 3. One font family everywhere, including translator-injected elements
+      (the hero .l2 line is the single exception: it sets its own serif with !important) */
+body,body *{font-family:var(--font, "Outfit",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif)!important}
+.hero-text h1 .l2,.hero-text h1 .l2 *{font-family:var(--font-display, "Playfair Display",Georgia,"Times New Roman",serif)!important}
+
+/* 4. Casing: titles are already correctly capitalized in the HTML itself
+      (Albanian source, e.g. "Kontakt" -> auto-translates cleanly to "Contact").
+      No ::first-letter selectors and no text-transform capitalize/uppercase
+      rules anywhere on this page on purpose: any ::first-letter rule forces
+      the browser to split off the first letter, and combined with the
+      translator's <font> wrappers a word gets split into styled pieces,
+      each piece re-capitalized (e.g. "Kontakt"/"Contact" rendered as
+      "contAct"). So: never add ::first-letter or casing rules. */
+body,body *{text-transform:none!important;font-variant:normal!important;font-variant-caps:normal!important}
+
+/* 5. Long translated words wrap instead of stretching the layout */
+h1,h2,h3,h4,p,li,label,small,strong,.btn,.small-title,.hero-eyebrow,.free-trial-badge{overflow-wrap:break-word;word-wrap:break-word}
+p,li{-webkit-hyphens:manual;hyphens:manual}
+h1,h2,h3,h4{-webkit-hyphens:manual;hyphens:manual;overflow-wrap:break-word}
+
+/* 6. Grid/flex children may shrink below their content width (prevents "blown-out" columns) */
+.hero-content>*,.services-grid>*,.about-grid>*,.reviews-grid>*,.contact-grid>*,.footer-content>*,.contact-item>div,.ai-grid>*{min-width:0}
+.contact-item strong{overflow-wrap:anywhere}
+
+/* 7. Buttons, badges, cards: tolerate longer English labels */
+.btn{max-width:100%;text-align:center;white-space:normal;line-height:1.3}
+.logo,.footer-logo{white-space:nowrap}
+.footer-links{flex-wrap:wrap}
+
+/* 8. Navigation: never break a menu item mid-label; tighten on tablets */
+.nav-links a{white-space:nowrap}
+/* Translated labels (e.g. "Kontakt" -> "Contact"): no case tricks anywhere,
+   translator <font> wrappers inherit cleanly and stay plain inline text
+   so a word is never split into styled pieces. Covers every element,
+   including buttons, paragraphs and cards with "kontakto/kontakt" text.
+   NOTE: no ::first-letter selectors allowed here (see note 4 above). */
+.nav-links .nav-contact,.nav-links .nav-contact *,.footer-links a,.footer-links a *{text-transform:none!important;font-variant:normal!important;font-variant-caps:normal!important}
+font{text-transform:inherit!important;font-variant:inherit!important;font-variant-caps:inherit!important}
+/* translator <font> wrappers must stay plain inline text so a word is never split into styled pieces */
+.nav-links a font,.footer-links a font,.section-title span font,.contact-info h3 font,.contact-form h3 font,.btn font,p font,li font,h1 font,h2 font,h3 font,h4 font,strong font,small font,span font{display:inline!important;float:none!important;text-transform:none!important;font-variant:normal!important;font-variant-caps:normal!important;font-size:inherit!important;font-weight:inherit!important;color:inherit!important;letter-spacing:inherit!important;vertical-align:baseline!important}
+@media(max-width:1100px) and (min-width:901px){
+  .nav-links{gap:2px}
+  .nav-links a{padding:10px 9px;font-size:14px}
+  .nav-links .nav-contact{padding:10px 14px;margin-left:4px}
+  .nav-right{gap:8px}
+}
 </style>
 </head>
+
 <body>
-  <div class="box">
-    <span class="mark">CN</span>
-    <h1>Code Nest Tirana</h1>
-    <p>Faqja u zhvendos nÃ« adresÃ«n kryesore tÃ« faqes.</p>
-    <a href="../">Hap faqen</a>
-    <small>https://elisabetaguri8-spec.github.io/code-nest-tirana2/</small>
+
+<!-- REACTIVE BACKGROUND (light + grid that follow the pointer across the whole page) -->
+<div class="bg-react" id="bgReact" aria-hidden="true">
+  <div class="bg-glow"></div>
+  <div class="bg-grid"></div>
+</div>
+
+<!-- ICON SPRITE (modern line icons, recoloured with CSS) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+  <symbol id="i-reply" viewBox="0 0 24 24"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></symbol>
+</svg>
+
+<!-- NAVBAR -->
+<header id="siteHeader">
+  <div class="container navbar">
+    <a href="#home" class="logo" aria-label="Code Nest Tirana">
+      <span class="logo-text" translate="no"><span>Code</span> <span class="logo-nest">Nest</span> <span class="logo-city">Tirana</span></span>
+    </a>
+
+    <div class="nav-right">
+      <!-- Order: Home, AI, Shërbimet tona, Rreth nesh, Reviews, Provo falas, Kontakt -->
+      <input type="checkbox" class="menu-checkbox" id="menuToggleBox" aria-label="Menu">
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#ai" title="Animacioni" translate="no">AI</a></li>
+        <li><a href="#sherbimet">Shërbimet tona</a></li>
+        <li><a href="#rreth-nesh">Rreth nesh</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+        <li><a href="#provo-falas">Provo falas</a></li>
+        <li><a href="#kontakt" class="nav-contact">Kontakt</a></li>
+      </ul>
+
+      <div class="lang-toggle" role="group" aria-label="Gjuha / Language" translate="no">
+        <button type="button" data-lang="sq" class="on" aria-pressed="true">SQ</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+
+      <!-- Dark / light toggle (top right, CSS-only) -->
+      <input type="checkbox" class="theme-checkbox" id="themeToggleBox" aria-label="Theme">
+      <label class="theme-toggle" for="themeToggleBox" title="Theme">
+        <span class="knob"></span>
+        <svg class="ic-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="ic-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </label>
+
+      <label class="menu-btn" for="menuToggleBox" aria-label="Menu">
+        <svg class="ico ic-open" aria-hidden="true"><use href="#i-menu"/></svg>
+        <svg class="ico ic-close" aria-hidden="true"><use href="#i-close"/></svg>
+      </label>
+    </div>
   </div>
+</header>
+
+<main>
+
+<!-- HERO: text only, centered -->
+<section class="hero" id="home">
+  <div class="container hero-content">
+
+    <div class="hero-text fade-in">
+      <span class="hero-eyebrow">Zgjidhje digjitale për biznesin tuaj</span>
+
+      <h1>
+        <span class="l1">Bëjeni biznesin tuaj</span>
+        <span class="l2">më profesional.</span>
+      </h1>
+
+      <p>Ne krijojmë prezencën digjitale që biznesi juaj meriton — nga website moderne deri te materialet profesionale të marketingut.</p>
+
+      <div class="hero-buttons">
+        <a href="#sherbimet" class="btn btn-primary">Shiko shërbimet</a>
+        <a href="#kontakt" class="btn btn-secondary">Na kontakto</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- AI SHOWCASE: static text on the left, quantum particle sphere on the right (reachable from nav: "AI") -->
+<section class="ai-showcase" id="ai" aria-label="Website me inteligjencë artificiale">
+  <div class="container ai-grid">
+
+    <div class="ai-copy">
+      <span class="ai-tag" translate="no">WEB × AI</span>
+      <h2 class="ai-label">Ne ndërtojmë website me performancë të lartë, të fuqizuara nga integrimi me <em>inteligjencën artificiale</em></h2>
+    </div>
+
+    <div class="ai-visual" aria-hidden="true">
+      <canvas id="aiSphere"></canvas>
+    </div>
+
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="sherbimet">
+  <div class="container">
+
+    <div class="section-title fade-in">
+      <span>Çfarë bëjmë</span>
+      <h2>Shërbimet tona</h2>
+      <p>Gjithçka që ju nevojitet për ta paraqitur biznesin tuaj në mënyrë profesionale.</p>
+    </div>
+
+    <div class="services-grid">
+
+      <div class="service-card fade-in">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/><path d="m10 8-2 2 2 2M14 8l2 2-2 2"/></svg>
+        </div>
+        <h3>Krijim Website</h3>
+        <p>Krijojmë website moderne, të shpejta, responsive dhe të përshtatura me identitetin e biznesit tuaj.</p>
+      </div>
+
+      <div class="service-card fade-in">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9.5 5 2.5-5 2.5z"/></svg>
+        </div>
+        <h3>Editim Videosh</h3>
+        <p>Editojmë video profesionale për marketing, rrjete sociale, reklama dhe promovimin e biznesit tuaj.</p>
+      </div>
+
+      <div class="service-card fade-in">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2"/><circle cx="8.5" cy="11" r="1.8"/><path d="M6 16c.6-1.6 1.6-2.2 2.5-2.2S10.4 14.4 11 16M14 10h4.5M14 13h3"/></svg>
+        </div>
+        <h3>Karta Biznesi</h3>
+        <p>Dizajnojmë karta biznesi moderne që ndihmojnë klientët tuaj të mbajnë mend markën dhe kontaktet tuaja.</p>
+      </div>
+
+      <div class="service-card fade-in">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 15.5h7M9 19h4"/></svg>
+        </div>
+        <h3>Fletushka</h3>
+        <p>Krijojmë fletushka informuese dhe reklamuese për të prezantuar ofertat dhe shërbimet e biznesit tuaj.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="rreth-nesh">
+  <div class="container about-grid">
+
+    <div class="about-box fade-in">
+      <h3>Një partner për biznesin tuaj.</h3>
+      <p>Qëllimi ynë është të ndihmojmë bizneset të kenë një prezencë më të fortë dhe profesionale online dhe offline.</p>
+
+      <ul class="about-list">
+        <li>Dizajn modern</li>
+        <li>Zgjidhje të përshtatura</li>
+        <li>Komunikim i drejtpërdrejtë</li>
+        <li>Fokus tek biznesi juaj</li>
+      </ul>
+    </div>
+
+    <div class="about-text fade-in">
+      <h2>Idetë tuaja, puna jonë.</h2>
+      <p>Çdo biznes ka një histori. Ne ju ndihmojmë ta tregoni atë në mënyrën e duhur.</p>
+      <p>Nga një website i thjeshtë deri te materialet e marketingut, krijojmë zgjidhje që duken profesionale dhe i përshtaten nevojave tuaja.</p>
+      <a href="#kontakt" class="btn btn-primary">Flasim për projektin tuaj</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- REVIEWS + COMMENTS -->
+<section class="reviews" id="reviews">
+  <div class="container">
+
+    <div class="section-title fade-in">
+      <span>Klientët tanë</span>
+      <h2>Çfarë thonë klientët</h2>
+      <p>Vlerësimet e klientëve që kanë punuar me ne.</p>
+    </div>
+
+    <div class="reviews-grid">
+
+      <div class="review-card fade-in">
+        <div class="stars"><span class="stars-static" role="img" aria-label="5 nga 5 yje"><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg></span></div>
+        <p>"Website-i doli shumë profesional dhe shumë më i bukur nga sa e imagjinoja."</p>
+        <div class="review-author">
+          <div class="avatar">A</div>
+          <div><strong translate="no">Ardit</strong><small>Klient</small></div>
+        </div>
+      </div>
+
+      <div class="review-card fade-in">
+        <div class="stars"><span class="stars-static" role="img" aria-label="5 nga 5 yje"><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg></span></div>
+        <p>"Shërbim shumë i mirë dhe komunikim korrekt. Videot për marketingun tonë dolën shumë mirë."</p>
+        <div class="review-author">
+          <div class="avatar">E</div>
+          <div><strong translate="no">Elona</strong><small>Klientja</small></div>
+        </div>
+      </div>
+
+      <div class="review-card fade-in">
+        <div class="stars"><span class="stars-static" role="img" aria-label="5 nga 5 yje"><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg><svg class="s on" aria-hidden="true"><use href="#i-star"/></svg></span></div>
+        <p>"Karta e biznesit dhe fletushkat ishin moderne dhe profesionale. Shumë i kënaqur!"</p>
+        <div class="review-author">
+          <div class="avatar">M</div>
+          <div><strong translate="no">Martin</strong><small>Klient</small></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- COMMENT SECTION: static list (HTML + CSS only) -->
+    <div class="comments fade-in" id="komente">
+      <div class="comments-head">
+        <h3>Komentet</h3>
+        <div class="comments-summary"><span>3 komente</span></div>
+      </div>
+
+      <ul class="comment-list">
+        <li class="comment">
+          <article class="comment-card">
+            <div class="avatar">A</div>
+            <div class="comment-body">
+              <div class="comment-head">
+                <strong class="comment-name">Ardit</strong>
+                <span class="comment-time">Klient i verifikuar</span>
+              </div>
+              <p class="comment-text">Website-i doli shumë profesional dhe shumë më i bukur nga sa e imagjinoja.</p>
+            </div>
+          </article>
+        </li>
+        <li class="comment">
+          <article class="comment-card">
+            <div class="avatar">E</div>
+            <div class="comment-body">
+              <div class="comment-head">
+                <strong class="comment-name">Elona</strong>
+                <span class="comment-time">Kliente e verifikuar</span>
+              </div>
+              <p class="comment-text">Shërbim shumë i mirë dhe komunikim korrekt. Videot për marketingun tonë dolën shumë mirë.</p>
+            </div>
+          </article>
+        </li>
+        <li class="comment">
+          <article class="comment-card">
+            <div class="avatar">M</div>
+            <div class="comment-body">
+              <div class="comment-head">
+                <strong class="comment-name">Martin</strong>
+                <span class="comment-time">Klient i verifikuar</span>
+              </div>
+              <p class="comment-text">Karta e biznesit dhe fletushkat ishin moderne dhe profesionale. Shumë i kënaqur!</p>
+            </div>
+          </article>
+        </li>
+      </ul>
+
+      <div class="comment-form">
+        <h4>Keni punuar me ne?</h4>
+        <p style="color:var(--muted, #93a0b8);margin-bottom:18px">Dërgoni vlerësimin tuaj në WhatsApp dhe do ta shtojmë këtu.</p>
+        <a class="btn btn-primary" href="https://wa.me/355698543275?text=Punova%20me%20Code%20Nest%20Tirana%20dhe%20dua%20te%20le%20nje%20review." target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-send"/></svg> Lini një review në WhatsApp</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="container">
+    <div class="cta-box fade-in">
+      <h2>Gati ta çoni biznesin më lart?</h2>
+      <p>Na kontaktoni sot dhe na tregoni çfarë projekti keni në mendje.</p>
+
+      <div class="cta-buttons">
+        <a href="tel:+355698543275" class="btn btn-navy"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg> <span translate="no">069 854 3275</span></a>
+        <a href="https://wa.me/355698543275" target="_blank" rel="noopener" class="btn btn-navy"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg> <span translate="no">WhatsApp</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FREE TRIAL -->
+<section class="free-trial" id="provo-falas">
+  <div class="container">
+    <div class="free-trial-box fade-in">
+      <div class="free-trial-content">
+        <span class="free-trial-badge"><svg class="ico" aria-hidden="true"><use href="#i-gift"/></svg> Ofertë speciale</span>
+        <h2>Provo falas!</h2>
+        <p>Dëshiron të provosh shërbimet tona? Na dërgo një mesazh dhe na trego çfarë të nevojitet. Le ta fillojmë bashkë!</p>
+        <a href="#kontakt" class="btn btn-white"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg> Na dërgo një mesazh</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="kontakt">
+  <div class="container">
+
+    <div class="section-title fade-in">
+      <span>Kontakt</span>
+      <h2>Le të flasim</h2>
+      <p>Keni një ide? Na kontaktoni dhe mund të diskutojmë për projektin tuaj.</p>
+    </div>
+
+    <div class="contact-grid">
+
+      <div class="contact-info fade-in">
+        <h3>Na gjeni këtu</h3>
+        <p>Për pyetje, oferta ose projekte të reja, mund të na kontaktoni direkt.</p>
+
+        <div class="contact-item">
+          <div class="contact-icon"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg></div>
+          <div><small>Telefon</small><strong translate="no">069 854 3275</strong></div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg></div>
+          <div><small translate="no">WhatsApp</small><strong translate="no">069 854 3275</strong></div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon"><svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg></div>
+          <div><small translate="no">Email</small><strong translate="no"><a href="mailto:roanguri5@gmail.com">roanguri5@gmail.com</a></strong></div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon"><svg class="ico" aria-hidden="true"><use href="#i-globe"/></svg></div>
+          <div><small>Shërbime</small><strong>Online &amp; Offline</strong></div>
+        </div>
+      </div>
+
+      <div class="contact-form fade-in">
+        <h3>Na dërgo një mesazh</h3>
+
+        <form action="https://wa.me/355698543275" method="get" target="_blank">
+          <div class="form-group">
+            <label for="message">Mesazhi juaj</label>
+            <textarea id="message" name="text" placeholder="Shkruani emrin, telefonin dhe detajet e projektit tuaj..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Dërgo mesazhin në WhatsApp</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container footer-content">
+    <div class="footer-logo">
+      <span class="logo-text" translate="no"><span>Code</span> <span class="logo-nest">Nest</span> <span class="logo-city">Tirana</span></span>
+    </div>
+
+    <p>© 2026 <span translate="no">Code Nest Tirana</span>. Të gjitha të drejtat e rezervuara.</p>
+
+    <div class="footer-links">
+      <a href="#home">Home</a>
+      <a href="#ai" translate="no">AI</a>
+      <a href="#sherbimet">Shërbimet tona</a>
+      <a href="#rreth-nesh">Rreth nesh</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#provo-falas">Provo falas</a>
+      <a href="#kontakt">Kontakt</a>
+    </div>
+  </div>
+</footer>
+
+<!-- FLOATING WHATSAPP -->
+<a href="https://wa.me/355698543275" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Na kontaktoni në WhatsApp"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg></a>
+
+<script>
+/* ===== Quantum / AI particle sphere (canvas) =====
+   - 3D Fibonacci sphere of particles, slowly rotating
+   - each particle vibrates; the whole sphere pulses
+   - soft energy rings radiate outward continuously
+   - dark mode: neon blue + cyan glow via additive blending
+   - light mode: deeper blue particles drawn normally so they show on a light background
+   - pauses when off-screen; shows one still frame if reduced motion is on */
+(function () {
+  var canvas = document.getElementById("aiSphere");
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext("2d");
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var N = 950, pts = [], size = 0, dpr = 1, raf = 0, running = false;
+  var start = performance.now();
+  var golden = Math.PI * (3 - Math.sqrt(5));
+
+  for (var i = 0; i < N; i++) {
+    var y = 1 - (i / (N - 1)) * 2;
+    var r = Math.sqrt(1 - y * y);
+    var th = golden * i;
+    pts.push({
+      x: Math.cos(th) * r, y: y, z: Math.sin(th) * r,
+      ph: Math.random() * Math.PI * 2,
+      sp: 0.6 + Math.random() * 1.4,
+      tone: Math.random()
+    });
+  }
+
+  function isLight() {
+    var root = document.documentElement;
+    if (root && root.classList) {
+      if (root.classList.contains("light")) return true;
+      if (root.classList.contains("dark")) return false;
+    }
+    var theme = root && root.getAttribute("data-theme");
+    if (theme) return theme === "light";
+    var box = document.getElementById("themeToggleBox");
+    return !!(box && box.checked);
+  }
+
+  function resize() {
+    var rect = canvas.getBoundingClientRect();
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    size = rect.width;
+    canvas.width = Math.round(size * dpr);
+    canvas.height = Math.round(size * dpr);
+  }
+
+  function draw(now) {
+    var light = isLight();
+    var t = (now - start) / 1000;
+    var cx = size / 2, cy = size / 2;
+    var base = size * 0.26;
+    var pulse = 1 + 0.06 * Math.sin(t * 2.2) + 0.02 * Math.sin(t * 5.3);
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.globalCompositeOperation = "source-over";
+    ctx.clearRect(0, 0, size, size);
+
+    /* soft core glow */
+    var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, base * 2.1 * pulse);
+    if (light) {
+      g.addColorStop(0, "rgba(30,110,240,0.16)");
+      g.addColorStop(0.4, "rgba(25,150,230,0.07)");
+      g.addColorStop(1, "rgba(255,255,255,0)");
+    } else {
+      g.addColorStop(0, "rgba(40,150,255,0.30)");
+      g.addColorStop(0.4, "rgba(25,182,255,0.12)");
+      g.addColorStop(1, "rgba(5,11,26,0)");
+    }
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, size, size);
+
+    ctx.globalCompositeOperation = light ? "source-over" : "lighter";
+
+    /* radiating energy rings */
+    for (var k = 0; k < 3; k++) {
+      var p = ((t / 3.4) + k / 3) % 1;
+      var rad = base * pulse * (1.05 + p * 1.2);
+      var a = Math.pow(1 - p, 1.6) * (light ? 0.5 : 0.38);
+      ctx.beginPath();
+      ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+      ctx.lineWidth = 1.4 + (1 - p) * 1.6;
+      ctx.strokeStyle = (light ? "rgba(20,95,225," : "rgba(25,182,255,") + a.toFixed(3) + ")";
+      ctx.shadowColor = light ? "rgba(30,123,255,0.35)" : "rgba(30,123,255,0.9)";
+      ctx.shadowBlur = light ? 6 : 14;
+      ctx.stroke();
+    }
+    ctx.shadowBlur = 0;
+
+    /* particles */
+    var ay = t * 0.38, ax = 0.4 + Math.sin(t * 0.25) * 0.15;
+    var cYa = Math.cos(ay), sYa = Math.sin(ay), cXa = Math.cos(ax), sXa = Math.sin(ax);
+    var unit = size / 540;
+
+    for (var n = 0; n < N; n++) {
+      var q = pts[n];
+      var j = 1 + 0.045 * Math.sin(t * q.sp * 9 + q.ph) + 0.015 * Math.sin(t * q.sp * 23 + q.ph * 2);
+
+      var x = q.x * j, yy = q.y * j, z = q.z * j;
+      var x1 = x * cYa + z * sYa;
+      var z1 = -x * sYa + z * cYa;
+      var y2 = yy * cXa - z1 * sXa;
+      var z2 = yy * sXa + z1 * cXa;
+
+      var f = 3 / (3 + z2);
+      var sx = cx + x1 * base * pulse * f;
+      var sy = cy + y2 * base * pulse * f;
+
+      var depth = (z2 + 1) / 2;              /* 0 = near, 1 = far */
+      var alpha = (light ? 0.30 : 0.22) + (light ? 0.70 : 0.78) * (1 - depth);
+      var rr = (0.6 + 1.5 * (1 - depth)) * unit * f;
+
+      var hue, sat, lig;
+      if (light) { hue = 214 + q.tone * 16; sat = 88; lig = 34 + 16 * (1 - depth); }
+      else       { hue = 192 + q.tone * 30; sat = 100; lig = 52 + 22 * (1 - depth); }
+      ctx.fillStyle = "hsla(" + hue.toFixed(0) + "," + sat + "%," + lig.toFixed(0) + "%," + alpha.toFixed(2) + ")";
+      ctx.beginPath();
+      ctx.arc(sx, sy, Math.max(rr, 0.4), 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    /* bright inner core */
+    var core = ctx.createRadialGradient(cx, cy, 0, cx, cy, base * 0.55 * pulse);
+    core.addColorStop(0, light ? "rgba(30,123,255,0.18)" : "rgba(180,235,255,0.35)");
+    core.addColorStop(1, light ? "rgba(30,123,255,0)" : "rgba(25,182,255,0)");
+    ctx.fillStyle = core;
+    ctx.beginPath();
+    ctx.arc(cx, cy, base * 0.55 * pulse, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function loop(now) {
+    if (!running) return;
+    draw(now);
+    raf = requestAnimationFrame(loop);
+  }
+  function play() { if (running || reduce) return; running = true; raf = requestAnimationFrame(loop); }
+  function pause() { running = false; cancelAnimationFrame(raf); }
+
+  resize();
+  draw(performance.now());
+  window.addEventListener("resize", function () { resize(); draw(performance.now()); });
+
+  /* repaint right away when the CSS-only theme switch is flipped */
+  var themeBox = document.getElementById("themeToggleBox");
+  if (themeBox) themeBox.addEventListener("change", function () { draw(performance.now()); });
+
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) {
+      entries[0].isIntersecting ? play() : pause();
+    }, { threshold: 0.05 }).observe(canvas);
+  } else {
+    play();
+  }
+})();
+</script>
+
+<script>
+/* ===== SQ / EN language toggle =====
+   Hardcoded strings, so English always shows "Contact" (never "contAct")
+   and the page no longer depends on browser auto-translate for UI labels. */
+(function () {
+  var KEY = "cnt-lang";
+  var ITEMS = [
+    { s: '#navLinks a[href="#sherbimet"],.footer-links a[href="#sherbimet"]', en: "Our services" },
+    { s: '#navLinks a[href="#rreth-nesh"],.footer-links a[href="#rreth-nesh"]', en: "About us" },
+    { s: '#navLinks a[href="#provo-falas"],.footer-links a[href="#provo-falas"]', en: "Try for free" },
+    { s: '#navLinks a[href="#kontakt"],.footer-links a[href="#kontakt"]', en: "Contact" },
+    { s: ".hero-eyebrow", en: "Digital solutions for your business" },
+    { s: ".hero-text h1 .l1", en: "Make your business" },
+    { s: ".hero-text h1 .l2", en: "more professional." },
+    { s: ".hero-text>p", en: "We create the digital presence your business deserves — from modern websites to professional marketing materials." },
+    { s: '.hero-buttons a[href="#sherbimet"]', en: "View services" },
+    { s: '.hero-buttons a[href="#kontakt"]', en: "Contact us" },
+    { s: ".ai-label", parts: ["We build high-performance websites, powered by ", "artificial intelligence"] },
+    { s: ".services .section-title>span", en: "What we do" },
+    { s: ".services .section-title>h2", en: "Our services" },
+    { s: ".services .section-title>p", en: "Everything you need to present your business professionally." },
+    { s: ".services-grid .service-card:nth-child(1) h3", en: "Website creation" },
+    { s: ".services-grid .service-card:nth-child(1) p", en: "We create modern, fast, responsive websites tailored to your business identity." },
+    { s: ".services-grid .service-card:nth-child(2) h3", en: "Video editing" },
+    { s: ".services-grid .service-card:nth-child(2) p", en: "We edit professional videos for marketing, social media, ads and promoting your business." },
+    { s: ".services-grid .service-card:nth-child(3) h3", en: "Business cards" },
+    { s: ".services-grid .service-card:nth-child(3) p", en: "We design modern business cards that help your clients remember your brand and contact details." },
+    { s: ".services-grid .service-card:nth-child(4) h3", en: "Flyers" },
+    { s: ".services-grid .service-card:nth-child(4) p", en: "We create informative and promotional flyers to present your offers and services." },
+    { s: ".about-box h3", en: "A partner for your business." },
+    { s: ".about-box>p", en: "Our goal is to help businesses have a stronger, more professional presence online and offline." },
+    { s: ".about-list li:nth-child(1)", en: "Modern design" },
+    { s: ".about-list li:nth-child(2)", en: "Tailored solutions" },
+    { s: ".about-list li:nth-child(3)", en: "Direct communication" },
+    { s: ".about-list li:nth-child(4)", en: "Focus on your business" },
+    { s: ".about-text h2", en: "Your ideas, our work." },
+    { s: ".about-text>p:nth-of-type(1)", en: "Every business has a story. We help you tell it the right way." },
+    { s: ".about-text>p:nth-of-type(2)", en: "From a simple website to marketing materials, we create solutions that look professional and fit your needs." },
+    { s: ".about-text .btn", en: "Let's discuss your project" },
+    { s: ".reviews .section-title>span", en: "Our clients" },
+    { s: ".reviews .section-title>h2", en: "What clients say" },
+    { s: ".reviews .section-title>p", en: "Reviews from clients we have worked with." },
+    { s: ".reviews-grid .review-card:nth-child(1) p", en: '"The website turned out very professional and much more beautiful than I imagined."' },
+    { s: ".reviews-grid .review-card:nth-child(1) small", en: "Client" },
+    { s: ".reviews-grid .review-card:nth-child(2) p", en: '"Very good service and proper communication. The videos for our marketing turned out great."' },
+    { s: ".reviews-grid .review-card:nth-child(2) small", en: "Client" },
+    { s: ".reviews-grid .review-card:nth-child(3) p", en: '"The business card and flyers were modern and professional. Very satisfied!"' },
+    { s: ".reviews-grid .review-card:nth-child(3) small", en: "Client" },
+    { s: ".comments-head h3", en: "Comments" },
+    { s: ".comments-summary span", en: "3 comments" },
+    { s: ".comment-list>.comment:nth-child(1) .comment-time", en: "Verified client" },
+    { s: ".comment-list>.comment:nth-child(1) .comment-text", en: '"The website turned out very professional and much more beautiful than I imagined."' },
+    { s: ".comment-list>.comment:nth-child(2) .comment-time", en: "Verified client" },
+    { s: ".comment-list>.comment:nth-child(2) .comment-text", en: '"Very good service and proper communication. The videos for our marketing turned out great."' },
+    { s: ".comment-list>.comment:nth-child(3) .comment-time", en: "Verified client" },
+    { s: ".comment-list>.comment:nth-child(3) .comment-text", en: '"The business card and flyers were modern and professional. Very satisfied!"' },
+    { s: ".comment-form h4", en: "Have you worked with us?" },
+    { s: ".comment-form>p", en: "Send your review via WhatsApp and we will add it here." },
+    { s: ".comment-form .btn", en: "Leave a review on WhatsApp" },
+    { s: ".cta-box>h2", en: "Ready to take your business higher?" },
+    { s: ".cta-box>p", en: "Contact us today and tell us what project you have in mind." },
+    { s: ".free-trial-badge", en: "Special offer" },
+    { s: ".free-trial-content>h2", en: "Try for free!" },
+    { s: ".free-trial-content>p", en: "Want to try our services? Send us a message and tell us what you need. Let's start together!" },
+    { s: ".free-trial-box .btn", en: "Send us a message" },
+    { s: ".contact .section-title>span", en: "Contact" },
+    { s: ".contact .section-title>h2", en: "Let's talk" },
+    { s: ".contact .section-title>p", en: "Have an idea? Contact us and we can discuss your project." },
+    { s: ".contact-info h3", en: "Find us here" },
+    { s: ".contact-info>p", en: "For questions, quotes or new projects, you can contact us directly." },
+    { s: ".contact-info>.contact-item:nth-of-type(1) small", en: "Phone" },
+    { s: ".contact-info>.contact-item:nth-of-type(4) small", en: "Services" },
+    { s: ".contact-form h3", en: "Send us a message" },
+    { s: '.contact-form label[for="message"]', en: "Your message" },
+    { s: '.contact-form button[type="submit"]', en: "Send the message via WhatsApp" },
+    { s: ".footer-content>p", parts: ["© 2026 ", ". All rights reserved."] }
+  ];
+  var ATTRS = [
+    { s: "#message", a: "placeholder", en: "Write your name, phone and project details..." },
+    { s: ".whatsapp-float", a: "aria-label", en: "Contact us on WhatsApp" },
+    { s: "#ai", a: "aria-label", en: "Websites with artificial intelligence" },
+    { s: "#navLinks a[title]", a: "title", en: "Animation" },
+    { s: ".stars-static", a: "aria-label", en: "5 out of 5 stars" }
+  ];
+  var DOCTITLE_EN = "Code Nest Tirana | Professional Solutions for Your Business";
+  var METADESC_EN = "Professional services for website creation, video editing, business cards and informative flyers.";
+  var origTitle = document.title;
+  var metaDesc = document.querySelector('meta[name="description"]');
+  var origDesc = metaDesc ? (metaDesc.getAttribute("content") || "") : "";
+  var textCache = new Map();
+  function textNodes(el) {
+    var out = [];
+    (function walk(n) {
+      for (var i = 0; i < n.childNodes.length; i++) {
+        var c = n.childNodes[i];
+        if (c.nodeType === 3) { if (c.nodeValue.trim() !== "") out.push(c); }
+        else if (c.nodeType === 1 && c.getAttribute("translate") !== "no") walk(c);
+      }
+    })(el);
+    return out;
+  }
+  function setLang(lang) {
+    for (var t = 0; t < ITEMS.length; t++) {
+      var it = ITEMS[t];
+      var els = document.querySelectorAll(it.s);
+      for (var k = 0; k < els.length; k++) {
+        var el = els[k];
+        if (!textCache.has(el)) textCache.set(el, textNodes(el).map(function (n) { return n.nodeValue; }));
+        var src = (lang === "en") ? (it.parts || [it.en]) : textCache.get(el);
+        var nodes = textNodes(el);
+        for (var i = 0; i < nodes.length; i++) {
+          if (src[i] !== undefined) nodes[i].nodeValue = src[i];
+        }
+      }
+    }
+    for (var q = 0; q < ATTRS.length; q++) {
+      var at = ATTRS[q];
+      var aes = document.querySelectorAll(at.s);
+      for (var m = 0; m < aes.length; m++) {
+        var ae = aes[m];
+        var dk = "data-orig-" + at.a;
+        if (!ae.hasAttribute(dk)) ae.setAttribute(dk, ae.getAttribute(at.a) || "");
+        ae.setAttribute(at.a, (lang === "en") ? at.en : ae.getAttribute(dk));
+      }
+    }
+    document.documentElement.setAttribute("lang", lang);
+    document.title = (lang === "en") ? DOCTITLE_EN : origTitle;
+    if (metaDesc) metaDesc.setAttribute("content", (lang === "en") ? METADESC_EN : origDesc);
+    var btns = document.querySelectorAll(".lang-toggle button");
+    for (var b = 0; b < btns.length; b++) {
+      var on = btns[b].getAttribute("data-lang") === lang;
+      btns[b].classList.toggle("on", on);
+      btns[b].setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    try { localStorage.setItem(KEY, lang); } catch (e) {}
+  }
+  var start = "sq";
+  try { start = localStorage.getItem(KEY) || "sq"; } catch (e) {}
+  if (start !== "en") start = "sq";
+  var btns0 = document.querySelectorAll(".lang-toggle button");
+  for (var j = 0; j < btns0.length; j++) {
+    (function (btn) {
+      btn.addEventListener("click", function () { setLang(btn.getAttribute("data-lang")); });
+    })(btns0[j]);
+  }
+  setLang(start);
+})();
+</script>
+
+<script>
+/* ===== Dark / light theme =====
+   The checkbox is the switch, but the "light" / "dark" class on <html>
+   is what the CSS actually reacts to - that way the light theme also
+   works in browsers that do not support ":has()" (older in-app browsers
+   such as WhatsApp, where an unsupported selector silently kills the
+   whole rule).
+   The default is DARK on every device - the site must look the same when
+   it is opened from a QR code, from WhatsApp or from a Google search, no
+   matter what the phone's system theme is. Only the switch changes it,
+   and the choice is remembered in localStorage.
+
+   The class on <html> also drives `color-scheme` (see the stylesheet):
+   `html.light` -> `color-scheme: only light`, `html.dark` ->
+   `color-scheme: only dark`. The "only" keyword is what forbids the
+   browser to invert / darken the page on its own, so the toggle really
+   controls the colours instead of fighting the UA. */
+(function(){
+  var KEY="cnt-theme";
+  var box=document.getElementById("themeToggleBox");
+  var meta=document.getElementById("themeColorMeta");
+  var root=document.documentElement;
+  if(!box) return;
+  function apply(light, save){
+    root.classList.remove("light","dark");
+    root.classList.add(light ? "light" : "dark");
+    root.setAttribute("data-theme", light ? "light" : "dark");
+    box.checked=light;
+    if(meta) meta.setAttribute("content", light ? "#f3f6fc" : "#050b1a");
+    /* keep the accessible name of the switch in sync with what it does */
+    var lbl=document.querySelector(".theme-toggle");
+    if(lbl) lbl.setAttribute("title", light ? "Switch to dark theme" : "Switch to light theme");
+    box.setAttribute("aria-label", light ? "Switch to dark theme" : "Switch to light theme");
+    if(save){ try{ localStorage.setItem(KEY, light ? "light" : "dark"); }catch(e){} }
+  }
+  var saved=null;
+  try{ saved=localStorage.getItem(KEY); }catch(e){}
+  apply(saved === "light", false);
+  box.addEventListener("change",function(){ apply(box.checked, true); });
+})();
+</script>
+
+<script>
+(function () {
+  var bg = document.getElementById("bgReact");
+  if (!bg) return;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var tx = window.innerWidth * 0.5, ty = window.innerHeight * 0.4;   /* target */
+  var cx = tx, cy = ty;                                              /* current (eased) */
+  var active = false, idleTimer = 0, raf = 0, t0 = performance.now();
+
+  function setActive(on) {
+    active = on;
+    bg.style.setProperty("--on", on ? "1" : "0");
+  }
+  function point(e) {
+    tx = e.clientX; ty = e.clientY;
+    setActive(true);
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(function () { setActive(false); }, 2600);
+    if (reduce) paint();
+  }
+  window.addEventListener("pointermove", point, { passive: true });
+  window.addEventListener("pointerdown", point, { passive: true });
+  document.documentElement.addEventListener("mouseleave", function () { setActive(false); });
+
+  function paint() {
+    bg.style.setProperty("--bx", cx.toFixed(1) + "px");
+    bg.style.setProperty("--by", cy.toFixed(1) + "px");
+    bg.style.setProperty("--sy", (-window.scrollY).toFixed(1) + "px");
+  }
+
+  function tick(now) {
+    if (!active) {
+      /* idle: gentle drift, pushed along by the scroll position */
+      var t = (now - t0) / 1000;
+      var p = window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      tx = window.innerWidth * (0.5 + 0.32 * Math.sin(t * 0.35 + p * 6));
+      ty = window.innerHeight * (0.45 + 0.28 * Math.cos(t * 0.27 + p * 4));
+    }
+    cx += (tx - cx) * 0.12;
+    cy += (ty - cy) * 0.12;
+    paint();
+    raf = requestAnimationFrame(tick);
+  }
+
+  window.addEventListener("scroll", function () { if (reduce) paint(); }, { passive: true });
+  window.addEventListener("resize", function () { if (!active) { tx = window.innerWidth * 0.5; ty = window.innerHeight * 0.4; } });
+
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { cancelAnimationFrame(raf); raf = 0; }
+    else if (!raf && !reduce) raf = requestAnimationFrame(tick);
+  });
+
+  paint();
+  if (!reduce) raf = requestAnimationFrame(tick);
+})();
+</script>
+
 </body>
 </html>
