@@ -50,6 +50,9 @@
   root.classList.add(light ? "light" : "dark");
   root.setAttribute("data-theme", light ? "light" : "dark");
   if(meta) meta.setAttribute("content", light ? "#f3f6fc" : "#050b1a");
+  /* tell the UA which scheme is really in use and forbid it to override it */
+  var sm=document.querySelector('meta[name="color-scheme"]');
+  if(sm) sm.setAttribute("content", light ? "only light" : "dark");
 })();
 </script>
 <style>

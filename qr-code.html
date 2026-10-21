@@ -21,6 +21,9 @@
     if(body){ body.classList.remove('light','dark'); body.classList.add(theme); }
     var m=document.getElementById('qrThemeColor');
     if(m) m.setAttribute('content', theme==='light' ? '#f3f6fc' : '#050b1a');
+    /* tell the UA which scheme is really in use and forbid it to override it */
+    var sm=document.querySelector('meta[name="color-scheme"]');
+    if(sm) sm.setAttribute('content', theme==='light' ? 'only light' : 'dark');
     try { localStorage.setItem('cnt-qr-theme', theme); } catch(e){}
   }
   /* Dark by default on every device, exactly like the main site, so the
